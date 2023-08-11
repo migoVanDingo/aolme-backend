@@ -3,7 +3,7 @@ from api.task.TaskAPI import task_api
 
 app = Flask(__name__)
 
-app.register_blueprint(task_api, url_prefix="/tasks")
+app.register_blueprint(task_api)
 
 @app.route("/")
 def hello_world():
