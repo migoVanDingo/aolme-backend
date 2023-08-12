@@ -21,9 +21,10 @@ def create_task(project_id):
 
 
 #get tasks list
-@task_api.route("/projects/<project_id>/tasks", methods=['GET'])
-def get_tasks_list(project_id):
-    api_request = RequestGetTasksList(project_id)
+@task_api.route("/projects/tasks", methods=['GET'])
+def get_tasks_list():
+    data = json.loads(request.data)
+    api_request = RequestGetTasksList(data["project_id"])
     response = api_request.do()
     return response
 
