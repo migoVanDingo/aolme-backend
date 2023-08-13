@@ -15,7 +15,7 @@ task_api = Blueprint('task_api', __name__)
 @task_api.route("/projects/<project_id>/tasks", methods=['POST'])
 def create_task(project_id):
     data = json.loads(request.data)
-    api_request = RequestCreateTask(project_id, data["name"])
+    api_request = RequestCreateTask(project_id, data)
     response = api_request.do()
     return response
 

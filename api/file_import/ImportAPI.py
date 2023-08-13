@@ -38,7 +38,7 @@ def delete_file_upload(file_id):
     return response
 
 
-@import_api.route('/import/file-upload/<file_id>', methods=['DELETE'])
+@import_api.route('/projects/<project_id>/file-uploads', methods=['DELETE'])
 def delete_files(file_id):
     api_request = RequestDeleteFiles()
     response = api_request.do()
@@ -46,7 +46,7 @@ def delete_files(file_id):
 
 
 @import_api.route('/projects/<project_id>/import', methods=['POST'])
-def get_file_upload(project_id):
+def import_tasks(project_id):
     api_request = RequestImportTasks()
     response = api_request.do()
     return response

@@ -1,6 +1,24 @@
+import requests, json
 class RequestCreateProject:
-    def __init__(self, name):
-        self.name = name
+
+    
+
+    def __init__(self, data):
+        self.data = data
+        self.url = "http://localhost:8080/api/projects/"
+        self.token="11e38f35519b1981642791bde53c2fb8fa4e0784"
         
+
     def do(self):
-        return "create-project {}".format(self.name)
+
+
+        headers = {
+            "Authorization":"Token {}".format(self.token),
+            "Content-Type": "application/json"
+        }
+
+        data = json.dumps(self.data)
+        x = requests.post(self.url, data=data, headers=headers)
+
+        return x.json()
+    

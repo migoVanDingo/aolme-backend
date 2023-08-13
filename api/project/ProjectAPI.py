@@ -8,15 +8,28 @@ from api.project.handler.RequestListAllProjects import RequestListAllProjects
 from api.project.handler.RequestListProjectTasks import RequestListProjectTasks
 from api.project.handler.RequestUpdateProject import RequestUpdateProject
 from api.project.handler.RequestValidateLabelConfig import RequestValidateLabelConfig
+from api.project.utility.ProjectPayloads import ProjectPayloads
+from api.project.utility.validator.ProjectValidator import ProjectValidator
 
 project_api = Blueprint('project_api', __name__)
 
 #create project
 @project_api.route("/projects", methods=['POST'])
 def create_project():
+
     data = json.loads(request.data)
-    api_request = RequestCreateProject(data["name"])
+
+    #validate request data
+    validator = ProjectValidator()
+    is_valid = validator.validate(data)
+    if is_valid[0] is False:
+        return is_valid[1]
+    
+    #make POST request to label-studio
+    api_request = RequestCreateProject(data)
     response = api_request.do()
+
+
     return response
 
 

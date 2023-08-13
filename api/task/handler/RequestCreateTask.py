@@ -1,8 +1,8 @@
 class RequestCreateTask:
 
-    def __init__(self, project_id, name):
+    def __init__(self, project_id, data):
         self.project_id = project_id
-        self.name = name
+        self.data = data
 
     def do(self):
-        return "create task {} for project {}".format(self.name, self.project_id)
+        return "project id {} data {}".format(self.project_id, self.data)
