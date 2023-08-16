@@ -1,0 +1,16 @@
+{
+    "id": "0cf98b80-dbec-4018-90b0-6142eb706208", "status_code": 400, 
+    "version": "1.8.0", 
+    "detail": "Validation error", 
+    "exc_info": "None", 
+    "validation_errors": {
+        "label_config": [
+            "syntax error: line 1, column 0"
+        ], 
+        "created_by": {
+            "email": [
+                "user with this email address already exists."
+            ]
+        }
+    }
+}

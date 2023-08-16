@@ -53,8 +53,14 @@ def get_project(project_id):
 @project_api.route('/projects/<project_id>', methods=['PATCH'])
 def update_project(project_id):
     data = json.loads(request.data)
-    name = data["name"]
-    api_request = RequestUpdateProject(project_id, name)
+    
+    validator = ProjectValidator()
+    is_valid = validator.validate(data)
+    if is_valid[0] is False:
+        return is_valid[1]
+
+
+    api_request = RequestUpdateProject(project_id, data)
     response = api_request.do()
     return response
 
@@ -76,10 +82,10 @@ def list_project_tasks(project_id):
 
 
 #Validate Label config
-@project_api.route("/projects/<project_id>/validate", methods=['POST'])
-def validate_label_config(project_id):
+@project_api.route("/projects/validate", methods=['POST'])
+def validate_label_config():
     data = json.loads(request.data)
-    config = data["config"]
-    api_request = RequestValidateLabelConfig(project_id, config)
+    
+    api_request = RequestValidateLabelConfig(data)
     response = api_request.do()
     return response

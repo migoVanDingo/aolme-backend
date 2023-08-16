@@ -1,8 +1,17 @@
+import json, requests
 class RequestValidateLabelConfig:
 
-    def __init__(self, project_id, config):
-        self.project_id = project_id
+    def __init__(self, config):
         self.config = config
+        self.url = "http://localhost:8080/api/projects/validate"
 
     def do(self):
-        return "project {} config {}".format(self.project_id, self.config)
+        headers = {
+            "Authorization":"Token {}".format(self.token),
+            "Content-Type": "application/json"
+        }
+
+        data = json.dumps(self.data)
+        x = requests.post(self.url, data=self.config, headers=headers)
+
+        return x.json()

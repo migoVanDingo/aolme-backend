@@ -10,8 +10,6 @@ class RequestCreateProject:
         
 
     def do(self):
-
-
         headers = {
             "Authorization":"Token {}".format(self.token),
             "Content-Type": "application/json"
