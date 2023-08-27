@@ -1,15 +1,15 @@
-from api.project.handler.RequestCreateProject import RequestCreateProject
+from api.label_studio.project.handler.RequestCreateProject import RequestCreateProject
 from flask import Blueprint, request
 import json
-from api.project.handler.RequestDeleteProject import RequestDeleteProject
-from api.project.handler.RequestGetProjectById import RequestGetProjectById
+from api.label_studio.project.handler.RequestDeleteProject import RequestDeleteProject
+from api.label_studio.project.handler.RequestGetProjectById import RequestGetProjectById
 
-from api.project.handler.RequestListAllProjects import RequestListAllProjects
-from api.project.handler.RequestListProjectTasks import RequestListProjectTasks
-from api.project.handler.RequestUpdateProject import RequestUpdateProject
-from api.project.handler.RequestValidateLabelConfig import RequestValidateLabelConfig
-from api.project.utility.ProjectPayloads import ProjectPayloads
-from api.project.utility.validator.ProjectValidator import ProjectValidator
+from api.label_studio.project.handler.RequestListAllProjects import RequestListAllProjects
+from api.label_studio.project.handler.RequestListProjectTasks import RequestListProjectTasks
+from api.label_studio.project.handler.RequestUpdateProject import RequestUpdateProject
+from api.label_studio.project.handler.RequestValidateLabelConfig import RequestValidateLabelConfig
+from api.label_studio.project.utility.ProjectPayloads import ProjectPayloads
+from api.label_studio.project.utility.validator.ProjectValidator import ProjectValidator
 
 project_api = Blueprint('project_api', __name__)
 

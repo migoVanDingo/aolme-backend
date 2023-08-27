@@ -1,12 +1,12 @@
 from flask import Blueprint, request
 import json
-from api.file_import.handler.RequestDeleteFileUpload import RequestDeleteFileUpload
-from api.file_import.handler.RequestDeleteFiles import RequestDeleteFiles
+from api.label_studio.file_import.handler.RequestDeleteFileUpload import RequestDeleteFileUpload
+from api.label_studio.file_import.handler.RequestDeleteFiles import RequestDeleteFiles
 
-from api.file_import.handler.RequestGetFileUpload import RequestGetFileUpload
-from api.file_import.handler.RequestGetFilesList import RequestGetFilesList
-from api.file_import.handler.RequestImportTasks import RequestImportTasks
-from api.file_import.handler.RequestUpdateFileUpload import RequestUpdateFileUpload
+from api.label_studio.file_import.handler.RequestGetFileUpload import RequestGetFileUpload
+from api.label_studio.file_import.handler.RequestGetFilesList import RequestGetFilesList
+from api.label_studio.file_import.handler.RequestImportTasks import RequestImportTasks
+from api.label_studio.file_import.handler.RequestUpdateFileUpload import RequestUpdateFileUpload
 
 import_api = Blueprint('import_api', __name__)
 

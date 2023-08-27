@@ -1,13 +1,13 @@
 from flask import Blueprint, request
 import json
-from api.task.Entity.PayloadGetTaskList import PayloadGetTaskList
+from api.label_studio.task.Entity.PayloadGetTaskList import PayloadGetTaskList
 
-from api.task.handler.RequestCreateTask import RequestCreateTask
-from api.task.handler.RequestDeleteTask import RequestDeleteTask
-from api.task.handler.RequestGetTaskById import RequestGetTaskById
-from api.task.handler.RequestGetTasksList import RequestGetTasksList
-from api.task.handler.RequestUpdateTask import RequestUpdateTask
-from api.task.Entity.PayloadCreateTask import PayloadCreateTask
+from api.label_studio.task.handler.RequestCreateTask import RequestCreateTask
+from api.label_studio.task.handler.RequestDeleteTask import RequestDeleteTask
+from api.label_studio.task.handler.RequestGetTaskById import RequestGetTaskById
+from api.label_studio.task.handler.RequestGetTasksList import RequestGetTasksList
+from api.label_studio.task.handler.RequestUpdateTask import RequestUpdateTask
+from api.label_studio.task.Entity.PayloadCreateTask import PayloadCreateTask
 
 
 

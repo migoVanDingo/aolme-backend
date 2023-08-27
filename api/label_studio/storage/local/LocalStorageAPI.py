@@ -1,23 +1,23 @@
 from flask import Blueprint, request
 import json
-from api.storage.local.entity.PayloadCreateExportStorage import PayloadCreateExportStorage
-from api.storage.local.entity.PayloadValidateExportStorage import PayloadValidateExportStorage
-from api.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
+from api.label_studio.storage.local.entity.PayloadCreateExportStorage import PayloadCreateExportStorage
+from api.label_studio.storage.local.entity.PayloadValidateExportStorage import PayloadValidateExportStorage
+from api.label_studio.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
 
-from api.storage.local.handler.RequestCreateExportStorage import RequestCreateExportStorage
-from api.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
-from api.storage.local.handler.RequestDeleteExportStorage import RequestDeleteExportStorage
-from api.storage.local.handler.RequestDeleteImportStorage import RequestDeleteImportStorage
-from api.storage.local.handler.RequestGetAllExportStorage import RequestGetAllExportStorage
-from api.storage.local.handler.RequestGetAllImportStorage import RequestGetAllImportStorage
-from api.storage.local.handler.RequestGetExportStorage import RequestGetExportStorage
-from api.storage.local.handler.RequestGetImportStorage import RequestGetImportStorage
-from api.storage.local.handler.RequestSyncExportStorage import RequestSyncExportStorage
-from api.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
-from api.storage.local.handler.RequestUpdateExportStorage import RequestUpdateExportStorage
-from api.storage.local.handler.RequestUpdateImportStorage import RequestUpdateImportStorage
-from api.storage.local.handler.RequestValidateExportStorage import RequestValidateExportStorage
-from api.storage.local.handler.RequestValidateImportStorage import RequestValidateImportStorage
+from api.label_studio.storage.local.handler.RequestCreateExportStorage import RequestCreateExportStorage
+from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
+from api.label_studio.storage.local.handler.RequestDeleteExportStorage import RequestDeleteExportStorage
+from api.label_studio.storage.local.handler.RequestDeleteImportStorage import RequestDeleteImportStorage
+from api.label_studio.storage.local.handler.RequestGetAllExportStorage import RequestGetAllExportStorage
+from api.label_studio.storage.local.handler.RequestGetAllImportStorage import RequestGetAllImportStorage
+from api.label_studio.storage.local.handler.RequestGetExportStorage import RequestGetExportStorage
+from api.label_studio.storage.local.handler.RequestGetImportStorage import RequestGetImportStorage
+from api.label_studio.storage.local.handler.RequestSyncExportStorage import RequestSyncExportStorage
+from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
+from api.label_studio.storage.local.handler.RequestUpdateExportStorage import RequestUpdateExportStorage
+from api.label_studio.storage.local.handler.RequestUpdateImportStorage import RequestUpdateImportStorage
+from api.label_studio.storage.local.handler.RequestValidateExportStorage import RequestValidateExportStorage
+from api.label_studio.storage.local.handler.RequestValidateImportStorage import RequestValidateImportStorage
 
 local_storage_api = Blueprint('local_storage_api', __name__)
 
