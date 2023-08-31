@@ -3,6 +3,8 @@ from flask import Blueprint, jsonify, make_response, request, flash, url_for
 import json
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
+
+
 file_upload_api = Blueprint('file_upload_api', __name__)
 CORS(file_upload_api)
 
@@ -11,6 +13,7 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json', 'csv'}
 
 @file_upload_api.route("/upload", methods=['POST', 'OPTIONS'])
 def upload_files():
+    
     
     if request.method == 'OPTIONS':
         response = make_response('success', 200)
