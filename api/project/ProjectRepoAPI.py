@@ -3,6 +3,8 @@ from flask import Blueprint, jsonify, make_response, request, flash, url_for
 import json
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
+from api.file_upload.handler.RequestUploadFiles import RequestUploadFiles
+from api.label_studio.project.handler.RequestCreateProject import RequestCreateProject
 from api.project.handler.RequestCreateRepoProject import RequestCreateRepoProject
 from api.project.handler.RequestGetProjectById import RequestGetProjectById
 from api.project.handler.RequestGetProjectList import RequestGetProjectList
@@ -31,8 +33,25 @@ def create_project_in_repo():
 
         
             api_request = RequestCreateRepoProject(data)
-        
-            return api_request.do(), 200
+
+            repo_project = api_request.do()
+
+            if repo_project is not None:
+                payload = {
+                    "title": data['name'],
+                    "description": data['description']
+                }
+                api_request = RequestCreateProject(payload)
+                label_studio_project = api_request.do()
+                
+
+            
+            # if label_studio_project is not None:
+                
+            #     api_request = RequestUploadFiles(files)
+            #     upload_files_response = api_request.do()
+                
+            return label_studio_project, 200
         
         
     except Exception as e:

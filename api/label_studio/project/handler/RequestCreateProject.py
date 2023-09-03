@@ -1,12 +1,10 @@
 import requests, json
 class RequestCreateProject:
-
     
-
     def __init__(self, data):
         self.data = data
         self.url = "http://localhost:8080/api/projects/"
-        self.token="11e38f35519b1981642791bde53c2fb8fa4e0784"
+        self.token="baa32e978ffcca4a0f0ec69f00d95f0bcef3fc7f"
         
 
     def do(self):

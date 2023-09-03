@@ -47,6 +47,6 @@ def delete_files(file_id):
 
 @import_api.route('/projects/<project_id>/import', methods=['POST'])
 def import_tasks(project_id):
-    api_request = RequestImportTasks()
+    api_request = RequestImportTasks(project_id)
     response = api_request.do()
     return response
