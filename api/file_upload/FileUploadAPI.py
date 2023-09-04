@@ -1,4 +1,5 @@
 import os
+from time import sleep
 from flask import Blueprint, jsonify, make_response, request, flash, url_for
 import json
 from flask_cors import CORS, cross_origin
@@ -6,6 +7,7 @@ from werkzeug.utils import secure_filename
 
 from api.file_upload.handler.RequestUploadFiles import RequestUploadFiles
 from api.label_studio.file_import.handler.RequestImportTasks import RequestImportTasks
+from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
 
 
 file_upload_api = Blueprint('file_upload_api', __name__)
@@ -22,23 +24,30 @@ def upload_files(project_id):
         return response
     
 
-    files = request.files.getlist('file')
+    try:
+        files = request.files.getlist('file')
+        data = request.form
 
-    api_request = RequestUploadFiles(files)
-    response = api_request.do()
-    if response.status_code == 200:
-        print("response: {}".format(response))
-        print("response-data: {}".format(response.data.decode('UTF-8')))
-        api_request = RequestImportTasks(project_id, response.data.decode('UTF-8'))
-        res = api_request.do()
-        print(res)
+        api_request = RequestUploadFiles(files)
+        response = api_request.do()
+        if response.status_code == 200:
+            sleep(5)
+            payload = { 
+                "project": data['project_id'],
+                "use_blob_urls": True}
+            api_request = RequestSyncImportStorage(data['local_storage_id'], payload)
+            response = api_request.do()
 
-  
-    response = make_response(response, 200)
-    response.headers['Access-Control-Allow-Headers'] = '*'
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Content-Type'] = '*'
-    return response
+    
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+
+    except Exception as e:
+        print("Error: {}".format(str(e)))
+        return "Error: " + str(e), 404
 
 
 

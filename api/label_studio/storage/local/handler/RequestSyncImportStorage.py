@@ -1,19 +1,26 @@
-import json, requests
+import json, requests, os
+from dotenv import load_dotenv
+load_dotenv()
 class RequestSyncImportStorage:
-    def __init__(self,file_id, payload):
+    def __init__(self,local_storage_id, payload):
+        self.local_storage_id = local_storage_id
         self.payload = payload
-        self.url = "http://localhost:8080/api/storages/localfiles/{}/sync".format(file_id)
-        self.token="11e38f35519b1981642791bde53c2fb8fa4e0784"
+        self.url = "http://localhost:8080/api/storages/localfiles/{}/sync".format(self.local_storage_id)
+        self.token=os.environ['LABEL_STUDIO_SECRET_KEY']
+        
         
 
 
     def do(self):
-        headers = {
-            "Authorization":"Token {}".format(self.token),
-            "Content-Type": "application/json"
-        }
+        try:
+            headers = {
+                "Authorization":"token {}".format(self.token),
+                "Content-Type": "application/json"
+            }
 
-        data = json.dumps(self.payload)
-        x = requests.post(self.url, data=data, headers=headers)
+            data = json.dumps(self.payload)
+            x = requests.post(self.url, data=data, headers=headers)
 
-        return x.json()
+            return x.json()
+        except Exception as e:
+            return "Error: " + str(e), 404

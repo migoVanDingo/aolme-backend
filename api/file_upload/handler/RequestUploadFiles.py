@@ -3,7 +3,7 @@ from flask import Flask, flash, make_response, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json', 'mp4'}
 UPLOAD_FOLDER = '/uploads'
 class RequestUploadFiles:
     def __init__(self, files):
@@ -32,14 +32,14 @@ class RequestUploadFiles:
             current_directory = os.getcwd()
             
             uploads_directory = os.path.join(current_directory, 'uploads')
-            print(uploads_directory)
+          
             if file and allowed_file(file.filename):
                 #filename = secure_filename(file.filename)
                 print(os.path.join(uploads_directory, file.filename))
                 file.save(os.path.join(uploads_directory, file.filename))
                 #print(jsonify(url_for('download_file', name=file.filename)))
             
-            print(file.filename)
+           
         
         response = make_response(file.filename, 200)
         response.headers['Access-Control-Allow-Origin'] = '*'

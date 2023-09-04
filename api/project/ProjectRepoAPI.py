@@ -5,6 +5,9 @@ from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from api.file_upload.handler.RequestUploadFiles import RequestUploadFiles
 from api.label_studio.project.handler.RequestCreateProject import RequestCreateProject
+from api.label_studio.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
+from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
+from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
 from api.project.handler.RequestCreateRepoProject import RequestCreateRepoProject
 from api.project.handler.RequestGetProjectById import RequestGetProjectById
 from api.project.handler.RequestGetProjectList import RequestGetProjectList
@@ -32,10 +35,12 @@ def create_project_in_repo():
                 return is_valid[1]
 
         
+            #Create project in my app
             api_request = RequestCreateRepoProject(data)
 
             repo_project = api_request.do()
 
+            #Create project in Label Studio
             if repo_project is not None:
                 payload = {
                     "title": data['name'],
@@ -43,18 +48,44 @@ def create_project_in_repo():
                 }
                 api_request = RequestCreateProject(payload)
                 label_studio_project = api_request.do()
-                
+                print(label_studio_project)
 
+            #Add Local storage to Label Studio project
+            if label_studio_project is not None:  
+                payload = {
+                    "project": label_studio_project['id'],
+                    "title": data['name'],
+                    "description": data['description'],
+                    "path": "/Users/bubz/Developer/master-project/aolme-backend/uploads",
+                    "use_blob_urls": True,
+                }
+                validator = PayloadCreateImportStorage()
+                is_valid = validator.validate(payload)
+                if is_valid[0] is False:
+                    return is_valid[1]
+                api_request = RequestCreateImportStorage(payload)
+                local_storage = api_request.do()
+                print(local_storage)
+
+                
+                response = {"project_id":label_studio_project['id'],
+                           "local_storage_id": local_storage['id']}
+                   
+
+
+
+            
             
             # if label_studio_project is not None:
                 
             #     api_request = RequestUploadFiles(files)
             #     upload_files_response = api_request.do()
                 
-            return label_studio_project, 200
+            return response, 200
         
         
     except Exception as e:
+        print(str(e))
         return "Error: " + str(e), 404
     
 @project_repo_api.route('/repo/project/<project_id>', methods=['GET'])
