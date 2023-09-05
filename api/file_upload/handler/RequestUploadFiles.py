@@ -2,12 +2,15 @@ import os
 from flask import Flask, flash, make_response, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
+from dao.TableFiles import TableFiles
+
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json', 'mp4'}
 UPLOAD_FOLDER = '/uploads'
 class RequestUploadFiles:
-    def __init__(self, files):
+    def __init__(self, project_id, files):
         self.files = files
+        self.project_id = project_id
 
     def do(self):
         
@@ -35,13 +38,44 @@ class RequestUploadFiles:
           
             if file and allowed_file(file.filename):
                 #filename = secure_filename(file.filename)
-                print(os.path.join(uploads_directory, file.filename))
-                file.save(os.path.join(uploads_directory, file.filename))
+
+                #working code 
+                # print(os.path.join(uploads_directory, file.filename))
+                # final_path = os.path.join(uploads_directory, file.filename)
+                
+                #test code
+                payload = {
+                    'filename': file.filename
+                }
+                table_files = TableFiles()
+                final_path = table_files.make_directory(payload)
+                
+                final_path = os.path.join(final_path, file.filename)
+                file.save(final_path)
+                f = file.filename
+                filename = f.split('.')
+                print("filename: {}".format(filename[0]))
+                print("ext: {}".format(filename[1]))
+
+                payload = {
+                    'project_id': self.project_id,
+                    'path': final_path,
+                    'name': filename[0],
+                    'extension':filename[1]
+                }
+
+                insert_file = table_files.create_file_info(payload)
+
+                print(insert_file)
+                
+                if insert_file == 'success':
+                    response = payload
+
                 #print(jsonify(url_for('download_file', name=file.filename)))
             
            
         
-        response = make_response(file.filename, 200)
+        response = make_response(response, 200)
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
     

@@ -33,22 +33,42 @@ def create_project_in_repo():
             is_valid = validator.validate(data)
             if is_valid[0] is False:
                 return is_valid[1]
+            
+            payload = {
+                "title": data['name'],
+                "description": data['description']
+            }
+            api_request = RequestCreateProject(payload)
+            label_studio_project = api_request.do()
+            print(label_studio_project)
+
 
         
             #Create project in my app
-            api_request = RequestCreateRepoProject(data)
+            if label_studio_project is not None:
+                print('ls project ID: {}'.format(label_studio_project['id']))
+                payload = {
+                    "name": data['name'],
+                    "description": data['description'],
+                    "owner": data['owner'],
+                    "created_by": data['created_by'],
+                    "last_updated_by": data['last_updated_by'],
+                    "ls_project_id":label_studio_project['id'] 
+                }
+                api_request = RequestCreateRepoProject(payload)
 
-            repo_project = api_request.do()
+                repo_project = api_request.do()
+                print("repo project response: {}".format(repo_project.data))
 
             #Create project in Label Studio
-            if repo_project is not None:
-                payload = {
-                    "title": data['name'],
-                    "description": data['description']
-                }
-                api_request = RequestCreateProject(payload)
-                label_studio_project = api_request.do()
-                print(label_studio_project)
+            # if repo_project is not None:
+            #     payload = {
+            #         "title": data['name'],
+            #         "description": data['description']
+            #     }
+            #     api_request = RequestCreateProject(payload)
+            #     label_studio_project = api_request.do()
+            #     print(label_studio_project)
 
             #Add Local storage to Label Studio project
             if label_studio_project is not None:  
@@ -68,8 +88,10 @@ def create_project_in_repo():
                 print(local_storage)
 
                 
-                response = {"project_id":label_studio_project['id'],
-                           "local_storage_id": local_storage['id']}
+                response = {
+                    "project_id":label_studio_project['id'],
+                    "local_storage_id": local_storage['id']
+                    }
                    
 
 

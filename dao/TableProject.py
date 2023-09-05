@@ -10,10 +10,10 @@ class TableProject:
             
             now = datetime.now()
 
-            insert_query = "INSERT INTO project (name, description, owner, created_by, created_at, last_updated, last_updated_by) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            insert_query = "INSERT INTO project (name, description, owner, created_by, created_at, last_updated, last_updated_by, ls_project_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
             cur = self.db.connection.cursor()
 
-            cur.execute(insert_query, (payload['name'], payload['description'], payload['owner'], payload['created_by'], now, now, payload['last_updated_by']))
+            cur.execute(insert_query, (payload['name'], payload['description'], payload['owner'], payload['created_by'], now, now, payload['last_updated_by'], int(payload['ls_project_id'])))
             self.db.connection.commit()
             cur.close()
 
@@ -24,7 +24,8 @@ class TableProject:
                 "created_by": payload['created_by'],
                 "created_at": now,
                 "last_updated_by": payload['last_updated_by'],
-                "last_updated": now
+                "last_updated": now,
+                "ls_project_id": payload['ls_project_id']
             }
 
             return response

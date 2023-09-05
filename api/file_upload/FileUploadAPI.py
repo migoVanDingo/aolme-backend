@@ -28,15 +28,15 @@ def upload_files(project_id):
         files = request.files.getlist('file')
         data = request.form
 
-        api_request = RequestUploadFiles(files)
+        api_request = RequestUploadFiles(data['project_id'],files)
         response = api_request.do()
         if response.status_code == 200:
-            sleep(5)
+            sleep(3)
             payload = { 
                 "project": data['project_id'],
                 "use_blob_urls": True}
             api_request = RequestSyncImportStorage(data['local_storage_id'], payload)
-            response = api_request.do()
+            api_request.do()
 
     
         response = make_response(response, 200)
