@@ -116,7 +116,12 @@ def get_repo_project_by_id(project_id):
 
         api_request = RequestGetProjectById(project_id)
         
-        return api_request.do(), 200
+        res = api_request.do()
+        response = make_response(res, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
         
         
     except Exception as e:

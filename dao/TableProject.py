@@ -36,9 +36,9 @@ class TableProject:
 
     def get_project_by_id(self, project_id):
         try:
-            query = "SELECT * FROM project WHERE isActive = 1 AND id = %s"
+            query = "SELECT * FROM project WHERE isActive = 1 AND ls_project_id = %s"
             cur = self.db.connection.cursor()
-            cur.execute(query, (project_id))
+            cur.execute(query, (project_id,))
             
             data = cur.fetchall()
 

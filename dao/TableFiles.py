@@ -34,3 +34,17 @@ class TableFiles:
 
         except Exception as e:
             return "Error: " + str(e)
+        
+
+    def get_project_files(self, project_id):
+        try:
+            query = "SELECT * FROM files WHERE project_id = %s"
+            cur = self.db.connection.cursor()
+            cur.execute(query, (project_id,))
+            data = cur.fetchall()
+            cur.close()
+            
+            return data
+
+        except Exception as e:
+            return "Error: " + str(e)

@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, make_response, request, flash, url_for
 import json
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
+from api.file_upload.handler.RequestGetProjectFiles import RequestGetProjectFiles
 
 from api.file_upload.handler.RequestUploadFiles import RequestUploadFiles
 from api.label_studio.file_import.handler.RequestImportTasks import RequestImportTasks
@@ -50,6 +51,21 @@ def upload_files(project_id):
         return "Error: " + str(e), 404
 
 
+@file_upload_api.route('/files/<project_id>', methods=['GET'])
+def get_project_files(project_id):
+    try:
+        api_request = RequestGetProjectFiles(project_id)
+        response = api_request.do()
+
+
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+     
+    except Exception as e:
+        return "Error: " + str(e), 404
 
 
 # UPLOAD_FOLDER = '/uploads'
