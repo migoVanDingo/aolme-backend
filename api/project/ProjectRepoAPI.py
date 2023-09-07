@@ -46,7 +46,7 @@ def create_project_in_repo():
         
             #Create project in my app
             if label_studio_project is not None:
-                print('ls project ID: {}'.format(label_studio_project['id']))
+                #print('ls project ID: {}'.format(label_studio_project['id']))
                 payload = {
                     "name": data['name'],
                     "description": data['description'],
@@ -58,7 +58,7 @@ def create_project_in_repo():
                 api_request = RequestCreateRepoProject(payload)
 
                 repo_project = api_request.do()
-                print("repo project response: {}".format(repo_project.data))
+                #print("repo project response: {}".format(repo_project.data))
 
             #Create project in Label Studio
             # if repo_project is not None:
@@ -72,26 +72,26 @@ def create_project_in_repo():
 
             #Add Local storage to Label Studio project
             if label_studio_project is not None:  
-                payload = {
-                    "project": label_studio_project['id'],
+                response = {
+                    "project_id": label_studio_project['id'],
                     "title": data['name'],
                     "description": data['description'],
-                    "path": "/Users/bubz/Developer/master-project/aolme-backend/uploads",
+                    "path": "/Users/bubz/Developer/master-project/aolme-backend/uploads/{}/videos".format(label_studio_project['id']),
                     "use_blob_urls": True,
                 }
-                validator = PayloadCreateImportStorage()
-                is_valid = validator.validate(payload)
-                if is_valid[0] is False:
-                    return is_valid[1]
-                api_request = RequestCreateImportStorage(payload)
-                local_storage = api_request.do()
-                print(local_storage)
+                # validator = PayloadCreateImportStorage()
+                # is_valid = validator.validate(payload)
+                # if is_valid[0] is False:
+                #     return is_valid[1]
+                # api_request = RequestCreateImportStorage(payload)
+                # local_storage = api_request.do()
+                # print(local_storage)
 
                 
-                response = {
+                """ response = {
                     "project_id":label_studio_project['id'],
                     "local_storage_id": local_storage['id']
-                    }
+                    } """
                    
 
 

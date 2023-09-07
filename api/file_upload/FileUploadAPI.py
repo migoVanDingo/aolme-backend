@@ -8,6 +8,8 @@ from api.file_upload.handler.RequestGetProjectFiles import RequestGetProjectFile
 
 from api.file_upload.handler.RequestUploadFiles import RequestUploadFiles
 from api.label_studio.file_import.handler.RequestImportTasks import RequestImportTasks
+from api.label_studio.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
+from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
 from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
 
 
@@ -28,16 +30,36 @@ def upload_files(project_id):
     try:
         files = request.files.getlist('file')
         data = request.form
-
+        #print("Data: {}".format(data))
         api_request = RequestUploadFiles(data['project_id'],files)
         response = api_request.do()
         if response.status_code == 200:
             sleep(3)
+
+            payload = {
+                    "project": int(data["project_id"]),
+                    "title": data['title'],
+                    "description": data['description'],
+                    "path": data['path'],
+                    "use_blob_urls": True,
+                }
+
+            print("payload: {}".format(payload))
+            validator = PayloadCreateImportStorage()
+            is_valid = validator.validate(payload)
+            if is_valid[0] is False:
+                return is_valid[1]
+            api_request = RequestCreateImportStorage(payload)
+            local_storage = api_request.do()
+            print("localStorage response: {}".format(local_storage))
+            
             payload = { 
                 "project": data['project_id'],
-                "use_blob_urls": True}
-            api_request = RequestSyncImportStorage(data['local_storage_id'], payload)
-            api_request.do()
+                "use_blob_urls": True
+            }
+            api_request = RequestSyncImportStorage(local_storage['id'], payload)
+            sync_storage_response = api_request.do()
+            print("sync storage {}".format(sync_storage_response))
 
     
         response = make_response(response, 200)
@@ -54,15 +76,18 @@ def upload_files(project_id):
 @file_upload_api.route('/files/<project_id>', methods=['GET'])
 def get_project_files(project_id):
     try:
+
         api_request = RequestGetProjectFiles(project_id)
         response = api_request.do()
-
+        #print('response: {}'.format(response))
+        
+        
 
         response = make_response(response, 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'
-        return response
+        return response, 200
      
     except Exception as e:
         return "Error: " + str(e), 404

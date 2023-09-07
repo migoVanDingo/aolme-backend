@@ -5,13 +5,13 @@ class TableFiles:
         from main import db
         self.db = db
 
-    def make_directory(self, payload):
+    def make_directory(self, project_id):
         try:
-            filename = payload['filename'].split(".")
-            create_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), filename[0])
+            #filename = payload['filename'].split(".")
+            create_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
             os.mkdir(create_dir)
 
-            create_dir = os.path.join(os.path.join(os.path.join(os.getcwd(), 'uploads'), filename[0]), 'videos')
+            create_dir = os.path.join(create_dir, 'videos')
             os.mkdir(create_dir)
 
             return create_dir
@@ -41,7 +41,7 @@ class TableFiles:
             query = "SELECT * FROM files WHERE project_id = %s"
             cur = self.db.connection.cursor()
             cur.execute(query, (project_id,))
-            data = cur.fetchall()
+            data = list(cur.fetchall())
             cur.close()
             
             return data

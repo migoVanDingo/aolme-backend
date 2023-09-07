@@ -6,7 +6,8 @@ class RequestGetProjectFiles:
         self.project_id = project_id
     
     def do(self):
-        response = TableFiles.get_project_files(self.project_id)
+        dao = TableFiles()
+        response = dao.get_project_files(self.project_id)
 
         return response 
         

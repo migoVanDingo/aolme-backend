@@ -11,6 +11,8 @@ class RequestUploadFiles:
     def __init__(self, project_id, files):
         self.files = files
         self.project_id = project_id
+        self.count = 0
+        self.final_path = ''
 
     def do(self):
         
@@ -24,6 +26,7 @@ class RequestUploadFiles:
 
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
+
 
         for file in files:
 
@@ -48,32 +51,35 @@ class RequestUploadFiles:
                     'filename': file.filename
                 }
                 table_files = TableFiles()
-                final_path = table_files.make_directory(payload)
+                if self.count == 0:
+                    self.final_path = table_files.make_directory(self.project_id)
                 
-                final_path = os.path.join(final_path, file.filename)
-                file.save(final_path)
+                save_path = os.path.join(self.final_path, file.filename)
+                
+                file.save(save_path)
+
                 f = file.filename
                 filename = f.split('.')
-                print("filename: {}".format(filename[0]))
-                print("ext: {}".format(filename[1]))
+                #print("filename: {}".format(filename[0]))
+                #print("ext: {}".format(filename[1]))
 
                 payload = {
                     'project_id': self.project_id,
-                    'path': final_path,
+                    'path': save_path,
                     'name': filename[0],
                     'extension':filename[1]
                 }
 
                 insert_file = table_files.create_file_info(payload)
 
-                print(insert_file)
+                #print(insert_file)
                 
                 if insert_file == 'success':
                     response = payload
 
                 #print(jsonify(url_for('download_file', name=file.filename)))
             
-           
+            self.count = self.count + 1
         
         response = make_response(response, 200)
         response.headers['Access-Control-Allow-Origin'] = '*'

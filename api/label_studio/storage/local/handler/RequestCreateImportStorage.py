@@ -21,6 +21,8 @@ class RequestCreateImportStorage:
             data = json.dumps(self.payload)
             x = requests.post(self.url, data=data, headers=headers)
 
+            #print('import storage: {}'.format(x))
+
             return x.json()
         except Exception as e:
             return "Error: " + str(e), 404
