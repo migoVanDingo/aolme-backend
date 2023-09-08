@@ -1,9 +1,11 @@
 import json, requests, os
+from dotenv import load_dotenv
+load_dotenv()
 class RequestImportTasks:
     def __init__(self, project_id, file_name):
         self.project_id = project_id
         self.url = "http://localhost:8080/api/projects/{}/import".format(self.project_id)
-        self.token = "baa32e978ffcca4a0f0ec69f00d95f0bcef3fc7f"
+        self.token= os.environ['LABEL_STUDIO_SECRET_KEY']
         self.file_name = file_name
 
     def do(self):

@@ -1,10 +1,12 @@
 import requests, json
+from dotenv import load_dotenv
+load_dotenv()
 class RequestCreateProject:
     
     def __init__(self, data):
         self.data = data
         self.url = "http://localhost:8080/api/projects/"
-        self.token="baa32e978ffcca4a0f0ec69f00d95f0bcef3fc7f"
+        self.token= os.environ['LABEL_STUDIO_SECRET_KEY']
         
 
     def do(self):

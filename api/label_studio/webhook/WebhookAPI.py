@@ -1,27 +1,49 @@
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, make_response, request
 import json
+from api.label_studio.webhook.entity.PayloadCreateWebhook import PayloadCreateWebhook
 
-from api.webhook.handler.RequestCreateWebhook import RequestCreateWebhook
-from api.webhook.handler.RequestDeleteWebhookInfo import RequestDeleteWebhookInfo
-from api.webhook.handler.RequestGetAllWebhookActions import RequestGetAllWebhookActions
-from api.webhook.handler.RequestGetWebhookInfo import RequestGetWebhookInfo
-from api.webhook.handler.RequestListAllWebhooks import RequestListAllWebhooks
-from api.webhook.handler.RequestSaveWebhookInfo import RequestSaveWebhookInfo
-from api.webhook.handler.RequestUpdateWebhookInfo import RequestUpdateWebhookInfo
+from api.label_studio.webhook.handler.RequestCreateWebhook import RequestCreateWebhook
+from api.label_studio.webhook.handler.RequestDeleteWebhookInfo import RequestDeleteWebhookInfo
+from api.label_studio.webhook.handler.RequestGetAllWebhookActions import RequestGetAllWebhookActions
+from api.label_studio.webhook.handler.RequestGetWebhookInfo import RequestGetWebhookInfo
+from api.label_studio.webhook.handler.RequestListAllWebhooks import RequestListAllWebhooks
+from api.label_studio.webhook.handler.RequestSaveWebhookInfo import RequestSaveWebhookInfo
+from api.label_studio.webhook.handler.RequestUpdateWebhookInfo import RequestUpdateWebhookInfo
+
 
 webhook_api = Blueprint('webhook_api', __name__)
 
-@webhook_api.route('/webhooks', methods=['POST'])
+@webhook_api.route('/api/webhooks', methods=['POST'])
 def create_webhook():
-    #data = json.loads(request.data)
-    api_request = RequestCreateWebhook()
+
+    data = json.loads(request.data)
+
+    print(data)
+    validator = PayloadCreateWebhook()
+    is_valid = validator.validate(data)
+    if is_valid[0] is False:
+        return is_valid[1]
+    
+    print("here")
+    api_request = RequestCreateWebhook(data)
     response = api_request.do()
+    # json_string = response.content.decode('utf-8')
+    # data = json.loads(json_string)
+    # json_data = json.dumps(data)
+    # print("JSON: {}".format(json_data))
+
+    response = make_response(response)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
     return response
 
-@webhook_api.route('/webhooks', methods=['GET'])
-def list_all_webhooks():
-    #data = json.loads(request.data)
-    api_request = RequestListAllWebhooks()
+
+
+@webhook_api.route('/api/webhooks/<project_id>', methods=['GET'])
+def list_all_webhooks(project_id):
+
+    api_request = RequestListAllWebhooks(project_id)
     response = api_request.do()
     return response
 

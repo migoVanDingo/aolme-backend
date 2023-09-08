@@ -1,8 +1,10 @@
-import json, requests
+import json, requests,os
+from dotenv import load_dotenv
+load_dotenv()
 class RequestListAllProjects:
     def __init__(self):
         self.url = "http://localhost:8080/api/projects"
-        self.token="11e38f35519b1981642791bde53c2fb8fa4e0784"
+        self.token=os.environ['LABEL_STUDIO_SECRET_KEY']
         
     def do(self):
         headers = {
