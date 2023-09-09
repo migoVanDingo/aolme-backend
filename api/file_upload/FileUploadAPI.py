@@ -44,14 +44,14 @@ def upload_files(project_id):
                     "use_blob_urls": True,
                 }
 
-            print("payload: {}".format(payload))
+            #print("payload: {}".format(payload))
             validator = PayloadCreateImportStorage()
             is_valid = validator.validate(payload)
             if is_valid[0] is False:
                 return is_valid[1]
             api_request = RequestCreateImportStorage(payload)
             local_storage = api_request.do()
-            print("localStorage response: {}".format(local_storage))
+            #print("localStorage response: {}".format(local_storage))
             
             payload = { 
                 "project": data['project_id'],
@@ -59,7 +59,7 @@ def upload_files(project_id):
             }
             api_request = RequestSyncImportStorage(local_storage['id'], payload)
             sync_storage_response = api_request.do()
-            print("sync storage {}".format(sync_storage_response))
+            #print("sync storage {}".format(sync_storage_response))
 
     
         response = make_response(response, 200)

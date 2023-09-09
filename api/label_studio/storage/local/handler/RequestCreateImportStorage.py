@@ -11,7 +11,7 @@ class RequestCreateImportStorage:
 
     def do(self):
         try:
-            print("Token: {}".format(self.token))
+            #print("Token: {}".format(self.token))
             headers = {
                 "Authorization":"Token {}".format(self.token),
                 "Content-Type": "application/json"

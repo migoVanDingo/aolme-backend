@@ -14,7 +14,7 @@ class RequestListAllWebhooks:
             "Authorization":"Token {}".format(self.token)
             }
             response = requests.get(self.url, headers=headers)
-            print('Request List All Webhooks: {}'.format(response))
+            #print('Request List All Webhooks: {}'.format(response))
 
             return response.json()
         

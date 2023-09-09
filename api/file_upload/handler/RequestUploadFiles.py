@@ -21,7 +21,7 @@ class RequestUploadFiles:
                 response = make_response('No file found', 500)
                 return response """
         files = self.files
-        print(len(files))
+        #print(len(files))
 
 
         # If the user does not select a file, the browser submits an
@@ -67,7 +67,8 @@ class RequestUploadFiles:
                     'project_id': self.project_id,
                     'path': save_path,
                     'name': filename[0],
-                    'extension':filename[1]
+                    'extension':filename[1],
+                    'file_type': 'UPLOAD'
                 }
 
                 insert_file = table_files.create_file_info(payload)

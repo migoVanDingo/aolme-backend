@@ -10,6 +10,7 @@ from api.label_studio.storage.local.LocalStorageAPI import local_storage_api
 from api.file_upload.FileUploadAPI import file_upload_api
 from api.project.ProjectRepoAPI import project_repo_api
 from api.label_studio.webhook.WebhookAPI import webhook_api
+from api.webhook_handler.WebhookHandlerAPI import webhook_handler_api
 
 db = MySQL()
 app = Flask(__name__)
@@ -34,3 +35,4 @@ app.register_blueprint(local_storage_api)
 app.register_blueprint(file_upload_api)
 app.register_blueprint(project_repo_api)
 app.register_blueprint(webhook_api)
+app.register_blueprint(webhook_handler_api)

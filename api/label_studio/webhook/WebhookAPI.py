@@ -27,10 +27,6 @@ def create_webhook():
     print("here")
     api_request = RequestCreateWebhook(data)
     response = api_request.do()
-    # json_string = response.content.decode('utf-8')
-    # data = json.loads(json_string)
-    # json_data = json.dumps(data)
-    # print("JSON: {}".format(json_data))
 
     response = make_response(response)
     response.headers['Access-Control-Allow-Headers'] = '*'

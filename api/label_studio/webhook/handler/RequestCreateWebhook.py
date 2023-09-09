@@ -15,7 +15,7 @@ class RequestCreateWebhook:
 
             response = requests.post(self.url, data=self.payload, headers=headers)
 
-            print("response: {}".format(response.content.decode('utf-8')))
+            #print("response: {}".format(response.content.decode('utf-8')))
 
             
             return response.content.decode('utf-8')

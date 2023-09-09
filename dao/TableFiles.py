@@ -22,10 +22,10 @@ class TableFiles:
     
     def create_file_info(self, payload):
         try:
-            insert_query = "INSERT INTO files (project_id, path, name, extension) VALUES(%s, %s, %s, %s)"
+            insert_query = "INSERT INTO files (project_id, path, name, extension, file_type) VALUES(%s, %s, %s, %s, %s)"
 
             cur = self.db.connection.cursor()
-            cur.execute(insert_query, (int(payload['project_id']), payload['path'], payload['name'], payload['extension']))
+            cur.execute(insert_query, (int(payload['project_id']), payload['path'], payload['name'], payload['extension'], payload['file_type']))
             self.db.connection.commit()
             cur.close()
 
@@ -48,3 +48,5 @@ class TableFiles:
 
         except Exception as e:
             return "Error: " + str(e)
+        
+    
