@@ -8,11 +8,13 @@ from api.label_studio.project.handler.RequestCreateProject import RequestCreateP
 from api.label_studio.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
 from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
 from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
+from api.label_studio.webhook.handler.RequestCreateWebhook import RequestCreateWebhook
 from api.project.handler.RequestCreateRepoProject import RequestCreateRepoProject
 from api.project.handler.RequestGetProjectById import RequestGetProjectById
 from api.project.handler.RequestGetProjectList import RequestGetProjectList
 
 from api.project.utility.validator.CreateProjectValidator import CreateProjectValidator
+from api.webhook_handler.handler.HandleProjectUpdate import HandleProjectUpdate
 project_repo_api = Blueprint('project_repo_api', __name__)
 CORS(project_repo_api)
 
@@ -40,7 +42,24 @@ def create_project_in_repo():
             }
             api_request = RequestCreateProject(payload)
             label_studio_project = api_request.do()
-            print(label_studio_project)
+            print("lsPRO: {}".format(label_studio_project))
+
+            payload_create_webhook = {
+                "actions": [
+                "PROJECT_UPDATED"
+                ],
+                "headers": {},
+                "is_active": True,
+                "project": label_studio_project['id'],
+                "send_for_all_actions": True,
+                "send_payload": True,
+                "url": "http://127.0.0.1:5000/api/webhook-handler/project-created"
+            }
+
+            print('MY payload : {}'.format(payload))
+
+            create_webhook = RequestCreateWebhook(payload_create_webhook)
+            response = create_webhook.do()
 
 
         
@@ -103,6 +122,7 @@ def create_project_in_repo():
             #     api_request = RequestUploadFiles(files)
             #     upload_files_response = api_request.do()
                 
+            
             return response, 200
         
         
