@@ -3,3 +3,6 @@
 *.rest
 uploads/*
 .env
+*.json
+*.mp4
+*.xlsx

@@ -30,11 +30,11 @@ def upload_files(project_id):
     try:
         files = request.files.getlist('file')
         data = request.form
-        #print("Data: {}".format(data))
+        print("Files length: {}".format(len(files)))
         api_request = RequestUploadFiles(data['project_id'],files)
         response = api_request.do()
         if response.status_code == 200:
-            sleep(3)
+            sleep(1)
 
             payload = {
                     "project": int(data["project_id"]),

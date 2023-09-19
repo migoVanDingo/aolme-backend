@@ -21,7 +21,7 @@ def start_label_studio_project():
     commands = [
         "cd /Users/bubz/Developer/master-project/label-studio",   # Replace with your first command and its arguments
         ". ~/.bash_profile",
-        "label-studio",   # Replace with your second command and its arguments
+        "label-studio start --no-browser",   # Replace with your second command and its arguments
 
     ]
 

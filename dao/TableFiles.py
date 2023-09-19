@@ -5,16 +5,51 @@ class TableFiles:
         from main import db
         self.db = db
 
-    def make_directory(self, project_id):
+    def make_directory_videos(self, project_id):
         try:
-            #filename = payload['filename'].split(".")
-            create_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
-            os.mkdir(create_dir)
+            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
+            create_videos_dir = os.path.join(create_project_dir, 'videos')
 
-            create_dir = os.path.join(create_dir, 'videos')
-            os.mkdir(create_dir)
+            #create the ground truth folder if the project folder exists, else create the project folder
+            if os.path.isdir(create_project_dir) is True and os.path.isdir(create_videos_dir) is not True:
+                os.mkdir(create_videos_dir)
+            if os.path.isdir(create_project_dir) is not True:
+                os.mkdir(create_project_dir)
+                os.mkdir(create_videos_dir)
 
-            return create_dir
+            return create_videos_dir
+
+        except OSError as e:
+            return "Error: " + str(e)
+        
+    def make_directory_raw_gt(self, project_id):
+        try:
+            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
+            create_raw_gt_dir = os.path.join(create_project_dir, 'ground-truth-raw')
+
+            #create the ground truth folder if the project folder exists, else create the project folder
+            if os.path.isdir(create_project_dir) is True and os.path.isdir(create_raw_gt_dir) is not True:
+                os.mkdir(create_raw_gt_dir)
+            elif os.path.isdir(create_project_dir) is not True:
+                os.mkdir(create_project_dir)
+                os.mkdir(create_raw_gt_dir)
+
+            return create_raw_gt_dir
+
+        except OSError as e:
+            return "Error: " + str(e)
+        
+    def make_directory_reformat_gt(self, project_id):
+        try:
+            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
+            create_gt_reformat_dir = os.path.join(create_project_dir, 'ground-truth-reformat')
+
+            #create the ground truth folder if the project folder exists, else create the project folder
+            if os.path.isdir(create_gt_reformat_dir) is not True:
+                os.mkdir(create_gt_reformat_dir)
+            
+
+            return create_gt_reformat_dir
 
         except OSError as e:
             return "Error: " + str(e)
@@ -48,5 +83,3 @@ class TableFiles:
 
         except Exception as e:
             return "Error: " + str(e)
-        
-    

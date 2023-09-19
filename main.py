@@ -11,6 +11,7 @@ from api.file_upload.FileUploadAPI import file_upload_api
 from api.project.ProjectRepoAPI import project_repo_api
 from api.label_studio.webhook.WebhookAPI import webhook_api
 from api.webhook_handler.WebhookHandlerAPI import webhook_handler_api
+from api.subprocess.SubprocessAPI import subprocess_api
 
 db = MySQL()
 app = Flask(__name__)
@@ -36,3 +37,5 @@ app.register_blueprint(file_upload_api)
 app.register_blueprint(project_repo_api)
 app.register_blueprint(webhook_api)
 app.register_blueprint(webhook_handler_api)
+app.register_blueprint(subprocess_api)
+
