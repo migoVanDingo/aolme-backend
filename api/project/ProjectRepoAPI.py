@@ -91,7 +91,7 @@ def create_project_in_repo():
 
             #Add Local storage to Label Studio project
             if label_studio_project is not None:  
-                response = {
+                response_payload = {
                     "project_id": label_studio_project['id'],
                     "title": data['name'],
                     "description": data['description'],
@@ -123,7 +123,7 @@ def create_project_in_repo():
             #     upload_files_response = api_request.do()
                 
             
-            return response, 200
+            return response_payload, 200
         
         
     except Exception as e:

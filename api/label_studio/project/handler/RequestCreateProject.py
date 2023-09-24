@@ -18,5 +18,7 @@ class RequestCreateProject:
         data = json.dumps(self.data)
         x = requests.post(self.url, data=data, headers=headers)
 
+        print("RequestCreateProject(LS): response {}".format(x.json()))
+
         return x.json()
     

@@ -3,6 +3,7 @@ from time import sleep
 from flask import Flask, flash, make_response, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from api.file_upload.FileUtility import FileUtility
+from api.subprocess.handler.HandleUploadGroundTruthLabelStudio import HandleUploadGroundTruthLabelStudio
 
 from dao.TableFiles import TableFiles
 
@@ -30,7 +31,7 @@ class RequestUploadFiles:
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
 
-
+        xlsx_switch = False
         for file in files:
 
             if file.filename == '':
@@ -41,7 +42,7 @@ class RequestUploadFiles:
             # Create the uploads directory
             current_directory = os.getcwd()
             
-            uploads_directory = os.path.join(current_directory, 'uploads')
+            uploads_directory = os.path.join(current_directory, 'project')
           
             if file and allowed_file(file.filename):
                 #filename = secure_filename(file.filename)
@@ -71,6 +72,7 @@ class RequestUploadFiles:
                         file.save(save_path)
                     
                     case 'xlsx':
+                        xlsx_switch = True
                         print('Save xlsx files')
                         save_path = os.path.join(self.gt_path, file.filename)
                         table_files.make_directory_reformat_gt(self.project_id)
@@ -112,11 +114,10 @@ class RequestUploadFiles:
         print('Pre-signal_create_local_storage()')
         local_storage_directory = FileUtility.signal_create_local_storage(self.project_id)
         print(local_storage_directory)
-        FileUtility.move_files_to_local_storage(self.project_id)
+        move_files_response = FileUtility.move_files_to_local_storage(self.project_id)
+
         
-        response = make_response(response, 200)
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        return response
+        return move_files_response
     
 def allowed_file(filename):
     return '.' in filename and \

@@ -11,6 +11,7 @@ from api.label_studio.file_import.handler.RequestImportTasks import RequestImpor
 from api.label_studio.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
 from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
 from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
+from api.subprocess.handler.HandleUploadGroundTruthLabelStudio import HandleUploadGroundTruthLabelStudio
 
 
 file_upload_api = Blueprint('file_upload_api', __name__)
@@ -31,35 +32,52 @@ def upload_files(project_id):
         files = request.files.getlist('file')
         data = request.form
         print("Files length: {}".format(len(files)))
+        print('FileUploadAPI project_id: {} --- {}'.format(data['project_id'], project_id))
         api_request = RequestUploadFiles(data['project_id'],files)
-        response = api_request.do()
-        if response.status_code == 200:
-            sleep(1)
+        
+        upload_files_response = api_request.do()
+        print("FileUploadAPI -- RequestUploadFiles response: {}".format(upload_files_response))
+        
+        sleep(1)
+    
 
-            payload = {
-                    "project": int(data["project_id"]),
+        payload = {
+                    "project": int(data['project_id']),
                     "title": data['title'],
                     "description": data['description'],
                     "path": data['path'],
                     "use_blob_urls": True,
                 }
 
-            #print("payload: {}".format(payload))
-            validator = PayloadCreateImportStorage()
-            is_valid = validator.validate(payload)
-            if is_valid[0] is False:
-                return is_valid[1]
-            api_request = RequestCreateImportStorage(payload)
-            local_storage = api_request.do()
-            #print("localStorage response: {}".format(local_storage))
+        print("TRIPPING payload: {}".format(payload))
+        validator = PayloadCreateImportStorage()
+        is_valid = validator.validate(payload)
+        if is_valid[0] is False:
+            return is_valid[1]
+        
+        print("PRE -- RequestCreateImportStorage")
+        api_request = RequestCreateImportStorage(payload)
+        local_storage_response = api_request.do()
+
+
+        print("FileUploadAPI -- RequestCreateImportStorage response: {}".format(local_storage_response))
+        #print("localStorage response: {}".format(local_storage))
             
-            payload = { 
+
+        payload = { 
                 "project": data['project_id'],
                 "use_blob_urls": True
             }
-            api_request = RequestSyncImportStorage(local_storage['id'], payload)
-            sync_storage_response = api_request.do()
-            #print("sync storage {}".format(sync_storage_response))
+
+        api_request = RequestSyncImportStorage(local_storage_response['id'], payload)
+        response = api_request.do()
+        print("FileUploadAPI -- RequestSyncImportStorage response: {}".format(response))
+        #print("sync storage {}".format(sync_storage_response))
+
+            
+        import_xlsx = HandleUploadGroundTruthLabelStudio()
+        import_xlsx_response = import_xlsx.do_process(project_id)
+        print("Upload gt response: {}".format(import_xlsx_response))
 
     
         response = make_response(response, 200)
@@ -69,8 +87,8 @@ def upload_files(project_id):
         return response
 
     except Exception as e:
-        print("Error: {}".format(str(e)))
-        return "Error: " + str(e), 404
+        print("Error yoseph: {}".format(str(e)))
+        return "Error yosephat: " + str(e), 404
 
 
 @file_upload_api.route('/files/<project_id>', methods=['GET'])

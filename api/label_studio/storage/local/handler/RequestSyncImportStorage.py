@@ -18,9 +18,11 @@ class RequestSyncImportStorage:
                 "Content-Type": "application/json"
             }
 
+            print("RequestSyncImportStorage(): url: {} --- payload: {}".format(self.url, self.payload))
+
             data = json.dumps(self.payload)
             x = requests.post(self.url, data=data, headers=headers)
 
             return x.json()
         except Exception as e:
-            return "Error: " + str(e), 404
+            return "RequestSyncImportStorage()::Error: " + str(e), 404

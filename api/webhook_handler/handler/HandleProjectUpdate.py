@@ -9,13 +9,16 @@ class HandleProjectUpdate:
         data = self.payload
         project_id = data['project']['id']
         project_title = data['project']['title']
-        task_id = data['task']['id']
+        #task_id = data['task']['id']
 
         formatted_json_data = json.dumps(self.payload, indent=4)
 
         
-        uploads_dir = os.path.join(os.getcwd(), 'uploads')
+        uploads_dir = os.path.join(os.getcwd(), 'project')
         project_dir = os.path.join(uploads_dir, str(project_id))
+        if os.path.exists(project_dir) == False:
+             os.mkdir(project_dir)
+
         annotation_directory = os.path.join(project_dir, 'annotations')
 
         if os.path.exists(annotation_directory) == False:
@@ -30,7 +33,7 @@ class HandleProjectUpdate:
                     "path": final_path,
                     "project_id": project_id,
                     "name": project_title.replace(" ", ""),
-                    "task_id": task_id,
+                    #"task_id": task_id,
                     "file_type": "ANNOTATION",
                     "extension": "json"
                 }

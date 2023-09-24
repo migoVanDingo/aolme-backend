@@ -16,7 +16,7 @@ class FileUtility:
         try:
             url = 'http://localhost:3002/local-storage/{}'.format(project_id)
             x = requests.get(url)
-            print('signal_create_local_storage()')
+            print('signal_create_local_storage(): {}'.format(project_id))
             return x.json()
         except Exception as e:
             return "Error: " + str(e)
@@ -34,4 +34,4 @@ class FileUtility:
             return x.json()
         except Exception as e:
             return "Error: " + str(e)
-    
+        

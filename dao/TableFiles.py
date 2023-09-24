@@ -7,7 +7,7 @@ class TableFiles:
 
     def make_directory_videos(self, project_id):
         try:
-            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
+            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
             create_videos_dir = os.path.join(create_project_dir, 'videos')
 
             #create the ground truth folder if the project folder exists, else create the project folder
@@ -24,7 +24,7 @@ class TableFiles:
         
     def make_directory_raw_gt(self, project_id):
         try:
-            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
+            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
             create_raw_gt_dir = os.path.join(create_project_dir, 'ground-truth-raw')
 
             #create the ground truth folder if the project folder exists, else create the project folder
@@ -41,7 +41,7 @@ class TableFiles:
         
     def make_directory_reformat_gt(self, project_id):
         try:
-            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'uploads'), project_id)
+            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
             create_gt_reformat_dir = os.path.join(create_project_dir, 'ground-truth-reformat')
 
             #create the ground truth folder if the project folder exists, else create the project folder
