@@ -64,12 +64,13 @@ class RequestUploadFiles:
                     self.final_path = table_files.make_directory_videos(self.project_id)
                     self.gt_path = table_files.make_directory_raw_gt(self.project_id)
                     
-                
+                file_type = ''
                 match filename[1]:
                     case 'mp4':
                         print('Save mp4 files')
                         save_path = os.path.join(self.final_path, file.filename)
                         file.save(save_path)
+                        file_type = "VIDEO"
                     
                     case 'xlsx':
                         xlsx_switch = True
@@ -79,6 +80,7 @@ class RequestUploadFiles:
                         file.save(save_path)
                         sleep(1)
                         FileUtility.signal_reformat_xlsx(self.project_id)
+                        file_type = "GROUND_TRUTH_RAW_XLSX_VJ"
                         
 
                     case _:
@@ -96,7 +98,7 @@ class RequestUploadFiles:
                     'path': save_path,
                     'name': filename[0],
                     'extension':filename[1],
-                    'file_type': 'UPLOAD'
+                    'file_type': file_type
                 }
 
 

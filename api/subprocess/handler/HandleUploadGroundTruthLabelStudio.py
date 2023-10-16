@@ -11,10 +11,10 @@ class HandleUploadGroundTruthLabelStudio:
 
     def do_process(self, project_id):
         try:
-            files = os.listdir("/Users/bubz/Developer/master-project/aolme-backend/project/{}/ground-truth-reformat".format(project_id))
+            files = os.listdir("{}/{}/ground-truth-reformat".format(os.environ['PROJECT_DIRECTORY'], project_id))
             arr = []
             for f in files:
-                f = "/Users/bubz/Developer/master-project/aolme-backend/project/{}/ground-truth-reformat/{}".format(project_id, f)
+                f = "{}/{}/ground-truth-reformat/{}".format(os.environ['PROJECT_DIRECTORY'],project_id, f)
                 print("HandleUploadGroundTruthLabelStudio -- files: {}".format(f))
                 arr.append(f)
 

@@ -10,10 +10,13 @@ class RequestCreateProject:
         
 
     def do(self):
+        
         headers = {
             "Authorization":"Token {}".format(self.token),
             "Content-Type": "application/json"
         }
+
+        print("headers: {}".format(headers))
 
         data = json.dumps(self.data)
         x = requests.post(self.url, data=data, headers=headers)
