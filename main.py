@@ -14,6 +14,7 @@ from api.webhook_handler.WebhookHandlerAPI import webhook_handler_api
 from api.subprocess.SubprocessAPI import subprocess_api
 from api.directory_tree.DirectoryTreeAPI import directory_tree_api
 from api.user.UserAPI import user_api
+from api.organization.OrganizationAPI import organization_api
 
 db = MySQL()
 app = Flask(__name__)
@@ -42,4 +43,5 @@ app.register_blueprint(webhook_handler_api)
 app.register_blueprint(subprocess_api)
 app.register_blueprint(directory_tree_api)
 app.register_blueprint(user_api)
+app.register_blueprint(organization_api)
 

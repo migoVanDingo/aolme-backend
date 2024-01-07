@@ -80,7 +80,7 @@ def upload_files(project_id):
         print("Upload gt response: {}".format(import_xlsx_response))
 
     
-        response = make_response(response, 200)
+        response = make_response("DONE", 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'

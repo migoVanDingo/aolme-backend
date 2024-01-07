@@ -83,3 +83,78 @@ class TableFiles:
 
         except Exception as e:
             return "Error: " + str(e)
+        
+    def insert_file(self, file_name, file_content):
+        try:
+            insert_query = "INSERT INTO files (name, content) VALUES(%s, %s)"
+
+            cur = self.db.connection.cursor()
+            cur.execute(insert_query, (file_name, file_content))
+            self.db.connection.commit()
+            cur.close()
+
+            return 'success'
+
+
+        except Exception as e:
+            return "Error: " + str(e)
+        
+    def read_file(self, file_name):
+        try:
+            query = "SELECT content FROM files WHERE name = %s"
+            cur = self.db.connection.cursor()
+            cur.execute(query, (file_name,))
+            data = cur.fetchone()
+            cur.close()
+            
+            return data
+
+        except Exception as e:
+            return "Error: " + str(e)
+        
+    def update_file_info(self, file_name, file_content):
+        try:
+            update_query = "UPDATE files SET content = %s WHERE name = %s"
+
+            cur = self.db.connection.cursor()
+            cur.execute(update_query, (file_content, file_name))
+            self.db.connection.commit()
+            cur.close()
+
+            return 'success'
+
+
+        except Exception as e:
+            return "Error: " + str(e)
+        
+
+    def delete_file(self, file_name):
+        try:
+            delete_query = "DELETE FROM files WHERE name = %s"
+
+            cur = self.db.connection.cursor()
+            cur.execute(delete_query, (file_name,))
+            self.db.connection.commit()
+            cur.close()
+
+            return 'success'
+
+
+        except Exception as e:
+            return "Error: " + str(e)
+        
+    def archive_file(self, file_name):
+        try:
+            archive_query = "UPDATE files SET archived = 1 WHERE name = %s"
+
+            cur = self.db.connection.cursor()
+            cur.execute(archive_query, (file_name,))
+            self.db.connection.commit()
+            cur.close()
+
+            return 'success'
+
+
+        except Exception as e:
+            return "Error: " + str(e)
+        x

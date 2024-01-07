@@ -33,10 +33,7 @@ def get_project_root(project_id):
         print("Error yoseph: {}".format(str(e)))
         return "Error yosephat: " + str(e), 404
 
-    
-
-    
-   
+     
 @directory_tree_api.route('/directory/project/<project_id>/folder', methods=['GET'])
 def get_folder_items(project_id):
     try:

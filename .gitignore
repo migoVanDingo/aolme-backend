@@ -6,3 +6,5 @@ uploads/*
 *.json
 *.mp4
 *.xlsx
+project/*
+.DS_Store
