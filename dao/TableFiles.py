@@ -20,7 +20,7 @@ class TableFiles:
             return create_videos_dir
 
         except OSError as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- make_directory_videos() --  " + str(e)
         
     def make_directory_raw_gt(self, project_id):
         try:
@@ -37,7 +37,7 @@ class TableFiles:
             return create_raw_gt_dir
 
         except OSError as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- make_directory_raw_gt() -- " + str(e)
         
     def make_directory_reformat_gt(self, project_id):
         try:
@@ -52,7 +52,7 @@ class TableFiles:
             return create_gt_reformat_dir
 
         except OSError as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- make_directory_reformat_gt() -- " + str(e)
         
     
     def create_file_info(self, payload):
@@ -68,7 +68,7 @@ class TableFiles:
 
 
         except Exception as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- create_file_info() -- " + str(e)
         
 
     def get_project_files(self, project_id):
@@ -82,7 +82,9 @@ class TableFiles:
             return data
 
         except Exception as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- get_project_files() -- " + str(e)
+        
+
         
     def insert_file(self, file_name, file_content):
         try:
@@ -97,8 +99,10 @@ class TableFiles:
 
 
         except Exception as e:
-            return "Error: " + str(e)
-        
+            return "Error: TableFiles -- insert_file() -- " + str(e)
+
+
+
     def read_file(self, file_name):
         try:
             query = "SELECT content FROM files WHERE name = %s"
@@ -110,8 +114,10 @@ class TableFiles:
             return data
 
         except Exception as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- read_file() -- " + str(e)
         
+
+
     def update_file_info(self, file_name, file_content):
         try:
             update_query = "UPDATE files SET content = %s WHERE name = %s"
@@ -125,8 +131,9 @@ class TableFiles:
 
 
         except Exception as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- update_file_info() -- " + str(e)
         
+
 
     def delete_file(self, file_name):
         try:
@@ -141,8 +148,10 @@ class TableFiles:
 
 
         except Exception as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- delete_file() -- " + str(e)
         
+
+
     def archive_file(self, file_name):
         try:
             archive_query = "UPDATE files SET archived = 1 WHERE name = %s"
@@ -156,5 +165,5 @@ class TableFiles:
 
 
         except Exception as e:
-            return "Error: " + str(e)
+            return "Error: TableFiles -- archive_file() -- " + str(e)
         x
