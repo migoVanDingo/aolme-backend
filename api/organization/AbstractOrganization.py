@@ -5,7 +5,7 @@ from dao import TableOrganization
 class AbstractOrganization(ABC):
     
     def __init__(self):
-        pass
+        super().__init__()
     
 
     #Concrete methods

@@ -26,11 +26,13 @@ def create_user():
         response.headers['Content-Type'] = '*'
         return response
     
-    data = json.loads(request.data)
-    #handler = HandleCreateUser(data)
-    #response = handler.do_process()
-
-    api_request = RequestCreateUser(data)
+    #data = json.loads(request.data)
+    # handler = HandleCreateUser(data)
+    # response = handler.do_process()
+    print(request.data)
+    #data = json.dumps(request.data)
+    
+    api_request = RequestCreateUser(request.data)
     response = api_request.do_process()
 
     response = make_response(response, 200)
@@ -42,11 +44,11 @@ def create_user():
 @user_api.route('/api/user/<user_id>', methods=["GET"])
 def get_user(user_id):
 
-    # handler = HandleGetUser(user_id)
-    # user = handler.do_process()
+    handler = HandleGetUser(user_id)
+    user = handler.do_process()
 
-    api_request = RequestGetUserById(user_id)
-    response = api_request.do_process()
+    # api_request = RequestGetUserById(user_id)
+    # response = api_request.do_process()
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
@@ -57,11 +59,11 @@ def get_user(user_id):
 @user_api.route('/api/user/<user_id>', methods=["PATCH"])
 def update_user(user_id):
     data = json.loads(request.data)
-    # handler = HandleUpdateUser(data, user_id)
-    # response = handler.do_process()
+    handler = HandleUpdateUser(data, user_id)
+    response = handler.do_process()
 
-    api_request = RequestUpdateUser(user_id, data)
-    response = api_request.do_process()
+    # api_request = RequestUpdateUser(user_id, data)
+    # response = api_request.do_process()
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
@@ -72,11 +74,11 @@ def update_user(user_id):
 @user_api.route('/api/user/archive/<user_id>', methods=["DELETE"])
 def archive_user(user_id):
 
-    # handler = HandleArchiveUser(data, user_id)
-    # response = handler.do_process()
+    handler = HandleArchiveUser(data, user_id)
+    response = handler.do_process()
 
-    api_request = RequestArchiveUser(user_id)
-    response = api_request.do_process()
+    # api_request = RequestArchiveUser(user_id)
+    # response = api_request.do_process()
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
@@ -109,6 +111,7 @@ def login():
         response.headers['Content-Type'] = '*'
         return response
     
+
     data = json.loads(request.data)
     handler = HandleLogin(data)
     response = handler.do_process()

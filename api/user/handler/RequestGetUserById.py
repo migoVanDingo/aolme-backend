@@ -1,4 +1,4 @@
-from api.user import AbstractUser
+from api.user.AbstractUser import AbstractUser
 class RequestGetUserById(AbstractUser):
     def __init__(self, user_id):
         self.user_id = user_id

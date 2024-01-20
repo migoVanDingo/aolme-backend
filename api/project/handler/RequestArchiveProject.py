@@ -1,4 +1,4 @@
-from api.project import AbstractProject
+from api.project.AbstractProject import AbstractProject
 
 class RequestArchiveProject(AbstractProject):
     def __init__(self, project_id):

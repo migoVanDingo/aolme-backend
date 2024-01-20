@@ -35,6 +35,7 @@ class TableProject:
 
             return data
         except Exception as e:
+            print("Error: " + str(e))
             return "Error: " + str(e)
         
 

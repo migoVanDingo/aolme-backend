@@ -9,7 +9,7 @@ from api.label_studio.storage.local.entity.PayloadCreateImportStorage import Pay
 from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
 from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
 from api.label_studio.webhook.handler.RequestCreateWebhook import RequestCreateWebhook
-from api.project.handler.RequesetUpdateProject import RequestUpdateProject
+from api.project.handler.RequestUpdateProject import RequestUpdateProject
 from api.project.handler.RequestArchiveProject import RequestArchiveProject
 from api.project.handler.RequestCreateRepoProject import RequestCreateRepoProject
 from api.project.handler.RequestDeleteProject import RequestDeleteProject
@@ -138,9 +138,10 @@ def create_project_in_repo():
 def get_repo_project_by_id(project_id):
     try:
 
+        print(project_id)
         api_request = RequestGetProjectById(project_id)
         
-        res = api_request.do()
+        res = api_request.do_process()
         response = make_response(res, 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
@@ -159,7 +160,7 @@ def get_repo_project_list():
 
         api_request = RequestGetProjectList()
         
-        return api_request.do(), 200
+        return api_request.do_process(), 200
         
         
     except Exception as e:

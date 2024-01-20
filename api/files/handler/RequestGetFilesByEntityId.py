@@ -1,4 +1,4 @@
-from api.files import AbstractFiles
+from api.files.AbstractFiles import AbstractFiles
 
 class RequestGetFilesByEntityId(AbstractFiles):
     def __init__(self, data):

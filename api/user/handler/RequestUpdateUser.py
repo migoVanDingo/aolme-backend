@@ -1,5 +1,5 @@
 import datetime
-from api.user import AbstractUser
+from api.user.AbstractUser import AbstractUser
 
 class RequestUpdateUser(AbstractUser):
     def __init__(self, user_id, params):

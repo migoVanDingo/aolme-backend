@@ -11,10 +11,11 @@
 #         result = dao.get_project_by_id(self.project_id) 
 
 #         return jsonify(result)
-from api.project import AbstractProject
+from api.project.AbstractProject import AbstractProject
 class RequestGetProjectById(AbstractProject):
     def __init__(self, project_id):
         self.project_id = project_id
 
     def do_process(self):
+        print("here boi")
         return self.get_project_by_id(self.project_id)

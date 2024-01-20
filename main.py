@@ -21,9 +21,9 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'aolme'
+app.config['MYSQL_USER'] = 'aolme_db_v2'
 app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'aolmedb'
+app.config['MYSQL_DB'] = 'aolme_db_v2'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' 
 
 db.init_app(app)

@@ -1,4 +1,4 @@
-from api.project import AbstractProject
+from api.project.AbstractProject import AbstractProject
 from api.project.utility.validator.CreateProjectValidator import CreateProjectValidator
 
 class RequestCreateProject(AbstractProject):

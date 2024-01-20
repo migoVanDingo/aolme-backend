@@ -1,5 +1,5 @@
 import datetime
-from api.user_group import AbstractUserGroup
+from api.user_group.AbstractUserGroup import AbstractUserGroup
 from api.user_group.utility.CreateUserGroupValidator import CreateUserGroupValidator
 
 class RequestCreateUserGroup(AbstractUserGroup):

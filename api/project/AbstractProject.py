@@ -5,7 +5,7 @@ from dao.TableProject import TableProject
 class AbstractProject(ABC):
         
         def __init__(self):
-            pass
+            super().__init__()
         
         #Concrete methods
         def insert_project(params):

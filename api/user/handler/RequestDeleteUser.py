@@ -1,4 +1,4 @@
-from api.user import AbstractUser
+from api.user.AbstractUser import AbstractUser
 
 class RequestDeleteUser(AbstractUser):
     def __init__(self, user_id):

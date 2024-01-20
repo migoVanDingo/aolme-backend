@@ -1,24 +1,33 @@
-import datetime
-from api.user import AbstractUser
+from datetime import datetime
+import json
+from api.user.AbstractUser import AbstractUser
 from api.user.utility.CreateUserValidator import CreateUserValidator
 class RequestCreateUser(AbstractUser):
     def __init__(self, params):
+        super().__init__()
         self.params = params
 
     def do_process(self):
 
+        print("PARAMS: {}".format(self.params))
+        params = json.loads(self.params)
+        print("PARAMS 2: {}".format(params["username"]))
+
+        
         params = {
-            "username": self.params['username'],
-            "email": self.params['email'],
-            "hash": self.params['hash'], 
-            "firstname": self.params['firstname'] if 'firstname' in self.params else "",
-            "lastname": self.params['lastname'] if 'lastname' in self.params else "",
-            "is_active": True,
-            "created_by": self.params['created_by'],
-            "created_at": datetime.now(),
+            "username": params["username"],
+            "email": params["email"],
+            "hash": self.hash_password(params["password"]).decode('utf8'), 
+            "firstname": params["firstname"] if "firstname" in params else "",
+            "lastname": params["lastname"] if "lastname" in params else "",
+            "is_active": 1,
+            "created_by": "root::MIGO",
+            "created_at": datetime.now()
             
 
         }
+
+        print("PARAMS 3: {}".format(params))
 
         #Validate the payload sent from FE
         validator = CreateUserValidator()
@@ -27,6 +36,11 @@ class RequestCreateUser(AbstractUser):
             return is_valid[1]
         
 
-        return self.create_user(params)
+    
+        response = self.insert_user(params)
+        del response['hash']
+
+        print("RESPONSE: {}".format(response))
+        return response
 
     

@@ -1,5 +1,5 @@
 import datetime
-from api.project import AbstractProject
+from api.project.AbstractProject import AbstractProject
 
 class RequestUpdateProject(AbstractProject):
     def __init__(self, params):

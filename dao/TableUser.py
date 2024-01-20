@@ -9,18 +9,19 @@ class TableUser:
         self.db = db
 
 
-    def generate_user_id():
+    def generate_user_id(self):
         N = 22
         return 'USR' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
     
     #V2
     def insert_user(self, payload):
         try:
+            
             insert_query = "INSERT INTO user (user_id, username, email, hash, firstname, lastname, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
 
             cur = self.db.connection.cursor()
-            cur.execute(insert_query, (self.generate_user_id(), payload['username'], payload['email'], payload['password'], payload['is_active'], payload['created_at'], payload['created_by']))
+            cur.execute(insert_query, (self.generate_user_id(), payload['username'], payload['email'], payload['hash'], payload['firstname'], payload['lastname'], payload['is_active'], payload['created_at'], payload['created_by']))
 
             self.db.connection.commit()
             cur.close()
@@ -143,11 +144,11 @@ class TableUser:
         except Exception as e:
             return "TableUser -- get_user() Error: " + str(e) 
         
-    def get_user_by_username(self, username):
+    def get_user_by_email(self, email):
         try:
-            query = "SELECT * FROM user WHERE username = %s"
+            query = "SELECT * FROM user WHERE is_active = 1 AND email = %s"
             cur = self.db.connection.cursor()
-            cur.execute(query, (username,))
+            cur.execute(query, (email,))
             
             data = cur.fetchall()
 
@@ -157,4 +158,4 @@ class TableUser:
 
             return user
         except Exception as e:
-            return "TableUser -- get_user_by_username() Error: " + str(e) 
+            return "TableUser -- get_user_by_email() Error: " + str(e) 

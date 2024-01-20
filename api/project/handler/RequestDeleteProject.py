@@ -1,4 +1,4 @@
-from api.project import AbstractProject
+from api.project.AbstractProject import AbstractProject
 
 class RequestDeleteProject(AbstractProject):
     def __init__(self, project_id):

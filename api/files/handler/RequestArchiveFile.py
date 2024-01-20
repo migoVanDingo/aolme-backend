@@ -1,4 +1,4 @@
-from api.files import AbstractFiles
+from api.files.AbstractFiles import AbstractFiles
 class RequestArchiveFile(AbstractFiles):
     def __init__(self, data):
         self.data = data

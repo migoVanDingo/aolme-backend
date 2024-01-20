@@ -1,3 +1,5 @@
+from api.organization.AbstractOrganization import AbstractOrganization
+
 class RequestArchiveOrganization(AbstractOrganization):
     def __init__(self, org_id):
         self.org_id = org_id

@@ -1,4 +1,4 @@
-from api.user_group import AbstractUserGroup
+from api.user_group.AbstractUserGroup import AbstractUserGroup
 
 class RequestGetUserGroupById(AbstractUserGroup):
     def __init__(self, user_group_id):
