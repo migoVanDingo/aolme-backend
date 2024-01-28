@@ -16,12 +16,12 @@ class TableUser:
     #V2
     def insert_user(self, payload):
         try:
-            
+            payload['user_id'] = self.generate_user_id()
+
             insert_query = "INSERT INTO user (user_id, username, email, hash, firstname, lastname, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-
             cur = self.db.connection.cursor()
-            cur.execute(insert_query, (self.generate_user_id(), payload['username'], payload['email'], payload['hash'], payload['firstname'], payload['lastname'], payload['is_active'], payload['created_at'], payload['created_by']))
+            cur.execute(insert_query, (payload['user_id'], payload['username'], payload['email'], payload['hash'], payload['firstname'], payload['lastname'], payload['is_active'], payload['created_at'], payload['created_by']))
 
             self.db.connection.commit()
             cur.close()

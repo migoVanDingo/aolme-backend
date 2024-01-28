@@ -1,13 +1,16 @@
 from datetime import datetime
+import logging
 import random
 import string
+
+import MySQLdb
 
 class TableOrganization:
     def __init__(self):
         from main import db
         self.db = db
 
-    def generate_org_id():
+    def generate_org_id(self):
         N = 22
         return 'ORG' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
 
@@ -15,29 +18,28 @@ class TableOrganization:
     def insert_organization(self, payload):
       
         try:
-            org_id = self.generate_org_id()
 
-            insert_query = "INSERT INTO organization (organization_id, name, url, description, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+            insert_query = "INSERT INTO organization (organization_id, name, email, description, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s)"
 
+            payload["org_id"] = self.generate_org_id()
+
+            #print(payload)
             
             cur = self.db.connection.cursor()
-            cur.execute(insert_query, (org_id, payload['name'], payload['url'], payload['description'], payload['is_active'], payload['created_at'], payload['created_by']))
+            cur.execute(insert_query, (payload["org_id"], payload["name"], payload["email"], payload["description"], payload["is_active"], payload["created_at"], payload["created_by"]))
 
             self.db.connection.commit()
-            cur.close()
 
-            response = {
-                "organization_id":org_id,
-                "name": payload['name'],
-                "url":payload['url'],
-                "description": payload['description'],
-                "created_at": payload['created_at'],
-                "created_by": payload['created_by']
-            }
 
-            return response
+            return payload
+        except MySQLdb.IntegrityError:
+            logging.warn("failed to insert values %d, %s", id, "TABLE_ORG::INSERT_ORG")
         except Exception as e:
+            print(str(e))
             return "TableOrganization -- create_organization() Error: " + str(e)
+        finally:
+            cur.close()
+       
         
 
         
@@ -54,6 +56,21 @@ class TableOrganization:
             return data
         except Exception as e:
             return datetime.now() + ": TableOrganization -- read_organization: " + str(e)
+        
+
+    def read_organization_by_user_id(self, user_id):
+        try:
+            query = "SELECT * FROM organization WHERE is_active = 1 AND created_by = %s"
+            cur = self.db.connection.cursor()
+            cur.execute(query, (user_id,))
+            
+            data = cur.fetchall()
+
+            cur.close()
+
+            return data
+        except Exception as e:
+            return "TableOrganization -- read_organization_by_user_id() Error: " + str(e)
         
 
 
