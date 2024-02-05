@@ -41,9 +41,11 @@ class TableRepository:
 
             cur.close()
 
-            return data
+            
+
+            return data[0]
         except Exception as e:
-            return datetime.now() + ": TableRepository -- read_repository: " + str(e)
+            return "TableRepository -- read_repository: " + str(e)
         
     
     def read_list_owner(self, owner):

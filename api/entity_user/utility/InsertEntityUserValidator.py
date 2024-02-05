@@ -14,5 +14,11 @@ class InsertEntityUserValidator(PayloadValidator):
     def validate_roles(self,val,**kwargs):
         if len(val) == 0:
             return False
+        
+        if "DEVELOPER" not in val and "OWNER" not in val and "ADMIN" not in val and "USER" and "GUEST" not in val and "READ_ONLY" not in val:
+            return False
+   
+        print("ENTITY_USER_PAYLOAD: VALIDATED")
+        
         return True
     

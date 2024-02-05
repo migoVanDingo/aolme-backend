@@ -5,6 +5,8 @@ from flask_cors import CORS
 from api.directory_tree.handler.ReadProjectFolder import ReadProjectFolder
 
 from api.directory_tree.handler.ReadProjectRoot import ReadProjectRoot
+from api.directory_tree.handler.RequestCreateOrganizationDirectory import RequestCreateOrganizationDirectory
+from api.directory_tree.handler.RequestCreateProjectDirectory import RequestCreateProjectDirectory
 from utility.Directory import Directory
 
 
@@ -14,8 +16,6 @@ CORS(directory_tree_api)
 @directory_tree_api.route('/api/directory/project/<project_id>/root', methods=['GET'])
 def get_project_root(project_id):
    try:
-        
-        
         directory_read_request = ReadProjectRoot(project_id)
             
         dir_read_res = directory_read_request.do()
@@ -92,3 +92,55 @@ def create_directory(project_id):
         # Handle any errors that occur while running the commands
         print("CLASS::DirectoryTreeAPI::ENDPOINT::create_directory:::", e)
         return "CLASS::DirectoryTreeAPI::ENDPOINT::create_directory:: " + str(e), 404
+    
+    
+@directory_tree_api.route('/api/directory/organization/<org_id>/project/<project_id>', methods=['POST', 'OPTIONS'])
+def create_project_directory(org_id, project_id):
+    if request.method == 'OPTIONS':
+        response = make_response('success', 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+
+        return response
+    
+    try:
+        api_request = RequestCreateProjectDirectory(org_id, project_id)
+        response = api_request.do_process()
+
+        response = make_response(response, 204)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+
+    except Exception as e:
+        # Handle any errors that occur while running the commands
+        print("CLASS::DirectoryTreeAPI::ENDPOINT::create_project_directory:::", e)
+        return "CLASS::DirectoryTreeAPI::ENDPOINT::create_project_directory:: " + str(e), 404
+
+
+@directory_tree_api.route('/api/directory/organization/<org_id>', methods=['POST', 'OPTIONS'])
+def create_organization_directory(org_id):
+    if request.method == 'OPTIONS':
+        response = make_response('success', 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+
+        return response
+    
+    try:
+        api_request = RequestCreateOrganizationDirectory(org_id)
+        response = api_request.do_process()
+
+        response = make_response(response, 204)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+
+    except Exception as e:
+        # Handle any errors that occur while running the commands
+        print("CLASS::DirectoryTreeAPI::ENDPOINT::create_organization_directory:::", e)
+        return "CLASS::DirectoryTreeAPI::ENDPOINT::create_organization_directory:: " + str(e), 404

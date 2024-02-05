@@ -10,21 +10,25 @@ class RequestInsertEntityUser(AbstractEntityUser):
 
 
     def do_process(self):
-
+        print('here')
         self.params['is_active'] = True
-        self.params['created_at'] = datetime.now()
+        self.params['created_at'] = "{}".format(datetime.now())
         self.params['created_by'] = self.params['user_id']
-        self.params['active_from'] = datetime.now() if 'active_from' not in self.params else self.params['active_from']
-        self.params['active_to'] = datetime.now() + timedelta(days=50000) if 'active_to' not in self.params else self.params['active_to']
+        
 
 
-        print("type: {}".format(type(self.params['created_at'])))
+        print("SELF_PARAMS: {}".format(self.params['created_at']))
 
         validator = InsertEntityUserValidator()
         is_valid = validator.validate(self.params)
         if is_valid[0] is False:
             return is_valid[1]
         
-        self.params['roles'] = json.dumps(self.params['roles'])
+       #self.params['roles'] = json.dumps(self.params['roles'])
 
-        return self.create_entity_user(self.params)
+        
+        response =  self.create_entity_user(self.params)
+
+        print("REQUEST_INSERT_ENTITY_USER_RESPONSE: {}".format(response))
+
+        return response

@@ -42,3 +42,12 @@ CREATE TABLE ls_import_storage(id INT NOT NULL AUTO_INCREMENT, path VARCHAR(255)
 --CREATE USER 'aolme_db_v2'@'localhost' IDENTIFIED BY 'password';
 
 --grant all privileges on *.* to aolme_db_v2@localhost with grant option;
+
+-- DATASET
+CREATE TABLE dataset(id INT NOT NULL AUTO_INCREMENT, dataset_id VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024) NULL, owner VARCHAR(255) NOT NULL, is_public INT NOT NULL, entity_id VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL,  is_active INT NOT NULL, created_by VARCHAR(255) NOT NULL, created_at VARCHAR(255) NOT NULL, updated_by VARCHAR(255) NULL, updated_at VARCHAR(255) NULL, deleted_by VARCHAR(255) NULL, deleted_at VARCHAR(255) NULL, PRIMARY KEY(id));
+
+-- MODULE
+CREATE TABLE module(id INT NOT NULL AUTO_INCREMENT, module_id VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024) NULL, owner VARCHAR(255) NOT NULL, is_public INT NOT NULL, entity_id VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL,  is_active INT NOT NULL, created_by VARCHAR(255) NOT NULL, created_at VARCHAR(255) NOT NULL, updated_by VARCHAR(255) NULL, updated_at VARCHAR(255) NULL, deleted_by VARCHAR(255) NULL, deleted_at VARCHAR(255) NULL, PRIMARY KEY(id));
+
+-- MODULE
+CREATE TABLE config(id INT NOT NULL AUTO_INCREMENT, config_id VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024) NULL, owner VARCHAR(255) NOT NULL, is_public INT NOT NULL, entity_id VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL,  is_active INT NOT NULL, created_by VARCHAR(255) NOT NULL, created_at VARCHAR(255) NOT NULL, updated_by VARCHAR(255) NULL, updated_at VARCHAR(255) NULL, deleted_by VARCHAR(255) NULL, deleted_at VARCHAR(255) NULL, PRIMARY KEY(id));

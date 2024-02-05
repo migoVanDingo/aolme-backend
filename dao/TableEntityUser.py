@@ -1,9 +1,11 @@
 from datetime import datetime
+import json
 import logging
 import random
 import string
 
 import MySQLdb
+from flask import jsonify
 
 class TableEntityUser:
     def __init__(self):
@@ -20,10 +22,10 @@ class TableEntityUser:
         try:
             payload['entity_user_id'] = self.generate_entity_user_id()
 
-            insert_query = "INSERT INTO entity_user (entity_user_id, entity_id, user_id, entity_type, entity_status, active_from, active_to, roles, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            insert_query = "INSERT INTO entity_user (entity_user_id, entity_id, user_id, entity_type, entity_status, roles, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             cur = self.db.connection.cursor()
-            cur.execute(insert_query, (payload['entity_user_id'], payload['entity_id'], payload['user_id'], payload['entity_type'], payload['entity_status'], payload['active_from'], payload['active_to'], payload['roles'], payload['is_active'], payload['created_at'], payload['created_by']))
+            cur.execute(insert_query, (payload['entity_user_id'], payload['entity_id'], payload['user_id'], payload['entity_type'], payload['entity_status'], payload['roles'], payload['is_active'], payload['created_at'], payload['created_by']))
 
             self.db.connection.commit()
 
@@ -53,17 +55,19 @@ class TableEntityUser:
 
     def read_user_list_by_entity_id(self, entity_id):
         try:
-            query = "SELECT user.* FROM entity_user JOIN user ON entity_user.user_id = user.user_id WHERE entity_user.is_active = 1 AND entity_user.entity_id = %s"
+            query = "SELECT * FROM entity_user JOIN user ON entity_user.user_id = user.user_id WHERE entity_user.is_active = 1 AND entity_user.entity_id = %s"
             cur = self.db.connection.cursor()
             cur.execute(query, (entity_id,))
             
             data = cur.fetchall()
 
             cur.close()
-            data = list(data)
-            print("data: {}".format(data))
+            
+            
 
-            return data
+
+            print("data: {}".format(data))
+            return jsonify(data)
         except Exception as e:
             return "TableEntityUser -- read_user_list_by_entity_id() Error: " + str(e)
         

@@ -21,9 +21,11 @@ def insert_entity_user():
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'
         return response
+
+    print("data: {}".format(request.data))
     
     # ENDPOINT LOGIC
-    api_request = RequestInsertEntityUser(json.loads(request.data))
+    api_request = RequestInsertEntityUser()
     response = api_request.do_process()
 
     response = make_response(response, 200)
