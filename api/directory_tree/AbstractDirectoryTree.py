@@ -10,6 +10,10 @@ class AbstractDirectoryTree(ABC):
     def create_directory(self, path):
         os.mkdir(path)
 
+    def create_dir_list(self, path, dir_list):
+        for dir in dir_list:
+            os.mkdir(os.path.join(path, dir))
+
     def get_root_folder(self, project_id):
         pass
 

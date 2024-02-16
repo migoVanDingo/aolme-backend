@@ -3,7 +3,7 @@ import string
 
 
 class TableDataset:
-    def __init__(self) -> None:
+    def __init__(self):
         from main import db
         self.db = db
 
@@ -12,7 +12,7 @@ class TableDataset:
         return 'DS' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
     
     def insert_dataset(self, payload):
-        query = "INSERT INTO dataset (dataset_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
+        query = "INSERT INTO dataset(dataset_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         try:
             payload['dataset_id'] = self.generate_id()
@@ -23,6 +23,7 @@ class TableDataset:
             return payload
         
         except Exception as e:  
+            print("TableDataset -- insert_dataset() Error: " + str(e))
             return "TableDataset -- insert_dataset() Error: " + str(e)
         
 
@@ -70,6 +71,7 @@ class TableDataset:
             return data
         except Exception as e:
             return "TableDataset -- read_list_by_user() Error: " + str(e)
+        
 
     def update(self, payload):
         query = "UPDATE dataset SET name = %s, description = %s, type = %s, path = %s, is_public = %s, is_active = %s, modified_by = %s, modified_at = %s WHERE dataset_id = %s"

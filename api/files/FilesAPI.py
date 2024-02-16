@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, make_response, request
 from flask_cors import CORS
 
-from api.files.handler.RequestCreateFileEntry import RequestCreateFileEntry
+from api.files.handler.RequestUploadFile import RequestUploadFile
 
 
 files_api = Blueprint('files_api', __name__)
@@ -20,8 +20,9 @@ def create_file():
     
     try:
        
-
-        api_request = RequestCreateFileEntry(json.loads(request.data))
+        files = request.files.getlist('file')
+        data = request.form
+        api_request = RequestUploadFile(json.loads(request.data))
         response = api_request.do_process()
 
     

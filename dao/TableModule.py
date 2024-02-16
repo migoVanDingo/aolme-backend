@@ -12,7 +12,7 @@ class TableModule:
         return 'MOD' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
     
     def insert_module(self, payload):
-        query = "INSERT INTO module (module_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
+        query = "INSERT INTO module (module_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)"
 
         try:
             payload['module_id'] = self.generate_id()

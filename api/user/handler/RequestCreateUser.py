@@ -1,5 +1,7 @@
 from datetime import datetime
 import json
+
+import requests
 from api.user.AbstractUser import AbstractUser
 from api.user.utility.CreateUserValidator import CreateUserValidator
 class RequestCreateUser(AbstractUser):
@@ -35,12 +37,18 @@ class RequestCreateUser(AbstractUser):
         if is_valid[0] is False:
             return is_valid[1]
         
-
-    
         response = self.insert_user(params)
         del response['hash']
 
-        print("RESPONSE: {}".format(response))
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        self.url = "http://localhost:5000/api/directory/user/{}".format(response['user_id'])
+        api_request = requests.post(self.url, headers=headers)
+        print("CREATE_USER_DIRECTORIES: {}".format(api_request))
+
+        print("CREATE_USER_RESPONSE: {}".format(response))
         return response
 
     

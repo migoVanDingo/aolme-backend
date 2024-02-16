@@ -1,6 +1,6 @@
 from api.config.AbstractConfig import AbstractConfig
 
-class RequesetGetConfigById(AbstractConfig):
+class RequestGetConfigById(AbstractConfig):
     def __init__(self, config_id):
         self.config_id = config_id
 

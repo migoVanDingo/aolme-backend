@@ -7,6 +7,7 @@ from api.directory_tree.handler.ReadProjectFolder import ReadProjectFolder
 from api.directory_tree.handler.ReadProjectRoot import ReadProjectRoot
 from api.directory_tree.handler.RequestCreateOrganizationDirectory import RequestCreateOrganizationDirectory
 from api.directory_tree.handler.RequestCreateProjectDirectory import RequestCreateProjectDirectory
+from api.directory_tree.handler.RequestCreateUserDirectory import RequestCreateUserDirectory
 from utility.Directory import Directory
 
 
@@ -144,3 +145,27 @@ def create_organization_directory(org_id):
         # Handle any errors that occur while running the commands
         print("CLASS::DirectoryTreeAPI::ENDPOINT::create_organization_directory:::", e)
         return "CLASS::DirectoryTreeAPI::ENDPOINT::create_organization_directory:: " + str(e), 404
+    
+@directory_tree_api.route('/api/directory/user/<user_id>', methods=['POST', 'OPTIONS'])
+def create_user_directory(user_id):
+    if request.method == 'OPTIONS':
+        response = make_response('success', 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+
+        return response
+    try:
+        api_request = RequestCreateUserDirectory(user_id)
+        response = api_request.do_process()
+
+        response = make_response(response, 204)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+
+    except Exception as e:
+        # Handle any errors that occur while running the commands
+        print("CLASS::DirectoryTreeAPI::ENDPOINT::create_user_directory:::", e)
+        return "CLASS::DirectoryTreeAPI::ENDPOINT::create_user_directory:: " + str(e), 404

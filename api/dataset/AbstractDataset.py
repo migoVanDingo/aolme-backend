@@ -4,7 +4,6 @@ from dao.TableDataset import TableDataset
 class AbstractDataset(ABC):
 
     def __init__(self):
-        super().__init__()
         self.table_dataset = TableDataset()
 
     #Concrete methods

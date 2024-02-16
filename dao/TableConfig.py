@@ -3,7 +3,7 @@ import string
 
 
 class TableConfig:
-    def __init__(self) -> None:
+    def __init__(self):
         from main import db
         self.db = db
 
@@ -12,7 +12,7 @@ class TableConfig:
         return 'CNF' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
     
     def insert_config(self, payload):
-        query = "INSERT INTO config (config_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
+        query = "INSERT INTO config (config_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         try:
             payload['config_id'] = self.generate_id()
@@ -23,6 +23,7 @@ class TableConfig:
             return payload
         
         except Exception as e:  
+            print("TableConfig -- insert_config() Error: " + str(e))
             return "TableConfig -- insert_config() Error: " + str(e)
         
 

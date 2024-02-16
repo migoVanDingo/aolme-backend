@@ -17,6 +17,10 @@ from api.user.UserAPI import user_api
 from api.organization.OrganizationAPI import organization_api
 from api.entity_user.EntityUserApi import entity_user_api
 from api.repository.RepositoryAPI import repository_api
+from api.config.ConfigAPI import config_api
+from api.module.ModuleAPI import module_api
+from api.dataset.DatasetAPI import dataset_api
+from api.files.FilesAPI import files_api
 
 db = MySQL()
 app = Flask(__name__)
@@ -48,4 +52,9 @@ app.register_blueprint(user_api)
 app.register_blueprint(organization_api)
 app.register_blueprint(entity_user_api)
 app.register_blueprint(repository_api)
+app.register_blueprint(config_api)
+app.register_blueprint(module_api)
+app.register_blueprint(dataset_api)
+app.register_blueprint(files_api)
+
 

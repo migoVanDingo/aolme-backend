@@ -14,8 +14,8 @@ class AbstractRepository(ABC):
     def read(self, id):
         return self.db.read(id)
     
-    def read_list_owner(self):
-        return self.db.read_list_owner()
+    def read_list_owner(self, id):
+        return self.db.read_list_owner(id)
     
     def read_list_entity(self, entity_id):
         return self.db.read_list_entity(entity_id)

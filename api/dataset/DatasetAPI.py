@@ -1,5 +1,15 @@
+import json
 from flask import Blueprint, make_response, request
 from flask_cors import CORS
+from api.dataset.handler.RequestArchiveDataset import RequestArchiveDataset
+
+from api.dataset.handler.RequestCreateNewDataset import RequestCreateDataset
+from api.dataset.handler.RequestDeleteDataset import RequestDeleteDataset
+from api.dataset.handler.RequestGetDatasetById import RequestGetDatasetById
+from api.dataset.handler.RequestGetDatasetList import RequestGetDatasetList
+from api.dataset.handler.RequestGetDatasetListByEntity import RequestGetDatasetListByEntity
+from api.dataset.handler.RequestGetDatasetListByUser import RequestGetDatasetListByUser
+from api.dataset.handler.RequestUpdateDataset import RequestUpdateDataset
 
 
 dataset_api = Blueprint('dataset_api', __name__)
@@ -14,9 +24,13 @@ def create_dataset():
         response.headers['Content-Type'] = '*'
         return response
 
-    print("data: {}".format(request.data))
+    
+    files = request.files.getlist('file')
+    data = request.form
     
     # ENDPOINT LOGIC
+    api_request = RequestCreateDataset(data, files)
+    response = api_request.do_process()
     
 
     response = make_response(response, 200)
@@ -28,16 +42,24 @@ def create_dataset():
 
 
 @dataset_api.route('/api/dataset', methods=['GET'])
-def get_datasets():
+def get_dataset_list():
+
+    api_request = RequestGetDatasetList()
+    response = api_request.do_process()
     
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = '*'
     return response
+
+
 
 @dataset_api.route('/api/dataset/<dataset_id>', methods=['GET'])
 def get_dataset(dataset_id):
+
+    api_request = RequestGetDatasetById(dataset_id)
+    response = api_request.do_process()
     
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
@@ -45,16 +67,55 @@ def get_dataset(dataset_id):
     response.headers['Content-Type'] = '*'
     return response
 
-@dataset_api.route('/api/dataset/<dataset_id>', methods=['PUT'])
-def update_dataset(dataset_id):
+
+
+@dataset_api.route('/api/dataset/entity/<entity_id>', methods=['GET'])
+def get_dataset_list_by_entity(entity_id):
+
+    api_request = RequestGetDatasetListByEntity(entity_id)
+    response = api_request.do_process()
+    
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = '*'
     return response
 
+
+
+@dataset_api.route('/api/dataset/user/<user_id>', methods=['GET'])
+def get_dataset_list_by_user(user_id):
+
+    api_request = RequestGetDatasetListByUser(user_id)
+    response = api_request.do_process()
+    
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+
+@dataset_api.route('/api/dataset/<dataset_id>', methods=['PATCH'])
+def update_dataset(dataset_id):
+
+    api_request = RequestUpdateDataset(dataset_id, json.loads(request.data))
+    response = api_request.do_process()
+
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+
+
 @dataset_api.route('/api/dataset/<dataset_id>', methods=['DELETE'])
 def delete_dataset(dataset_id):
+
+    api_request = RequestDeleteDataset(dataset_id)
+    response = api_request.do_process()
+
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'
@@ -64,6 +125,10 @@ def delete_dataset(dataset_id):
 
 @dataset_api.route('/api/dataset/archive/<dataset_id>', methods=['DELETE'])
 def archive_dataset(dataset_id):
+
+    api_request = RequestArchiveDataset(dataset_id)
+    response = api_request.do_process()
+
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'

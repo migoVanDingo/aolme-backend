@@ -16,10 +16,10 @@ class TableRepository:
     def insert(self, payload):
         try:
             payload["repo_id"] = self.generate_id()
-            query = "INSERT INTO repository (repo_id, name, description, owner, entity_id, is_public, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO repository (repo_id, name, description, owner, entity_id, entity_type, is_public, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             cur = self.db.connection.cursor()
-            cur.execute(query, (payload["repo_id"], payload["name"], payload["description"], payload["owner"], payload['entity_id'] , payload["is_public"], payload["is_active"], payload["created_at"], payload["created_by"]))
+            cur.execute(query, (payload["repo_id"], payload["name"], payload["description"], payload["owner"], payload['entity_id'] , payload['entity_type'], payload["is_public"], payload["is_active"], payload["created_at"], payload["created_by"]))
 
             self.db.connection.commit()
 
@@ -53,14 +53,18 @@ class TableRepository:
             query = "SELECT * FROM repository WHERE is_active = 1 AND owner = %s"
             cur = self.db.connection.cursor()
             cur.execute(query, (owner,))   
+            
 
             data = cur.fetchall()
 
             cur.close()
 
-            return data
+            print("----------->>>    {}".format(list(data)))
+
+            return list(data)
         except Exception as e:
-            return datetime.now() + ": TableRepository -- read_repository: " + str(e)
+            print(" TableRepository -- read_list_owner: " + str(e))
+            return " TableRepository -- read_list_owner: " + str(e)
         
     def read_list_entity(self, entity_id):
         try:
