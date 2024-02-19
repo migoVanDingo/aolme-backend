@@ -8,6 +8,7 @@ from api.repository.handler.RequestDeleteRepo import RequestDeleteRepo
 from api.repository.handler.RequestGetRepoByEntity import RequestGetRepoByEntity
 from api.repository.handler.RequestGetRepoById import RequestGetRepoById
 from api.repository.handler.RequestGetRepoByOwner import RequestGetRepoByOwner
+from api.repository.handler.RequestGetRepoItemList import RequestGetRepoItemList
 from api.repository.handler.RequestUpdateRepo import RequestUpdateRepo
 
 
@@ -77,6 +78,21 @@ def get_repository_list_by_entity_id(entity_id):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = '*'
     return response 
+
+
+@repository_api.route('/api/repository/<repo_id>/items', methods=['GET'])
+def get_repository_items_by_id(repo_id):
+        
+        # ENDPOINT LOGIC
+        api_request = RequestGetRepoItemList(repo_id)
+        response = api_request.do_process()
+    
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+
 
 
 @repository_api.route('/api/repository/<repo_id>', methods=['PATCH', 'OPTIONS'])

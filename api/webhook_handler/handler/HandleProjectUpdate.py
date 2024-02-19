@@ -1,21 +1,42 @@
 import json, requests, os
+from datetime import datetime
+from flask import jsonify
+from dao.TableDataset import TableDataset
 
 from dao.TableFiles import TableFiles
+from dao.TableLsProject import TableLsProject
+from dao.TableRepoItem import TableRepoItem
 class HandleProjectUpdate:
     def __init__(self, payload):
         self.payload = json.loads(payload)
 
     def do_process(self):
-        data = self.payload
-        project_id = data['project']['id']
-        project_title = data['project']['title']
-        #task_id = data['task']['id']
-
-        formatted_json_data = json.dumps(self.payload, indent=4)
-
+      
         
-        uploads_dir = os.path.join(os.getcwd(), 'project')
-        project_dir = os.path.join(uploads_dir, str(project_id))
+
+        formatted_json_data = self.payload
+
+        print("Formatted JSON Data: {}".format(formatted_json_data))
+        
+        project_id = formatted_json_data["project"]["id"]
+        project_title = formatted_json_data["project"]["title"]
+
+        ls_table = TableLsProject()
+        ls_project = ls_table.read_ls_project_by_id(str(project_id))
+
+        print("LS Project: {}".format(ls_project))
+
+
+        if ls_project['entity_id'].startswith('ORG'):
+            entity = os.environ['ORGANIZATION_DIRECTORY']
+        elif ls_project['entity_id'].startswith('USR'):
+            entity = os.environ['USER_DIRECTORY']
+            
+        entity_dir = os.path.join(entity, ls_project['entity_id'])
+
+        project_dir = os.path.join(entity_dir, 'project')
+
+        project_dir = os.path.join(project_dir, str(project_id))
         if os.path.exists(project_dir) == False:
              os.mkdir(project_dir)
 
@@ -27,7 +48,31 @@ class HandleProjectUpdate:
         final_path = os.path.join(annotation_directory, project_title)
 
         with open(final_path, "w") as f:
-                    f.write(formatted_json_data)
+                    f.write(json.dumps(formatted_json_data))
+
+        
+        #add to files
+        insert_file = TableDataset()
+        payload_insert_file = {
+             "entity_id": ls_project['entity_id'], "name": ls_project['name'], "description": ls_project['description'], "owner": ls_project['entity_id'], "type":"ANNOTATION", "path": final_path, "is_public": 1, "is_active":1, "created_by":ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        response_insert_file = insert_file.insert_files(payload_insert_file)
+
+        repo_item = TableRepoItem()
+        payload_repo_item = {
+            "file_id": response_insert_file["file_id"],
+            "repo_id": ls_project['repo_id'],
+            "type": "ANNOTATION",
+            "is_active": 1,
+            "created_by": ls_project['entity_id'],
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+        }
+        response_repo_item = repo_item.insert(payload_repo_item)
+
+        print("Response Insert File: {}".format(response_repo_item))
+
 
         response_object = {
                     "path": final_path,

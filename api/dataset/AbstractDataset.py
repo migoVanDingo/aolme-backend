@@ -8,7 +8,7 @@ class AbstractDataset(ABC):
 
     #Concrete methods
     def create(self, params):
-        return self.table_dataset.insert_dataset(params)
+        return self.table_dataset.insert_files(params)
     
     def read_list(self):
         return self.table_dataset.read_list()

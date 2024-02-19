@@ -24,11 +24,15 @@ def create_module():
         response.headers['Content-Type'] = '*'
         return response
     
+    repo_id = request.args.get('repo_id')
+
+    print("repoId: " + repo_id)
+    
     files = request.files.getlist('file')
     data = request.form
     
     # ENDPOINT LOGIC
-    api_request = RequestCreateModule(data, files)
+    api_request = RequestCreateModule(data, files, repo_id)
     response = api_request.do_process()
     
 

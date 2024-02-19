@@ -7,28 +7,44 @@ class TableDataset:
         from main import db
         self.db = db
 
-    def generate_id(self):
+    def generate_id(self, type):
         N = 22
-        return 'DS' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+        match type:
+            case "DATASET":
+                return 'DS' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+            case "CONFIG":
+                return 'CF' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+            case "MODULE":
+                return 'MD' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+            case "ANNOTATION":
+                return 'ANN' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+            case "GROUND_TRUTH":
+                return 'GT' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+        
+
+            case _:
+                return 'FYL' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+
+        
     
-    def insert_dataset(self, payload):
-        query = "INSERT INTO dataset(dataset_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    def insert_files(self, payload):
+        query = "INSERT INTO files(file_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         try:
-            payload['dataset_id'] = self.generate_id()
+            payload['file_id'] = self.generate_id(payload['type'])
             cur = self.db.connection.cursor()
-            cur.execute(query, (payload['dataset_id'], payload['entity_id'], payload['name'], payload['description'], payload['owner'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['created_by'], payload['created_at']))
+            cur.execute(query, (payload['file_id'], payload['entity_id'], payload['name'], payload['description'], payload['owner'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['created_by'], payload['created_at']))
             self.db.connection.commit()
             cur.close()
             return payload
         
         except Exception as e:  
-            print("TableDataset -- insert_dataset() Error: " + str(e))
-            return "TableDataset -- insert_dataset() Error: " + str(e)
+            print("TableDataset -- insert_files() Error: " + str(e))
+            return "TableDataset -- insert_files() Error: " + str(e)
         
 
     def read_list(self):
-        query = "SELECT * FROM dataset WHERE is_active = 1 AND is_public = 1"
+        query = "SELECT * FROM files WHERE is_active = 1 AND is_public = 1"
         try:
             cur = self.db.connection.cursor()
             cur.execute(query)
@@ -39,11 +55,11 @@ class TableDataset:
             return "TableDataset -- read_list() Error: " + str(e)
         
 
-    def read_item(self, dataset_id):
-        query = "SELECT * FROM dataset WHERE dataset_id = %s"
+    def read_item(self, files_id):
+        query = "SELECT * FROM files WHERE files_id = %s"
         try:
             cur = self.db.connection.cursor()
-            cur.execute(query, (dataset_id,))
+            cur.execute(query, (files_id,))
             data = cur.fetchall()
             cur.close()
             return data
@@ -51,7 +67,7 @@ class TableDataset:
             return "TableDataset -- read_item() Error: " + str(e)
 
     def read_list_by_entity(self, entity_id):
-        query = "SELECT * FROM dataset WHERE entity_id = %s AND is_active = 1"
+        query = "SELECT * FROM files WHERE entity_id = %s AND is_active = 1"
         try:
             cur = self.db.connection.cursor()
             cur.execute(query, (entity_id,))
@@ -62,7 +78,7 @@ class TableDataset:
             return "TableDataset -- read_list_by_entity() Error: " + str(e)
 
     def read_list_by_user(self, user_id):
-        query = "SELECT * FROM dataset WHERE owner = %s AND is_active = 1"
+        query = "SELECT * FROM files WHERE owner = %s AND is_active = 1"
         try:
             cur = self.db.connection.cursor()
             cur.execute(query, (user_id,))
@@ -74,34 +90,34 @@ class TableDataset:
         
 
     def update(self, payload):
-        query = "UPDATE dataset SET name = %s, description = %s, type = %s, path = %s, is_public = %s, is_active = %s, modified_by = %s, modified_at = %s WHERE dataset_id = %s"
+        query = "UPDATE files SET name = %s, description = %s, type = %s, path = %s, is_public = %s, is_active = %s, modified_by = %s, modified_at = %s WHERE files_id = %s"
         try:
             cur = self.db.connection.cursor()
-            cur.execute(query, (payload['name'], payload['description'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['modified_by'], payload['modified_at'], payload['dataset_id']))
+            cur.execute(query, (payload['name'], payload['description'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['modified_by'], payload['modified_at'], payload['file_id']))
             self.db.connection.commit()
             cur.close()
             return payload
         except Exception as e:
             return "TableDataset -- update() Error: " + str(e)
 
-    def delete(self, dataset_id):
-        query = "DELETE FROM dataset WHERE dataset_id = %s"
+    def delete(self, files_id):
+        query = "DELETE FROM files WHERE files_id = %s"
         try:
             cur = self.db.connection.cursor()
-            cur.execute(query, (dataset_id,))
+            cur.execute(query, (files_id,))
             self.db.connection.commit()
             cur.close()
-            return dataset_id
+            return files_id
         except Exception as e:
             return "TableDataset -- delete() Error: " + str(e)
 
-    def archive(self, dataset_id):
-        query = "UPDATE dataset SET is_active = 0 WHERE dataset_id = %s"
+    def archive(self, files_id):
+        query = "UPDATE files SET is_active = 0 WHERE files_id = %s"
         try:
             cur = self.db.connection.cursor()
-            cur.execute(query, (dataset_id,))
+            cur.execute(query, (files_id,))
             self.db.connection.commit()
             cur.close()
-            return dataset_id
+            return files_id
         except Exception as e:
             return "TableDataset -- archive() Error: " + str(e)

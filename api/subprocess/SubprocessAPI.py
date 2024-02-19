@@ -95,19 +95,31 @@ def start_jupyter_notebook():
     data = json.loads(request.data)
 
 
-    create_dir = Directory.create_directory(data['project_id'], data['folder_name'])
+    # create_dir = Directory.create_directory(data['project_id'], data['folder_name'])
 
-    print("create_dir: {}".format(create_dir['path']))
+    # print("create_dir: {}".format(create_dir['path']))
     
+    if data['entity_id'].startswith("ORG"):
+        dir = os.environ['ORGANIZATION_DIRECTORY']
+    elif data['entity_id'].startswith("USR"):
+        dir = os.environ['USER_DIRECTORY']
+
+    path = os.path.join(dir, data['entity_id'])
+    path = os.path.join(path, 'notebook')
+
     
     commands = [
-        "cd {}".format(create_dir['path']),
+        "python3 -m venv .venv",
+        "source .venv/bin/activate",    
         "pip install notebook",
         "jupyter notebook"
     ]
 
+    print("Commands: {}".format(commands))
+
 
     try:
+        os.chdir(path)
     # Run each command sequentially
         for command in commands:
             subprocess.run(command, shell=True, check=True)

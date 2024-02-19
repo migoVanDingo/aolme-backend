@@ -2,12 +2,17 @@ from datetime import datetime
 import os
 from api.config.AbstractConfig import AbstractConfig
 from api.config.entity.CreateConfigValidator import CreateConfigValidator
+from dao.TableRepoItem import TableRepoItem
 
 class RequestCreateConfig(AbstractConfig):
-    def __init__(self, params, files):
+    def __init__(self, params, files, repo_id=None):
         super().__init__()
         self.params = params
         self.files = files
+        if repo_id is None:
+            self.repo_id = None
+        else:
+            self.repo_id = repo_id
 
     def do_process(self):
         try:
@@ -54,6 +59,20 @@ class RequestCreateConfig(AbstractConfig):
                 
                 dao_response = self.create(payload)
 
+                if self.repo_id is not None:
+                    repo_item_payload = {
+                        "repo_item_id":dao_response['config_id'],
+                        "repo_id": self.repo_id,
+                        "is_active": 1,
+                        "created_at": dao_response['created_at'],
+                        "created_by": dao_response['created_by'],
+                        "type": "CONFIG"
+                    }
+                    print("Saving repo_item -- payload: {}".format(repo_item_payload))
+                    table_repo_item = TableRepoItem()
+                    response = table_repo_item.insert(repo_item_payload)
+                    print("TableRepoItem::::insert()::::response: {}".format(response))
+
                 # print("dao_response: {}".format(dao_response))
                 # config_id = dao_response['config_id']
                 
@@ -71,4 +90,5 @@ class RequestCreateConfig(AbstractConfig):
             
 
         except Exception as e:
+            print("RequestCreateConfig -- do_process() Error: " + str(e))
             return "RequestCreateConfig -- do_process() Error: " + str(e)

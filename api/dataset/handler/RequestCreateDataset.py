@@ -2,24 +2,32 @@ from datetime import datetime
 import os
 from api.dataset.AbstractDataset import AbstractDataset
 from api.dataset.entity.CreateDatasetValidator import CreateDatasetValidator
+from dao.TableRepoItem import TableRepoItem
 
 class RequestCreateDataset(AbstractDataset):
-    def __init__(self, params, files):
+    def __init__(self, params, files, repo_id=None):
         super().__init__()
         self.params = params
         self.files = files
+        if repo_id is None:
+            self.repo_id = None
+        else:
+            self.repo_id = repo_id
 
     def do_process(self):
         try:
 
             dao_response = "NULL"
 
+            print("params: {}".format(self.params))
+
             if "USR" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['USER_DIRECTORY'], self.params.get('entity_id'))
             elif "ORG" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['ORGANIZATION_DIRECTORY'], self.params.get('entity_id'))
-                
-            path = os.path.join(path, 'dataset')
+
+            
+            path = os.path.join(path, self.params.get('type').lower())
             
             
             files = self.files
@@ -56,6 +64,24 @@ class RequestCreateDataset(AbstractDataset):
                     return is_valid[1]
                 
                 dao_response = self.create(payload)
+
+                print("daoReponse: {}".format(dao_response))
+
+                if self.repo_id is not None:
+                    repo_item_payload = {
+                        "file_id":dao_response['file_id'],
+                        "repo_id": self.repo_id,
+                        "is_active": 1,
+                        "created_at": dao_response['created_at'],
+                        "created_by": dao_response['created_by'],
+                        "type": dao_response['type']
+                    }
+                    print("Saving repo_item -- payload: {}".format(repo_item_payload))
+                    table_repo_item = TableRepoItem()
+                    response = table_repo_item.insert(repo_item_payload)
+                    print("TableRepoItem::::insert()::::response: {}".format(response))
+                    
+                
 
                 # print("dao_response: {}".format(dao_response))
                 # dataset_id = dao_response['dataset_id']
