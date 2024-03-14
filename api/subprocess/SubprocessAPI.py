@@ -2,6 +2,7 @@ import subprocess, json, os
 from flask_cors import CORS
 from flask import Blueprint, make_response, request
 from dotenv import load_dotenv
+from file_watcher.WatchNotebook import WatchNotebook
 
 from utility.Directory import Directory
 load_dotenv()
@@ -99,34 +100,47 @@ def start_jupyter_notebook():
 
     # print("create_dir: {}".format(create_dir['path']))
     
-    if data['entity_id'].startswith("ORG"):
-        dir = os.environ['ORGANIZATION_DIRECTORY']
-    elif data['entity_id'].startswith("USR"):
-        dir = os.environ['USER_DIRECTORY']
+    # if data['entity_id'].startswith("ORG"):
+    #     dir = os.environ['ORGANIZATION_DIRECTORY']
+    # elif data['entity_id'].startswith("USR"):
+    #     dir = os.environ['USER_DIRECTORY']
 
-    path = os.path.join(dir, data['entity_id'])
+    # path = os.path.join(dir, data['entity_id'])
+    # path = os.path.join(path, 'notebook')
+
+    path = os.path.join(os.environ['REPO_DIRECTORY'], data['repo_id'])
     path = os.path.join(path, 'notebook')
 
     
     commands = [
-        "python3 -m venv .venv",
-        "source .venv/bin/activate",    
-        "pip install notebook",
         "jupyter notebook"
     ]
 
     print("Commands: {}".format(commands))
 
-
     try:
         os.chdir(path)
-    # Run each command sequentially
+        # Run each command sequentially
         for command in commands:
             subprocess.run(command, shell=True, check=True)
 
+        payload_insert_file = {
+            "entity_id": data["repoEntity"],
+            "description": "JUPYTER NOTEBOOK",
+            "owner": data['owner'],
+            "type": "NOTEBOOK",
+            "is_public": data['is_public'],
+            "repo_id": data["repoId"],
+            "is_active": 1, 
+
+        }
+
+        #watcher = WatchNotebook()
+        #watcher.fileWatcher(path, 1, payload_insert_file)
+
         print("All commands executed successfully.")
 
-        response = make_response("success", 204)
+        response = make_response("SUCCESS", 204)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'

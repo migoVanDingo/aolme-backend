@@ -56,7 +56,7 @@ class TableDataset:
         
 
     def read_item(self, files_id):
-        query = "SELECT * FROM files WHERE files_id = %s"
+        query = "SELECT * FROM files WHERE file_id = %s"
         try:
             cur = self.db.connection.cursor()
             cur.execute(query, (files_id,))
@@ -90,7 +90,7 @@ class TableDataset:
         
 
     def update(self, payload):
-        query = "UPDATE files SET name = %s, description = %s, type = %s, path = %s, is_public = %s, is_active = %s, modified_by = %s, modified_at = %s WHERE files_id = %s"
+        query = "UPDATE files SET name = %s, description = %s, type = %s, path = %s, is_public = %s, is_active = %s, modified_by = %s, modified_at = %s WHERE file_id = %s"
         try:
             cur = self.db.connection.cursor()
             cur.execute(query, (payload['name'], payload['description'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['modified_by'], payload['modified_at'], payload['file_id']))
@@ -101,7 +101,7 @@ class TableDataset:
             return "TableDataset -- update() Error: " + str(e)
 
     def delete(self, files_id):
-        query = "DELETE FROM files WHERE files_id = %s"
+        query = "DELETE FROM files WHERE file_id = %s"
         try:
             cur = self.db.connection.cursor()
             cur.execute(query, (files_id,))
@@ -112,7 +112,7 @@ class TableDataset:
             return "TableDataset -- delete() Error: " + str(e)
 
     def archive(self, files_id):
-        query = "UPDATE files SET is_active = 0 WHERE files_id = %s"
+        query = "UPDATE files SET is_active = 0 WHERE file_id = %s"
         try:
             cur = self.db.connection.cursor()
             cur.execute(query, (files_id,))
@@ -121,3 +121,16 @@ class TableDataset:
             return files_id
         except Exception as e:
             return "TableDataset -- archive() Error: " + str(e)
+        
+    def archive_by_name(self, name, entity_id):
+        query = "UPDATE files SET is_active = 0 WHERE name = %s AND entity_id = %s"
+        try:
+            cur = self.db.connection.cursor()
+            cur.execute(query, (name, entity_id))
+            self.db.connection.commit()
+            cur.close()
+            return name
+        except Exception as e:
+            return "TableDataset -- archive_by_name() Error: " + str(e)
+        
+

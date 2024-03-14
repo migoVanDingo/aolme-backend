@@ -1,5 +1,8 @@
+
 from api.directory_tree.AbstractDirectoryTree import AbstractDirectoryTree
 import os
+
+from utility.Constant import Constant
 class RequestCreateOrganizationDirectory(AbstractDirectoryTree):
     def __init__(self, org_id) -> None:
         self.org_id = org_id
@@ -15,7 +18,7 @@ class RequestCreateOrganizationDirectory(AbstractDirectoryTree):
         
         self.create_directory(path)
 
-        dir_list = ['project', 'dataset', 'module', 'experiment', 'config', 'annotations','model', 'notebook', 'report', 'data', 'logs', 'ground_truth']
+        dir_list = Constant.directory_list
 
         self.create_dir_list(path, dir_list)
         

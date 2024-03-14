@@ -24,9 +24,7 @@ class AbstractDirectoryTree(ABC):
             for entry in it:
                 if not entry.name.startswith('.'):
                     if entry.is_file():
-                        file_name = entry.name
-                        base_name, extension = os.path.splitext(file_name)
-                        items.append({ "name": base_name + extension, "type": "file"})
+                        items.append({ "name": entry.name, "type": "file"})
 
                     if entry.is_dir():
                         items.append({"name": entry.name, "type": "folder"})

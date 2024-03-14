@@ -20,14 +20,27 @@ class RequestCreateDataset(AbstractDataset):
             dao_response = "NULL"
 
             print("params: {}".format(self.params))
-
+            path = ''
             if "USR" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['USER_DIRECTORY'], self.params.get('entity_id'))
             elif "ORG" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['ORGANIZATION_DIRECTORY'], self.params.get('entity_id'))
 
             
+            repo_path = None
+            if self.repo_id is not None:
+                # repo_path = os.path.join(os.environ['USER_DIRECTORY'], 'repo')
+                # repo_path = os.path.join(repo_path, self.repo_id)
+                # repo_path = os.path.join(repo_path, 'files')
+                repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
+                repo_path = os.path.join(repo_path, self.params.get('type').lower())
+
             path = os.path.join(path, self.params.get('type').lower())
+
+
+                
+            
+            
             
             
             files = self.files
@@ -92,6 +105,8 @@ class RequestCreateDataset(AbstractDataset):
                 # file.filename = dataset_id + '...'.join(f) + '.' + last
                 
                 file.save(path)
+                if repo_path is not None:
+                    file.save(os.path.join(repo_path, file.filename))
 
 
 

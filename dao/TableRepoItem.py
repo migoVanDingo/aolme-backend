@@ -18,6 +18,28 @@ class TableRepoItem:
             print("TableRepoItem -- insert() Error: " + str(e))
             return "TableRepoItem -- insert() Error: " + str(e)
         
+    def archive(self, repo_item_id):
+        query = "UPDATE repo_item SET is_active = 0 WHERE file_id = %s"
+        try:
+            cur = self.db.connection.cursor()
+            cur.execute(query, (repo_item_id,))
+            self.db.connection.commit()
+            cur.close()
+            return "SUCCESS"
+        except Exception as e:
+            return "TableRepoItem -- archive() Error: " + str(e)
+        
+    def delete(self, repo_item_id): 
+        query = "DELETE FROM repo_item WHERE file_id = %s"
+        try:
+            cur = self.db.connection.cursor()
+            cur.execute(query, (repo_item_id,))
+            self.db.connection.commit()
+            cur.close()
+            return "SUCCESS"
+        except Exception as e:
+            return "TableRepoItem -- delete() Error: " + str(e)
+        
 
     def read_list_repo_items(self, repo_id):
         

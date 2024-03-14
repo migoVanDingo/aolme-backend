@@ -3,7 +3,7 @@ from flask import Blueprint, make_response, request
 from flask_cors import CORS
 from api.repository.handler.RequestArchiveRepo import RequestArchiveRepo
 
-from api.repository.handler.RequestCreateRepo import RequestCreateRepository
+from api.repository.handler.RequestCreateRepo import RequestCreateRepo
 from api.repository.handler.RequestDeleteRepo import RequestDeleteRepo
 from api.repository.handler.RequestGetRepoByEntity import RequestGetRepoByEntity
 from api.repository.handler.RequestGetRepoById import RequestGetRepoById
@@ -25,7 +25,7 @@ def create_repository():
         return response
     
     # ENDPOINT LOGIC
-    api_request = RequestCreateRepository(json.loads(request.data))
+    api_request = RequestCreateRepo(json.loads(request.data))
     response = api_request.do_process()
 
     

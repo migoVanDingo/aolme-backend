@@ -1,6 +1,7 @@
 import json, requests, os
 from datetime import datetime
 from flask import jsonify
+from api.webhook_handler.handler.ConvertAnnotationToDataset import ConvertAnnotationToDataset
 from dao.TableDataset import TableDataset
 
 from dao.TableFiles import TableFiles
@@ -16,7 +17,7 @@ class HandleProjectUpdate:
 
         formatted_json_data = self.payload
 
-        print("Formatted JSON Data: {}".format(formatted_json_data))
+        #print("Formatted JSON Data: {}".format(formatted_json_data))
         
         project_id = formatted_json_data["project"]["id"]
         project_title = formatted_json_data["project"]["title"]
@@ -26,26 +27,18 @@ class HandleProjectUpdate:
 
         print("LS Project: {}".format(ls_project))
 
-
-        if ls_project['entity_id'].startswith('ORG'):
-            entity = os.environ['ORGANIZATION_DIRECTORY']
-        elif ls_project['entity_id'].startswith('USR'):
-            entity = os.environ['USER_DIRECTORY']
-            
-        entity_dir = os.path.join(entity, ls_project['entity_id'])
-
-        project_dir = os.path.join(entity_dir, 'project')
-
-        project_dir = os.path.join(project_dir, str(project_id))
-        if os.path.exists(project_dir) == False:
-             os.mkdir(project_dir)
-
-        annotation_directory = os.path.join(project_dir, 'annotations')
+        repo_directory = os.path.join(os.environ['REPO_DIRECTORY'], ls_project['repo_id'])
+        annotation_directory = os.path.join(repo_directory, 'annotations')
 
         if os.path.exists(annotation_directory) == False:
             os.mkdir(annotation_directory)
 
         final_path = os.path.join(annotation_directory, project_title)
+
+
+        ### Convert JSON to CSV
+        request_convert_annotation = ConvertAnnotationToDataset(formatted_json_data, project_id, project_title, final_path)
+        response_convert_annotation = request_convert_annotation.do_process()
 
         with open(final_path, "w") as f:
                     f.write(json.dumps(formatted_json_data))
