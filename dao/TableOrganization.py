@@ -4,6 +4,7 @@ import random
 import string
 
 import MySQLdb
+from flask import jsonify
 
 class TableOrganization:
     def __init__(self):
@@ -45,6 +46,7 @@ class TableOrganization:
         
     def read_organization(self, org_id):
         try:
+            print("\n\nread_organization orgId: {}\n\n".format(org_id))
             query = "SELECT * FROM organization WHERE is_active = 1 AND organization_id = %s"
             cur = self.db.connection.cursor()
             cur.execute(query, (org_id,))
@@ -53,9 +55,12 @@ class TableOrganization:
 
             cur.close()
 
-            return data
+            print("\nread_organization: {}\n\n".format(data))
+
+            return data[0]
         except Exception as e:
-            return datetime.now() + ": TableOrganization -- read_organization: " + str(e)
+            print("TableOrganization -- read_organization: " + str(e))
+            return "TableOrganization -- read_organization: " + str(e)
         
 
     def read_organization_by_user_id(self, user_id):

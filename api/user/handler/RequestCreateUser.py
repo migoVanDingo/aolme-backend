@@ -16,31 +16,30 @@ class RequestCreateUser(AbstractUser):
 
     def do_process(self):
         try:
-            print("PARAMS: {}".format(self.params))
-            params = json.loads(self.params)
-            print("PARAMS 2: {}".format(params["username"]))
 
             
+
             params = {
-                "username": params["username"],
-                "email": params["email"],
-                "hash": self.hash_password(params["password"]).decode('utf8') if "password" in params else "password", 
-                "firstname": params["firstname"] if "firstname" in params else "",
-                "lastname": params["lastname"] if "lastname" in params else "",
+                "username": self.params["username"],
+                "email": self.params["email"],
+                "hash": self.hash_password(self.params["password"]).decode('utf8') if "password" in self.params else self.hash_password("password").decode('utf8'), 
+                "firstname": self.params["firstname"] if "firstname" in self.params else "",
+                "lastname": self.params["lastname"] if "lastname" in self.params else "",
                 "is_active": 1,
-                "created_by": "root::MIGO" if "created_by" not in params else params["created_by"],
-                "created_at": datetime.now(),
+                "created_by": "root::MIGO" if "created_by" not in self.params else self.params["created_by"],
+                "created_at": "{}".format(datetime.now()),
              
                 
 
             }
 
-            print("PARAMS 3: {}".format(params))
+
 
             #Validate the payload sent from FE
             validator = CreateUserValidator()
             is_valid = validator.validate(params)
             if is_valid[0] is False:
+                print("\nRequestCreateUser::do_process:: ERROR: {}\n\n".format(is_valid[1]))
                 return is_valid[1]
             
             response = self.insert_user(params)
@@ -52,15 +51,15 @@ class RequestCreateUser(AbstractUser):
                     "entity_type": self.entity_type,
                     "entity_status": "ACTIVE",
                     "is_active": 1,
-                    "roles": "USER",
+                    "roles": self.params["roles"] if "roles" in self.params else "USER",
                     "user_id": response['user_id'],
                     "user_status": "INVITED",
                     "created_by": "root::MIGO" if "created_by" not in params else params["created_by"],
-                    "created_at": datetime.now()
+                    "created_at": "{}".format(datetime.now())
                 }
                 entity_user_table = TableEntityUser()
                 entity_user_response = entity_user_table.insert_entity_user(entity_user)
-                print("ENTITY_USER_RESPONSE: {}".format(entity_user_response))
+                print("\nENTITY_USER_RESPONSE: {}\n\n".format(entity_user_response))
 
             headers = {
                 "Content-Type": "application/json"

@@ -37,10 +37,10 @@ def create_user():
     if "entity_type" in args:
         entity_type = args["entity_type"]
 
-    print(request.data)
-    #data = json.dumps(request.data)
+    print("request.data: {}".format(json.loads(request.data)))
+    data = json.loads(request.data)
     
-    api_request = RequestCreateUser(request.data, entity_id, entity_type)
+    api_request = RequestCreateUser(data, entity_id, entity_type)
     response = api_request.do_process()
 
     response = make_response(response, 200)

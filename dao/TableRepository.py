@@ -3,6 +3,8 @@ import logging
 import random
 import string
 
+from flask import jsonify
+
 class TableRepository:
 
     def __init__(self):
@@ -76,7 +78,7 @@ class TableRepository:
 
             cur.close()
 
-            return data
+            return jsonify(data)
         except Exception as e:
             return datetime.now() + ": TableRepository -- read_repository: " + str(e)
         
