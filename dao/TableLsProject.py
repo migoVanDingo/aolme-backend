@@ -1,6 +1,9 @@
 from datetime import datetime
 import random
 import string
+import json
+
+from flask import jsonify
 
 class TableLsProject:
     def __init__(self):
@@ -53,6 +56,20 @@ class TableLsProject:
             return data[0]
         except Exception as e:
             return "Error::TableLsProject::read_ls_project_by_id(): " + str(e)
+        
+    def read_ls_project_by_repo_id(self, repo_id):
+        try:
+            query = "SELECT * FROM label_studio_project WHERE is_active = 1 AND repo_id = %s"
+            cur = self.db.connection.cursor()
+            cur.execute(query, (repo_id,))
+            
+            data = cur.fetchall()
+
+            cur.close()
+
+            return data
+        except Exception as e:
+            return "Error::TableLsProject::read_ls_project_by_repo_id(): " + str(e)
         
     def read_ls_project_list_by_entity_id(self, entity_id):
         try:

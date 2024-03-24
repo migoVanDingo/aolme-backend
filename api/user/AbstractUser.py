@@ -6,7 +6,8 @@ from dao.TableUser import TableUser
 class AbstractUser(ABC):
         
         def __init__(self):
-            pass
+            super().__init__()
+            self.table_user = TableUser()
 
         def hash_password(self, password):
             bytes = password.encode('utf-8') 
@@ -24,20 +25,25 @@ class AbstractUser(ABC):
         
         #Concrete methods
         def insert_user(self, params):
-            request = TableUser()
-            return request.insert_user(params)
+            return self.table_user.insert_user(params)
         
         def read_user(self, user_id):
-            return TableUser.read_user(user_id)
+            return self.table_user.read_user(user_id)
     
         def update_user(self, params):
-            return TableUser.update_user(params)
+            return self.table_user.update_user(params)
+        
+        def update_user_email(self, params, user_id):
+            return self.table_user.update_user_email(params, user_id)
+        
+        def update_username(self, params, user_id):
+            return self.table_user.update_username(params, user_id)
     
         def archive_user(self, user_id):
-            return TableUser.archive_user(user_id)
+            return self.table_user.archive_user(user_id)
     
         def delete_user(self, user_id):
-            return TableUser.delete_user(user_id)
+            return self.table_user.delete_user(user_id)
     
         #Abstract methods
         @abstractmethod

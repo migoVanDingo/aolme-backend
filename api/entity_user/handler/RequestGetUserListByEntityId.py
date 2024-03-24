@@ -7,9 +7,14 @@ class RequestGetUserListByEntityId(AbstractEntityUser):
 
 
     def do_process(self):
-        print("GET_USER_LIST_BY_ENTITY_ID: {}".format(self.entity_id))
-        response = self.get_user_list_by_entity_id(self.entity_id)
+        try:
+            print("GET_USER_LIST_BY_ENTITY_ID: {}".format(self.entity_id))
+            response = self.get_user_list_by_entity_id(self.entity_id)
 
-        print("GET_USER_LIST_BY_ENTITY_ID_RESPONSE: {}".format(response))   
+            print("GET_USER_LIST_BY_ENTITY_ID_RESPONSE: {}".format(response))   
 
-        return response
+            return response
+        
+        except Exception as e:
+            print("RequestGetUserListByEntityId::::do_process():::: Error: {}".format(str(e)))
+            return e, 404

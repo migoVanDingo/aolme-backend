@@ -45,11 +45,11 @@ class RequestCreateOrganization(AbstractOrganization):
             "entity_type": "ORGANIZATION",
             "entity_status": "ACTIVE",
             "created_by": self.params['user_id'],
-            "roles": "DEVELOPER"
+            "roles": "OWNER"
         
         }
 
-        entity_user_payload["roles"] = json.dumps(entity_user_payload["roles"])
+        #entity_user_payload["roles"] = json.dumps(entity_user_payload["roles"])
         print("ENTITY_USER_PAYLOAD: {}".format(entity_user_payload))
 
         api_request = RequestInsertEntityUser(entity_user_payload)

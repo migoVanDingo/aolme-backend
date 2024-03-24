@@ -46,6 +46,35 @@ class TableUser:
         except Exception as e:
             return "TableUser -- read_user() Error: " + str(e)
         
+    def update_user_email(self, params, user_id):
+        try:
+            update_query = "UPDATE user SET email = %s, updated_at = %s WHERE is_active = 1 AND user_id = %s"
+
+            cur = self.db.connection.cursor()
+            cur.execute(update_query,(params["email"], params["updated_at"], user_id))
+
+            self.db.connection.commit()
+            cur.close()
+
+            return params['user_id']
+        except Exception as e:
+            print("TableUser -- update_user_email() Error: " + str(e))
+            return "TableUser -- update_user_email() Error: " + str(e)
+        
+    def update_username(self, params, user_id):
+        try:
+            update_query = "UPDATE user SET username = %s, updated_at = %s WHERE is_active = 1 AND user_id = %s"
+
+            cur = self.db.connection.cursor()
+            cur.execute(update_query,(params["username"], params["updated_at"], user_id))
+
+            self.db.connection.commit()
+            cur.close()
+
+            return params['user_id']
+        except Exception as e:
+            print("TableUser -- update_username() Error: " + str(e))
+            return "TableUser -- update_username() Error: " + str(e)
 
     def update_user(self, payload):
         try:

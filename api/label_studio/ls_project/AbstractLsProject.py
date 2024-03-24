@@ -122,6 +122,9 @@ class AbstractLsProject(ABC):
 
     def get_ls_project_list_by_entity_id(self, entity_id):
         return self.dao.read_ls_project_list_by_entity_id(entity_id)
+    
+    def get_ls_project_by_repo_id(self, repo_id):
+        return self.dao.read_ls_project_by_repo_id(repo_id)
 
     def get_ls_project_list_by_dataset_id(self, dataset_id):
         return self.dao.read_ls_project_list_by_dataset_id(dataset_id)

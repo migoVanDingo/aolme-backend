@@ -28,11 +28,19 @@ def create_user():
     
     #data = json.loads(request.data)
     # handler = HandleCreateUser(data)
-    # response = handler.do_process()
+    # response = handler.do_process()   
+
+    args = request.args
+    if "entity_id" in args:
+        entity_id = args["entity_id"]
+    
+    if "entity_type" in args:
+        entity_type = args["entity_type"]
+
     print(request.data)
     #data = json.dumps(request.data)
     
-    api_request = RequestCreateUser(request.data)
+    api_request = RequestCreateUser(request.data, entity_id, entity_type)
     response = api_request.do_process()
 
     response = make_response(response, 200)
@@ -40,6 +48,7 @@ def create_user():
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = '*'
     return response
+
 
 @user_api.route('/api/user/<user_id>', methods=["GET"])
 def get_user(user_id):
@@ -59,11 +68,12 @@ def get_user(user_id):
 @user_api.route('/api/user/<user_id>', methods=["PATCH"])
 def update_user(user_id):
     data = json.loads(request.data)
-    handler = HandleUpdateUser(data, user_id)
-    response = handler.do_process()
+    print("\nEdit User Data =======>>>>>>> {}\n\n".format(data))
+    #handler = RequestUpdateUser(data, user_id)
+    #response = handler.do_process()
 
-    # api_request = RequestUpdateUser(user_id, data)
-    # response = api_request.do_process()
+    api_request = RequestUpdateUser(user_id, data)
+    response = api_request.do_process()
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'

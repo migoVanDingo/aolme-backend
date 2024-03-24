@@ -5,6 +5,7 @@ class InsertEntityUserValidator(PayloadValidator):
     user_id = datatypes.String(required=True)
     entity_type = datatypes.String(required=True)
     entity_status = datatypes.String(required=True)
+    status = datatypes.String(required=True)
 
 
     created_by = datatypes.String(required=True)

@@ -22,10 +22,10 @@ class TableEntityUser:
         try:
             payload['entity_user_id'] = self.generate_entity_user_id()
 
-            insert_query = "INSERT INTO entity_user (entity_user_id, entity_id, user_id, entity_type, entity_status, roles, is_active, created_at, created_by) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            insert_query = "INSERT INTO entity_user (entity_user_id, entity_id, user_id, entity_type, entity_status, roles, is_active, created_at, created_by, user_status) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             cur = self.db.connection.cursor()
-            cur.execute(insert_query, (payload['entity_user_id'], payload['entity_id'], payload['user_id'], payload['entity_type'], payload['entity_status'], payload['roles'], payload['is_active'], payload['created_at'], payload['created_by']))
+            cur.execute(insert_query, (payload['entity_user_id'], payload['entity_id'], payload['user_id'], payload['entity_type'], payload['entity_status'], payload['roles'], payload['is_active'], payload['created_at'], payload['created_by'], payload['user_status']))
 
             self.db.connection.commit()
 
@@ -89,6 +89,42 @@ class TableEntityUser:
         except Exception as e:
             return "TableEntityUser -- read_entity_list_by_user_id() Error: " + str(e)
         
+    def update_entity_user_roles(self, payload, entity_user_id):
+        try:
+
+            print("payload roles: {}".format(payload))
+            print("entity_user_id: {}".format(entity_user_id))
+            update_query = "UPDATE entity_user SET roles = %s, updated_at = %s WHERE is_active = 1 AND entity_user_id = %s"
+
+            cur = self.db.connection.cursor()
+            cur.execute(update_query, (payload['roles'], payload['updated_at'], entity_user_id))
+
+            self.db.connection.commit()
+            cur.close()
+            
+
+            return payload
+        except Exception as e:
+            return "TableEntityUser -- update_entity_user_roles() Error: " + str(e)
+        
+
+    def update_entity_user_status(self, payload, entity_user_id):
+        try:
+            print("payload status: {}".format(payload))
+            print("entity_user_id: {}".format(entity_user_id))
+            update_query = "UPDATE entity_user SET user_status = %s, updated_at = %s WHERE is_active = 1 AND entity_user_id = %s"
+
+            cur = self.db.connection.cursor()
+            cur.execute(update_query, (payload['user_status'], payload['updated_at'], entity_user_id))
+
+            self.db.connection.commit()
+            cur.close()
+            
+
+            return payload
+        except Exception as e:
+            return "TableEntityUser -- update_entity_user_status() Error: " + str(e)
+
 
     def update_entity_user(self, payload):
         try:

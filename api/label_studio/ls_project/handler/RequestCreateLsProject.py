@@ -67,39 +67,42 @@ class RequestCreateLsProject(AbstractLsProject):
             # path = os.path.join(path, "files")
             # path = os.path.join(path, "uploads")
 
-            # import_storage_path = os.path.join(
-            #     os.environ["REPO_DIRECTORY"], payload['repo_id'])
-            # import_storage_path = os.path.join(import_storage_path, "ground_truth")
+            import_storage_path = os.path.join(
+                os.environ["REPO_DIRECTORY"], payload['repo_id'])
+            import_storage_path = os.path.join(import_storage_path, "ground_truth")
 
-            # test_path = "/Users/bubz/Developer/master-project/aolme-backend/project/334/videos"
+            print("Import storage path: {}".format(import_storage_path))
+            #test_path = "/Users/bubz/Developer/master-project/aolme-backend/project/334/videos"
+
+            #print("Test path: {}".format(test_path))
             
-            # payload_create_import_storage = {
-            #     "project": int(response['id']),
-            #     "title": payload['name'],
-            #     "description": payload['description'],
-            #     "path": import_storage_path,
-            #     "use_blob_urls": True,
-            # }
+            payload_create_import_storage = {
+                "project": int(response['id']),
+                "title": payload['name'],
+                "description": payload['description'],
+                "path": import_storage_path,
+                "use_blob_urls": True,
+            }
 
-            # print("payload_create_import_storage: {}".format(payload_create_import_storage))
+            print("payload_create_import_storage: {}".format(payload_create_import_storage))
 
-            # # Create the import storage
-            # create_import_storage = self.create_import_storage(
-            #     json.dumps(payload_create_import_storage)).json()
+            # Create the import storage
+            create_import_storage = self.create_import_storage(
+                json.dumps(payload_create_import_storage)).json()
 
-            # print("Created import storage: {}".format(create_import_storage))
+            print("Created import storage: {}".format(create_import_storage))
 
-            # payload_sync_import_storage = {
-            #     "project": payload_create_import_storage['project'],
-            #     "use_blob_urls": True
-            # }
+            payload_sync_import_storage = {
+                "project": payload_create_import_storage['project'],
+                "use_blob_urls": True
+            }
 
 
 
-            # sync_import_storage = self.sync_import_storage(
-            #     create_import_storage['id'], payload_sync_import_storage)
+            sync_import_storage = self.sync_import_storage(
+                create_import_storage['id'], payload_sync_import_storage)
             
-            # print("Synced import storage: {}".format(sync_import_storage.json()))
+            print("Synced import storage: {}".format(sync_import_storage.json()))
 
             return response
 

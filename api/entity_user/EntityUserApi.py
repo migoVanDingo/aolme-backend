@@ -23,6 +23,10 @@ def insert_entity_user():
         return response
 
     print("data: {}".format(request.data))
+
+    data = json.loads(request.data)
+
+    
     
     # ENDPOINT LOGIC
     api_request = RequestInsertEntityUser()
@@ -38,10 +42,11 @@ def insert_entity_user():
 def get_user_list_by_entity_id(entity_id):
     try:
         # ENDPOINT LOGIC
+        print("entity_id: {}".format(entity_id))
         api_request = RequestGetUserListByEntityId(entity_id)
         response = api_request.do_process()
     
-        response = make_response(response, 200)
+        response = make_response(response, response.status_code)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'
