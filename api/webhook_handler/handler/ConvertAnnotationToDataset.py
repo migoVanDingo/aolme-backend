@@ -20,7 +20,7 @@ class ConvertAnnotationToDataset(AbstractLsProject):
         for task in response:
             task_id = task['id']
             file_path = task['data']['video']
-            file_name = task['file_upload']
+            #file_name = task['file_upload']
             
             for annotation in task['annotations']:
                 project_id = annotation['project']
@@ -33,7 +33,7 @@ class ConvertAnnotationToDataset(AbstractLsProject):
                     for frame in result['value']['sequence']:
                         frame['task_id'] = task_id
                         frame['file_path'] = file_path
-                        frame['file_name'] = file_name
+                        #frame['file_name'] = file_name
                         frame['project_name'] = self.project_title
                         frame['label'] = label
                         frame['project_id'] = project_id

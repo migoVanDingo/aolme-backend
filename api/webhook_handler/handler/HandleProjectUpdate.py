@@ -17,7 +17,7 @@ class HandleProjectUpdate:
 
         formatted_json_data = self.payload
 
-        #print("Formatted JSON Data: {}".format(formatted_json_data))
+        print("Formatted JSON Data: {}".format(formatted_json_data))
         
         project_id = formatted_json_data["project"]["id"]
         project_title = formatted_json_data["project"]["title"]
@@ -34,14 +34,14 @@ class HandleProjectUpdate:
             os.mkdir(annotation_directory)
 
         final_path = os.path.join(annotation_directory, project_title)
-
+        with open(final_path, "w") as f:
+            f.write(json.dumps(formatted_json_data))
 
         ### Convert JSON to CSV
         request_convert_annotation = ConvertAnnotationToDataset(formatted_json_data, project_id, project_title, final_path)
         response_convert_annotation = request_convert_annotation.do_process()
 
-        with open(final_path, "w") as f:
-                    f.write(json.dumps(formatted_json_data))
+       
 
         
         #add to files

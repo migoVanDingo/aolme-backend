@@ -6,6 +6,7 @@ from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from api.file_upload.handler.RequestGetProjectFiles import RequestGetProjectFiles
 
+from api.file_upload.handler.RequestGroundTruthConversion import RequestGroundTruthConversions
 from api.file_upload.handler.RequestUploadFiles import RequestUploadFiles
 from api.label_studio.file_import.handler.RequestImportTasks import RequestImportTasks
 from api.label_studio.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
@@ -16,6 +17,34 @@ from api.subprocess.handler.HandleUploadGroundTruthLabelStudio import HandleUplo
 
 file_upload_api = Blueprint('file_upload_api', __name__)
 CORS(file_upload_api)
+
+@file_upload_api.route('/api/file_upload/ground_truth', methods=['GET'])
+def upload_gt():
+    # if request.method == 'OPTIONS':
+    #     response = make_response('success', 200)
+    #     response.headers['Access-Control-Allow-Headers'] = '*'
+    #     response.headers['Access-Control-Allow-Origin'] = '*'
+    #     response.headers['Content-Type'] = '*'
+    #     return response
+    
+    try:
+        # data = json.loads(request.data)
+        path = request.args.get('path')
+
+        api_request = RequestGroundTruthConversions(path)
+        response = api_request.do_process()
+
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        print("FILE_UPLOAD_API::upload_ground_truth::Error===========>>> " + str(e))
+        return "FILE_UPLOAD_API::upload_ground_truth::Error===========>>> " + str(e), 404
+
+
+
 
 @file_upload_api.route('/files/<project_id>', methods=['POST', 'OPTIONS'])
 def upload_files(project_id):

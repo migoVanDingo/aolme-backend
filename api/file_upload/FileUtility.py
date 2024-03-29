@@ -12,6 +12,22 @@ class FileUtility:
         except Exception as e:
             return "Error: " + str(e)
         
+    def signal_reformat_xlsx_v2(path):
+        try:
+            headers = {
+            "Content-Type": "application/json"
+            }
+            data={
+                "path": path
+            }
+            url = 'http://localhost:3002/convert/v2/xlsx'
+            x = requests.post(url, data=data, headers=headers)
+
+            print('signal_reformat_xlsx_v2()::DATA: {}'.format(data)) 
+            return x.json()
+        except Exception as e:
+            return "Error: " + str(e)
+        
     def signal_create_local_storage(project_id):
         try:
             url = 'http://localhost:3002/local-storage/{}'.format(project_id)
