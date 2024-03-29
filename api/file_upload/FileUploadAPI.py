@@ -46,8 +46,8 @@ def upload_gt():
 
 
 
-@file_upload_api.route('/files/<project_id>', methods=['POST', 'OPTIONS'])
-def upload_files(project_id):
+@file_upload_api.route('/files/<project_id>/<file_set_id>', methods=['POST', 'OPTIONS'])
+def upload_files(project_id, file_set_id):
     if request.method == 'OPTIONS':
         response = make_response('success', 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
@@ -60,9 +60,11 @@ def upload_files(project_id):
     try:
         files = request.files.getlist('file')
         data = request.form
+        repo_id = data['repo_id']
         print("Files length: {}".format(len(files)))
-        print('FileUploadAPI project_id: {} --- {}'.format(data['project_id'], project_id))
-        api_request = RequestUploadFiles(data['project_id'],files)
+        print('FileUploadAPI project_id: {} --- {}'.format(project_id, project_id))
+        print("REPO ID: {}".format(repo_id))    
+        api_request = RequestUploadFiles(project_id,files, repo_id, file_set_id)
         
         upload_files_response = api_request.do()
         print("FileUploadAPI -- RequestUploadFiles response: {}".format(upload_files_response))
@@ -71,7 +73,7 @@ def upload_files(project_id):
     
 
         payload = {
-                    "project": int(data['project_id']),
+                    "project": int(project_id),
                     "title": data['title'],
                     "description": data['description'],
                     "path": data['path'],
@@ -82,6 +84,7 @@ def upload_files(project_id):
         validator = PayloadCreateImportStorage()
         is_valid = validator.validate(payload)
         if is_valid[0] is False:
+            print("TRIPPING is_valid: {}".format(is_valid[1]))
             return is_valid[1]
         
         print("PRE -- RequestCreateImportStorage")
@@ -94,7 +97,7 @@ def upload_files(project_id):
             
 
         payload = { 
-                "project": data['project_id'],
+                "project": project_id,
                 "use_blob_urls": True
             }
 
@@ -105,7 +108,7 @@ def upload_files(project_id):
 
             
         import_xlsx = HandleUploadGroundTruthLabelStudio()
-        import_xlsx_response = import_xlsx.do_process(project_id)
+        import_xlsx_response = import_xlsx.do_process(project_id, repo_id)
         print("Upload gt response: {}".format(import_xlsx_response))
 
     

@@ -9,12 +9,12 @@ class HandleUploadGroundTruthLabelStudio:
         self.url = "http://localhost:8080/api/projects/"
         self.token= os.environ['LABEL_STUDIO_SECRET_KEY']
 
-    def do_process(self, project_id):
+    def do_process(self, project_id, repo_id):
         try:
-            files = os.listdir("{}/{}/ground-truth-reformat".format(os.environ['PROJECT_DIRECTORY'], project_id))
+            files = os.listdir("{}/{}/ground-truth-reformat".format(os.environ['REPO_DIRECTORY'], repo_id))
             arr = []
             for f in files:
-                f = "{}/{}/ground-truth-reformat/{}".format(os.environ['PROJECT_DIRECTORY'],project_id, f)
+                f = "{}/{}/ground-truth-reformat/{}".format(os.environ['REPO_DIRECTORY'],repo_id, f)
                 print("HandleUploadGroundTruthLabelStudio -- files: {}".format(f))
                 arr.append(f)
 

@@ -5,49 +5,57 @@ class TableFiles:
         from main import db
         self.db = db
 
-    def make_directory_videos(self, project_id):
+    def make_directory_videos(self, project_id, repo_path):
         try:
-            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
-            create_videos_dir = os.path.join(create_project_dir, 'videos')
+            # create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
+            # create_videos_dir = os.path.join(create_project_dir, 'videos')
 
-            #create the ground truth folder if the project folder exists, else create the project folder
-            if os.path.isdir(create_project_dir) is True and os.path.isdir(create_videos_dir) is not True:
-                os.mkdir(create_videos_dir)
-            if os.path.isdir(create_project_dir) is not True:
-                os.mkdir(create_project_dir)
-                os.mkdir(create_videos_dir)
+            # #create the ground truth folder if the project folder exists, else create the project folder
+            # if os.path.isdir(create_project_dir) is True and os.path.isdir(create_videos_dir) is not True:
+            #     os.mkdir(create_videos_dir)
+            # if os.path.isdir(create_project_dir) is not True:
+            #     os.mkdir(create_project_dir)
+            #     os.mkdir(create_videos_dir)
+
+            create_videos_dir = os.path.join(repo_path, 'videos')
+
+            os.mkdir(create_videos_dir)
 
             return create_videos_dir
 
         except OSError as e:
             return "Error: TableFiles -- make_directory_videos() --  " + str(e)
         
-    def make_directory_raw_gt(self, project_id):
+    def make_directory_raw_gt(self, project_id, repo_path):
         try:
-            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
-            create_raw_gt_dir = os.path.join(create_project_dir, 'ground-truth-raw')
+            # create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
+            # create_raw_gt_dir = os.path.join(create_project_dir, 'ground-truth-raw')
 
-            #create the ground truth folder if the project folder exists, else create the project folder
-            if os.path.isdir(create_project_dir) is True and os.path.isdir(create_raw_gt_dir) is not True:
-                os.mkdir(create_raw_gt_dir)
-            elif os.path.isdir(create_project_dir) is not True:
-                os.mkdir(create_project_dir)
-                os.mkdir(create_raw_gt_dir)
+            # #create the ground truth folder if the project folder exists, else create the project folder
+            # if os.path.isdir(create_project_dir) is True and os.path.isdir(create_raw_gt_dir) is not True:
+            #     os.mkdir(create_raw_gt_dir)
+            # elif os.path.isdir(create_project_dir) is not True:
+            #     os.mkdir(create_project_dir)
+            #     os.mkdir(create_raw_gt_dir)
+
+            create_raw_gt_dir = os.path.join(repo_path, 'ground-truth-raw')
+            os.mkdir(create_raw_gt_dir)
 
             return create_raw_gt_dir
 
         except OSError as e:
             return "Error: TableFiles -- make_directory_raw_gt() -- " + str(e)
         
-    def make_directory_reformat_gt(self, project_id):
+    def make_directory_reformat_gt(self, project_id, repo_path):
         try:
-            create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
-            create_gt_reformat_dir = os.path.join(create_project_dir, 'ground-truth-reformat')
+            # create_project_dir = os.path.join(os.path.join(os.getcwd(), 'project'), project_id)
+            # create_gt_reformat_dir = os.path.join(create_project_dir, 'ground-truth-reformat')
 
-            #create the ground truth folder if the project folder exists, else create the project folder
-            if os.path.isdir(create_gt_reformat_dir) is not True:
-                os.mkdir(create_gt_reformat_dir)
-            
+            # #create the ground truth folder if the project folder exists, else create the project folder
+            # if os.path.isdir(create_gt_reformat_dir) is not True:
+            #     os.mkdir(create_gt_reformat_dir)
+            create_gt_reformat_dir = os.path.join(repo_path, 'ground-truth-reformat')
+            os.mkdir(create_gt_reformat_dir)
 
             return create_gt_reformat_dir
 
