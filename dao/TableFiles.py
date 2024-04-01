@@ -19,7 +19,9 @@ class TableFiles:
 
             create_videos_dir = os.path.join(repo_path, 'videos')
 
-            os.mkdir(create_videos_dir)
+            if os.path.isdir(create_videos_dir) is not True:
+                os.mkdir(create_videos_dir) 
+            
 
             return create_videos_dir
 
@@ -39,7 +41,9 @@ class TableFiles:
             #     os.mkdir(create_raw_gt_dir)
 
             create_raw_gt_dir = os.path.join(repo_path, 'ground-truth-raw')
-            os.mkdir(create_raw_gt_dir)
+
+            if os.path.isdir(create_raw_gt_dir) is not True:
+                os.mkdir(create_raw_gt_dir)
 
             return create_raw_gt_dir
 
@@ -55,7 +59,9 @@ class TableFiles:
             # if os.path.isdir(create_gt_reformat_dir) is not True:
             #     os.mkdir(create_gt_reformat_dir)
             create_gt_reformat_dir = os.path.join(repo_path, 'ground-truth-reformat')
-            os.mkdir(create_gt_reformat_dir)
+
+            if os.path.isdir(create_gt_reformat_dir) is not True:
+                os.mkdir(create_gt_reformat_dir)
 
             return create_gt_reformat_dir
 

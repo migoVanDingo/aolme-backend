@@ -4,6 +4,7 @@ import os
 
 from flask import jsonify
 from api.label_studio.ls_project.AbstractLsProject import AbstractLsProject
+from dao.TableLsImportStorage import TableLsImportStorage
 
 
 class RequestCreateLsProject(AbstractLsProject):
@@ -69,7 +70,7 @@ class RequestCreateLsProject(AbstractLsProject):
 
             import_storage_path = os.path.join(
                 os.environ["REPO_DIRECTORY"], payload['repo_id'])
-            import_storage_path = os.path.join(import_storage_path, "ground_truth")
+            import_storage_path = os.path.join(import_storage_path, "local-storage")
 
             print("Import storage path: {}".format(import_storage_path))
             #test_path = "/Users/bubz/Developer/master-project/aolme-backend/project/334/videos"
@@ -97,10 +98,32 @@ class RequestCreateLsProject(AbstractLsProject):
                 "use_blob_urls": True
             }
 
+            
+
+
+            
 
 
             sync_import_storage = self.sync_import_storage(
                 create_import_storage['id'], payload_sync_import_storage)
+            
+            dao_insert_import_storage = {
+                "ls_id": create_import_storage['id'],
+                "entity_id": payload_persist_ls_project['entity_id'],
+                "repo_id": payload['repo_id'],
+                "title": payload['name'],
+                "path": import_storage_path,
+                "created_by": payload['created_by'],
+                "project_id": payload_create_import_storage['project'],
+                "user_id": payload['created_by']
+            }
+
+            print("RequestCreateLsProject::dao_insert_import_storage payload: {}".format(dao_insert_import_storage))
+
+            dao_import_storage = TableLsImportStorage()
+            insert_import_storage = dao_import_storage.insert_ls_import_storage(dao_insert_import_storage)
+
+            print("RequestCreateLsProject::Inserted import storage: {}".format(insert_import_storage))
             
             print("Synced import storage: {}".format(sync_import_storage.json()))
 

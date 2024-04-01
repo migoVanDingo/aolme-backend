@@ -56,7 +56,7 @@ class AbstractLsProject(ABC):
     def endpoint_url_create_import_storage(self):
         return "http://localhost:8080/api/storages/localfiles"
     
-    def endpoint_url_sync_imoport_storage(self, local_storage_id):
+    def endpoint_url_sync_import_storage(self, local_storage_id):
         return "http://localhost:8080/api/storages/localfiles/{}/sync".format(local_storage_id)
     
     def endpoint_url_get_all_frames(self, project_id):
@@ -107,7 +107,7 @@ class AbstractLsProject(ABC):
         return self.post(self.endpoint_url_create_import_storage(), payload, self.get_headers())
     
     def sync_import_storage(self, local_storage_id, payload):
-        return self.post(self.endpoint_url_sync_imoport_storage(local_storage_id), payload, self.get_headers())
+        return self.post(self.endpoint_url_sync_import_storage(local_storage_id), payload, self.get_headers())
 
 
 

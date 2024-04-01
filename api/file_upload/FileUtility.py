@@ -3,9 +3,9 @@ class FileUtility:
     def __init__(self):
         pass
 
-    def signal_reformat_xlsx(project_id, file_set_id):
+    def signal_reformat_xlsx(repo_id, file_set_id):
         try:
-            url = 'http://localhost:3002/convert/xlsx/{}/{}'.format(project_id, file_set_id)
+            url = 'http://localhost:3002/convert/xlsx/{}/{}'.format(repo_id, file_set_id)
             x = requests.get(url)
 
             return x.json()

@@ -6,6 +6,7 @@ from api.file_upload.FileUtility import FileUtility
 from api.subprocess.handler.HandleUploadGroundTruthLabelStudio import HandleUploadGroundTruthLabelStudio
 
 from dao.TableFiles import TableFiles
+from dao.TableLsImportStorage import TableLsImportStorage
 
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json', 'mp4', 'xlsx'}
@@ -33,8 +34,13 @@ class RequestUploadFiles:
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
 
+        
+
         repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
         xlsx_switch = False
+
+
+
         for file in files:
 
             if file.filename == '':
@@ -82,7 +88,7 @@ class RequestUploadFiles:
                         table_files.make_directory_reformat_gt(self.project_id, repo_path)
                         file.save(save_path)
                         sleep(1)
-                        FileUtility.signal_reformat_xlsx(self.project_id, self.file_set_id)
+                        FileUtility.signal_reformat_xlsx(self.repo_id, self.file_set_id)
                         file_type = "GROUND_TRUTH_RAW_XLSX_VJ"
                         
 

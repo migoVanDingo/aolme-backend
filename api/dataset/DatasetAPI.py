@@ -25,16 +25,16 @@ def create_dataset():
         return response
 
     
-    repo_id = request.args.get('repo_id')
+    # repo_id = request.args.get('repo_id')
 
-    print("repoId: " + repo_id)
+    # print("repoId: " + repo_id)
 
     
-    files = request.files.getlist('file')
-    data = request.form
+    # files = request.files.getlist('file')
+    data = json.loads(request.data)
     
     # ENDPOINT LOGIC
-    api_request = RequestCreateDataset(data, files, repo_id)
+    api_request = RequestCreateDataset(data)
     response = api_request.do_process()
     
 
