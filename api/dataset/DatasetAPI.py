@@ -11,6 +11,7 @@ from api.dataset.handler.RequestGetDatasetList import RequestGetDatasetList
 from api.dataset.handler.RequestGetDatasetListByEntity import RequestGetDatasetListByEntity
 from api.dataset.handler.RequestGetDatasetListByUser import RequestGetDatasetListByUser
 from api.dataset.handler.RequestGetSubset import RequestGetSubset
+from api.dataset.handler.RequestGetSubsetItems import RequestGetSubsetItems
 from api.dataset.handler.RequestGetSubsetList import RequestGetSubsetList
 from api.dataset.handler.RequestUpdateDataset import RequestUpdateDataset
 
@@ -197,6 +198,19 @@ def get_subset(subset_id):
 def get_subset_list(dataset_id):
 
     api_request = RequestGetSubsetList(dataset_id)
+    response = api_request.do_process()
+    
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+
+@dataset_api.route('/api/dataset/subset/<subset_id>/item', methods=['GET'])
+def get_subset_items(subset_id):
+
+    api_request = RequestGetSubsetItems(subset_id)
     response = api_request.do_process()
     
     response = make_response(response, 200)

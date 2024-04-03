@@ -1,3 +1,4 @@
+import os
 import random
 import string
 from datetime import datetime
@@ -17,6 +18,7 @@ class TableSubset:
             payload['subset_id'] = self.generate_id()
             payload['created_at'] = "{}".format(datetime.now())
             payload['is_active'] = 1
+            payload['path'] = os.path.join(payload['path'], payload['subset_id'])
             query = "INSERT INTO subset(subset_id, dataset_id, name, description, owner, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             cur = self.db.connection.cursor()

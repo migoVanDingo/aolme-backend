@@ -10,6 +10,8 @@ class RequestGetSubsetList(AbstractDataset):
         try:
 
             response =  self.read_list_by_dataset_id(self.dataset_id)
+
+            print("RequestGetSubsetList -- do_process() response: " + str(response))
             return jsonify(response)
         
         except Exception as e:

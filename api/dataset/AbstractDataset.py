@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from dao.TableDataset import TableDataset
 from dao.TableDatasetV2 import TableDatasetV2
 from dao.TableSubset import TableSubset
+from dao.TableSubsetItem import TableSubsetItem
 class AbstractDataset(ABC):
 
     def __init__(self):
@@ -10,6 +11,7 @@ class AbstractDataset(ABC):
         self.table_dataset = TableDataset()
         self.v2 = TableDatasetV2()
         self.subset = TableSubset()
+        self.subset_item = TableSubsetItem()
 
     #Concrete methods
     def create(self, params):
@@ -46,4 +48,15 @@ class AbstractDataset(ABC):
     
     def read_list_by_dataset_id(self, dataset_id):
         return self.subset.read_list_by_dataset_id(dataset_id)
+    
+    
+    #Subset Item API
+    def create_subset_item(self, params):
+        return self.subset_item.insert(params)
+    
+    def read_subset_item(self, subset_item_id):
+        return self.subset_item.read_item(subset_item_id)
+    
+    def read_items_by_subset_id(self, subset_id):
+        return self.subset_item.read_list(subset_id)
     
