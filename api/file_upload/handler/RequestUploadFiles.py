@@ -6,17 +6,20 @@ from api.file_upload.FileUtility import FileUtility
 from api.subprocess.handler.HandleUploadGroundTruthLabelStudio import HandleUploadGroundTruthLabelStudio
 
 from dao.TableFiles import TableFiles
+from dao.TableLsImportStorage import TableLsImportStorage
 
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json', 'mp4', 'xlsx'}
 UPLOAD_FOLDER = '/uploads'
 class RequestUploadFiles:
-    def __init__(self, project_id, files):
+    def __init__(self, project_id, files, repo_id, file_set_id):
         self.files = files
         self.project_id = project_id
         self.count = 0
         self.final_path = ''
         self.gt_path = ''
+        self.repo_id = repo_id
+        self.file_set_id = file_set_id
 
     def do(self):
         
@@ -31,7 +34,13 @@ class RequestUploadFiles:
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
 
+        
+
+        repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
         xlsx_switch = False
+
+
+
         for file in files:
 
             if file.filename == '':
@@ -40,9 +49,9 @@ class RequestUploadFiles:
     
             print("file: {}".format(file.filename))
             # Create the uploads directory
-            current_directory = os.getcwd()
+            # current_directory = os.getcwd()
             
-            uploads_directory = os.path.join(current_directory, 'project')
+            # uploads_directory = os.path.join(current_directory, 'project')
           
             if file and allowed_file(file.filename):
                 #filename = secure_filename(file.filename)
@@ -61,8 +70,8 @@ class RequestUploadFiles:
                 }
                 table_files = TableFiles()
                 if self.count == 0:
-                    self.final_path = table_files.make_directory_videos(self.project_id)
-                    self.gt_path = table_files.make_directory_raw_gt(self.project_id)
+                    self.final_path = table_files.make_directory_videos(self.project_id, repo_path)
+                    self.gt_path = table_files.make_directory_raw_gt(self.project_id, repo_path)
                     
                 file_type = ''
                 match filename[1]:
@@ -76,10 +85,10 @@ class RequestUploadFiles:
                         xlsx_switch = True
                         print('Save xlsx files')
                         save_path = os.path.join(self.gt_path, file.filename)
-                        table_files.make_directory_reformat_gt(self.project_id)
+                        table_files.make_directory_reformat_gt(self.project_id, repo_path)
                         file.save(save_path)
                         sleep(1)
-                        FileUtility.signal_reformat_xlsx(self.project_id)
+                        FileUtility.signal_reformat_xlsx(self.repo_id, self.file_set_id)
                         file_type = "GROUND_TRUTH_RAW_XLSX_VJ"
                         
 
@@ -114,9 +123,9 @@ class RequestUploadFiles:
             self.count = self.count + 1
 
         print('Pre-signal_create_local_storage()')
-        local_storage_directory = FileUtility.signal_create_local_storage(self.project_id)
+        local_storage_directory = FileUtility.signal_create_local_storage(self.project_id, self.repo_id)
         print(local_storage_directory)
-        move_files_response = FileUtility.move_files_to_local_storage(self.project_id)
+        move_files_response = FileUtility.move_files_to_local_storage(self.project_id, self.repo_id)
 
         
         return move_files_response

@@ -14,15 +14,23 @@ from api.webhook_handler.WebhookHandlerAPI import webhook_handler_api
 from api.subprocess.SubprocessAPI import subprocess_api
 from api.directory_tree.DirectoryTreeAPI import directory_tree_api
 from api.user.UserAPI import user_api
+from api.organization.OrganizationAPI import organization_api
+from api.entity_user.EntityUserApi import entity_user_api
+from api.repository.RepositoryAPI import repository_api
+from api.config.ConfigAPI import config_api
+from api.module.ModuleAPI import module_api
+from api.dataset.DatasetAPI import dataset_api
+from api.files.FilesAPI import files_api
+from api.label_studio.ls_project.LabelStudioAPI import label_studio_api
 
 db = MySQL()
 app = Flask(__name__)
 CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'aolme'
+app.config['MYSQL_USER'] = 'aolme_db_v2'
 app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'aolmedb'
+app.config['MYSQL_DB'] = 'aolme_db_v2'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' 
 
 db.init_app(app)
@@ -42,4 +50,13 @@ app.register_blueprint(webhook_handler_api)
 app.register_blueprint(subprocess_api)
 app.register_blueprint(directory_tree_api)
 app.register_blueprint(user_api)
+app.register_blueprint(organization_api)
+app.register_blueprint(entity_user_api)
+app.register_blueprint(repository_api)
+app.register_blueprint(config_api)
+app.register_blueprint(module_api)
+app.register_blueprint(dataset_api)
+app.register_blueprint(files_api)
+app.register_blueprint(label_studio_api)
+
 

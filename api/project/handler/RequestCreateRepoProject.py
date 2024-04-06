@@ -1,8 +1,9 @@
 from flask import jsonify
 from dao.TableProject import TableProject
+from api.project.AbstractProject import AbstractProject
 
 
-class RequestCreateRepoProject:
+class RequestCreateRepoProject(AbstractProject):
     def __init__(self, data):
         self.data = data
 

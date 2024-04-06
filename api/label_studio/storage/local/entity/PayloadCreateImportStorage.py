@@ -12,6 +12,3 @@ class PayloadCreateImportStorage(PayloadValidator):
     last_sync_job = datatypes.String(required=False)
     use_blob_urls = datatypes.Boolean(required=False)
     last_sync_count = datatypes.Integer(required=False)
-    
-
-    

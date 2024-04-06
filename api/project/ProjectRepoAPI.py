@@ -9,7 +9,10 @@ from api.label_studio.storage.local.entity.PayloadCreateImportStorage import Pay
 from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
 from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
 from api.label_studio.webhook.handler.RequestCreateWebhook import RequestCreateWebhook
+from api.project.handler.RequestUpdateProject import RequestUpdateProject
+from api.project.handler.RequestArchiveProject import RequestArchiveProject
 from api.project.handler.RequestCreateRepoProject import RequestCreateRepoProject
+from api.project.handler.RequestDeleteProject import RequestDeleteProject
 from api.project.handler.RequestGetProjectById import RequestGetProjectById
 from api.project.handler.RequestGetProjectList import RequestGetProjectList
 
@@ -72,7 +75,8 @@ def create_project_in_repo():
                     "owner": data['owner'],
                     "created_by": data['created_by'],
                     "last_updated_by": data['last_updated_by'],
-                    "ls_project_id":label_studio_project['id'] 
+                    "ls_project_id":label_studio_project['id'],
+                    "organization": "aolme"
                 }
                 api_request = RequestCreateRepoProject(payload)
 
@@ -134,9 +138,10 @@ def create_project_in_repo():
 def get_repo_project_by_id(project_id):
     try:
 
+        print(project_id)
         api_request = RequestGetProjectById(project_id)
         
-        res = api_request.do()
+        res = api_request.do_process()
         response = make_response(res, 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
@@ -155,8 +160,80 @@ def get_repo_project_list():
 
         api_request = RequestGetProjectList()
         
-        return api_request.do(), 200
+        return api_request.do_process(), 200
         
         
     except Exception as e:
         return "Error: " + str(e), 404
+    
+@project_repo_api.route('/api/project', methods=['POST', 'OPTIONS'])
+def create_project():
+    try:
+        if request.method == 'OPTIONS':
+            response = make_response('success', 200)
+            response.headers['Access-Control-Allow-Headers'] = '*'
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Content-Type'] = '*'
+            return response
+        
+        data = json.loads(request.data)
+        api_request = RequestCreateProject(data)
+        response = api_request.do_process()
+
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+        
+    except Exception as e:
+        return "Error: ProjectRepoAPI -- create_project(): " + str(e), 404
+    
+    
+@project_repo_api.route('/api/project/<project_id>', methods=['GET'])
+def get_project_by_id(project_id):
+    try:
+        api_request = RequestGetProjectById(project_id)
+        response = api_request.do_process()
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+        
+    except Exception as e:
+        return "Error: ProjectRepoAPI -- get_project_by_id(): " + str(e), 404
+    
+@project_repo_api.route('/api/project/update', methods=['PATCH'])
+def update_project():
+    try:
+        data = json.loads(request.data)
+        api_request = RequestUpdateProject(data)
+        response = api_request.do_process()
+        return response, 200
+        
+    except Exception as e:
+        return "Error: ProjectRepoAPI -- update_project(): " + str(e), 404
+    
+
+
+@project_repo_api.route('/api/project/archive/<project_id>', methods=['DELETE'])
+def archive_project(project_id):
+    try:
+        api_request = RequestArchiveProject(project_id)
+        response = api_request.do_process()
+        return response, 200
+        
+    except Exception as e:
+        return "Error: ProjectRepoAPI -- archive_project(): " + str(e), 404
+    
+
+@project_repo_api.route('/api/project/<project_id>', methods=['DELETE'])
+def delete_project(project_id):
+    try:
+        api_request = RequestDeleteProject(project_id)
+        response = api_request.do_process()
+        return response, 200
+        
+    except Exception as e:
+        return "Error: ProjectRepoAPI -- delete_project(): " + str(e), 404

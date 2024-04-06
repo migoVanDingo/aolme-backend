@@ -7,7 +7,7 @@ class ReadProjectRoot:
         self.project_id = project_id
         self.path = "{}/{}".format(os.environ['PROJECT_DIRECTORY'],project_id)
     
-    def do(self):
+    def do_process(self):
         #dir_list = os.listdir(self.path)
         #dir_list = os.walk(self.path, topdown=True)
         items = []

@@ -6,19 +6,49 @@ from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from api.file_upload.handler.RequestGetProjectFiles import RequestGetProjectFiles
 
+from api.file_upload.handler.RequestGroundTruthConversion import RequestGroundTruthConversions
 from api.file_upload.handler.RequestUploadFiles import RequestUploadFiles
 from api.label_studio.file_import.handler.RequestImportTasks import RequestImportTasks
 from api.label_studio.storage.local.entity.PayloadCreateImportStorage import PayloadCreateImportStorage
 from api.label_studio.storage.local.handler.RequestCreateImportStorage import RequestCreateImportStorage
 from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
 from api.subprocess.handler.HandleUploadGroundTruthLabelStudio import HandleUploadGroundTruthLabelStudio
+from dao.TableLsImportStorage import TableLsImportStorage
 
 
 file_upload_api = Blueprint('file_upload_api', __name__)
 CORS(file_upload_api)
 
-@file_upload_api.route('/files/<project_id>', methods=['POST', 'OPTIONS'])
-def upload_files(project_id):
+@file_upload_api.route('/api/file_upload/ground_truth', methods=['GET'])
+def upload_gt():
+    # if request.method == 'OPTIONS':
+    #     response = make_response('success', 200)
+    #     response.headers['Access-Control-Allow-Headers'] = '*'
+    #     response.headers['Access-Control-Allow-Origin'] = '*'
+    #     response.headers['Content-Type'] = '*'
+    #     return response
+    
+    try:
+        # data = json.loads(request.data)
+        path = request.args.get('path')
+
+        api_request = RequestGroundTruthConversions(path)
+        response = api_request.do_process()
+
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        print("FILE_UPLOAD_API::upload_ground_truth::Error===========>>> " + str(e))
+        return "FILE_UPLOAD_API::upload_ground_truth::Error===========>>> " + str(e), 404
+
+
+
+
+@file_upload_api.route('/files/<file_set_id>', methods=['POST', 'OPTIONS'])
+def upload_files(file_set_id):
     if request.method == 'OPTIONS':
         response = make_response('success', 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
@@ -29,11 +59,21 @@ def upload_files(project_id):
     
 
     try:
+        file_set_id = int(file_set_id)
         files = request.files.getlist('file')
         data = request.form
+        repo_id = data['repo_id']
+
+        dao_import_storage = TableLsImportStorage()
+        import_storage = dao_import_storage.read_ls_import_storage_by_repo_id(repo_id)
+
+        print('RequestUploadFiles::import_storage: {}'.format(import_storage))
+
+
         print("Files length: {}".format(len(files)))
-        print('FileUploadAPI project_id: {} --- {}'.format(data['project_id'], project_id))
-        api_request = RequestUploadFiles(data['project_id'],files)
+        print('FileUploadAPI project_id: {} --- {}'.format(import_storage['project_id'], import_storage['project_id']))
+        print("REPO ID: {}".format(repo_id))    
+        api_request = RequestUploadFiles(import_storage['project_id'],files, repo_id, file_set_id)
         
         upload_files_response = api_request.do()
         print("FileUploadAPI -- RequestUploadFiles response: {}".format(upload_files_response))
@@ -42,45 +82,46 @@ def upload_files(project_id):
     
 
         payload = {
-                    "project": int(data['project_id']),
+                    "project": int(import_storage['project_id']),
                     "title": data['title'],
                     "description": data['description'],
-                    "path": data['path'],
+                    "path": import_storage['path'],
                     "use_blob_urls": True,
                 }
 
-        print("TRIPPING payload: {}".format(payload))
-        validator = PayloadCreateImportStorage()
-        is_valid = validator.validate(payload)
-        if is_valid[0] is False:
-            return is_valid[1]
+        # print("TRIPPING payload: {}".format(payload))
+        # validator = PayloadCreateImportStorage()
+        # is_valid = validator.validate(payload)
+        # if is_valid[0] is False:
+        #     print("TRIPPING is_valid: {}".format(is_valid[1]))
+        #     return is_valid[1]
         
-        print("PRE -- RequestCreateImportStorage")
-        api_request = RequestCreateImportStorage(payload)
-        local_storage_response = api_request.do()
+        # print("PRE -- RequestCreateImportStorage")
+        # api_request = RequestCreateImportStorage(payload)
+        # local_storage_response = api_request.do()
 
 
-        print("FileUploadAPI -- RequestCreateImportStorage response: {}".format(local_storage_response))
+        # print("FileUploadAPI -- RequestCreateImportStorage response: {}".format(local_storage_response))
         #print("localStorage response: {}".format(local_storage))
             
 
         payload = { 
-                "project": data['project_id'],
+                "project": import_storage['project_id'],
                 "use_blob_urls": True
             }
 
-        api_request = RequestSyncImportStorage(local_storage_response['id'], payload)
+        api_request = RequestSyncImportStorage(import_storage['ls_id'], payload)
         response = api_request.do()
         print("FileUploadAPI -- RequestSyncImportStorage response: {}".format(response))
         #print("sync storage {}".format(sync_storage_response))
 
             
         import_xlsx = HandleUploadGroundTruthLabelStudio()
-        import_xlsx_response = import_xlsx.do_process(project_id)
+        import_xlsx_response = import_xlsx.do_process(import_storage['project_id'], repo_id)
         print("Upload gt response: {}".format(import_xlsx_response))
 
     
-        response = make_response(response, 200)
+        response = make_response("DONE", 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'
