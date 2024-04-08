@@ -46,7 +46,7 @@ class RequestCreateSubset(AbstractDataset):
             if not os.path.exists(response['path']):
                     os.mkdir(response['path'])
 
-            subset_paths = ["annotation", "files", "misc", "dataset", "xlsx"]
+            subset_paths = ["annotation", "files", "misc", "dataset", "xlsx", "local-storage", "ground-truth-raw", "ground-truth-processed"]
 
             for subset_path in subset_paths:
                 if not os.path.exists(os.path.join(response['path'], subset_path)):
