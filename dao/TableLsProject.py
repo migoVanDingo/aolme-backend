@@ -16,10 +16,10 @@ class TableLsProject:
     
     def insert_ls_project(self, params):
         try:
-            params['ls_id'] = self.generate_id()
-            query = "INSERT INTO label_studio_project(ls_id, ls_project_id, entity_id, subset_id, name, description, is_active, created_by, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            params['label_studio_project_id'] = self.generate_id()
+            query = "INSERT INTO label_studio_project(label_studio_project_id, ls_project_id, entity_id, subset_id, name, description, is_active, created_by, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cur = self.db.connection.cursor()
-            cur.execute(query, (params['ls_id'], params['ls_project_id'], params['entity_id'], params['subset_id'],params['name'], params['description'], params['is_active'], params['created_by'], params['created_at']))
+            cur.execute(query, (params['label_studio_project_id'], params['ls_project_id'], params['entity_id'], params['subset_id'],params['name'], params['description'], params['is_active'], params['created_by'], params['created_at']))
 
             self.db.connection.commit()
             cur.close()

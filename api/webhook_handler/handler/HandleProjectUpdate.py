@@ -1,12 +1,17 @@
 import json, requests, os
 from datetime import datetime
 from flask import jsonify
+from api.label_studio.ls_project.handler.RequestExportAllFrames import RequestExportAllFrames
+from api.subprocess.handler.HandleLSExportAllFrames import HandleLSExportAllFrames
 from api.webhook_handler.handler.ConvertAnnotationToDataset import ConvertAnnotationToDataset
 from dao.TableDataset import TableDataset
 
+from dao.TableDatasetV2 import TableDatasetV2
 from dao.TableFiles import TableFiles
 from dao.TableLsProject import TableLsProject
 from dao.TableRepoItem import TableRepoItem
+from dao.TableSubset import TableSubset
+from dao.TableSubsetItem import TableSubsetItem
 class HandleProjectUpdate:
     def __init__(self, payload):
         self.payload = json.loads(payload)
@@ -16,8 +21,18 @@ class HandleProjectUpdate:
         
 
         formatted_json_data = self.payload
+       
+        #print("Formatted JSON Data: {}".format(formatted_json_data.keys()))
+        
 
-        print("Formatted JSON Data: {}".format(formatted_json_data))
+        task = formatted_json_data["task"]
+        task_id = task["id"]
+
+        print("Task: {}".format(task))    
+        print("Task ID: {}".format(task_id))
+        
+
+        #print("Formatted JSON Data: {}".format(formatted_json_data))
         
         project_id = formatted_json_data["project"]["id"]
         project_title = formatted_json_data["project"]["title"]
@@ -25,21 +40,40 @@ class HandleProjectUpdate:
         ls_table = TableLsProject()
         ls_project = ls_table.read_ls_project_by_id(str(project_id))
 
+        subset_id = ls_project['subset_id']
+
+        table_subset = TableSubset()
+        subset = table_subset.read_item(subset_id)
+
+        table_dataset = TableDatasetV2()
+        dataset = table_dataset.read_item(subset['dataset_id'])
+        print("HandleProjectUpdate::dataset: {}".format(dataset))
+        entity_id = dataset['entity_id']
+        dataset_id = dataset['dataset_id']
+
+        print("HandleProjectUpdate::task_id: {}".format(task_id))
+
+
+        request_export_all_frames = HandleLSExportAllFrames(entity_id, dataset_id, subset_id, project_id, task_id)
+        response_export_all_frames = request_export_all_frames.do_process()
+
+        if entity_id.startswith("ORG"):
+            gt_processed_path = os.path.join(os.environ["ORGANIZATION_DIRECTORY"], entity_id, "dataset", dataset_id, "subset", subset_id, "ground-truth-processed")
+        elif entity_id.startswith("USR"):
+            gt_processed_path = os.path.join(os.environ["USER_DIRECTORY"], entity_id, "dataset", dataset_id, "subset", subset_id, "ground-truth-processed")
+        else:
+            print("HandleProjectUpdate::::Error: Invalid entity_id: " + entity_id)
+            return "HandleProjectUpdate::::Error: Invalid entity_id: " + entity_id
+
+
         print("LS Project: {}".format(ls_project))
 
-        repo_directory = os.path.join(os.environ['REPO_DIRECTORY'], ls_project['repo_id'])
-        annotation_directory = os.path.join(repo_directory, 'annotations')
-
-        if os.path.exists(annotation_directory) == False:
-            os.mkdir(annotation_directory)
-
-        final_path = os.path.join(annotation_directory, project_title)
-        with open(final_path, "w") as f:
+        with open(os.path.join(gt_processed_path, project_title+".json"), "w") as f:
             f.write(json.dumps(formatted_json_data))
 
         ### Convert JSON to CSV
-        request_convert_annotation = ConvertAnnotationToDataset(formatted_json_data, project_id, project_title, final_path)
-        response_convert_annotation = request_convert_annotation.do_process()
+        # request_convert_annotation = ConvertAnnotationToDataset(formatted_json_data, project_id, project_title, gt_processed_path)
+        # response_convert_annotation = request_convert_annotation.do_process()
 
        
 
@@ -47,28 +81,40 @@ class HandleProjectUpdate:
         #add to files
         insert_file = TableDataset()
         payload_insert_file = {
-             "entity_id": ls_project['entity_id'], "name": ls_project['name'], "description": ls_project['description'], "owner": ls_project['entity_id'], "type":"ANNOTATION", "path": final_path, "is_public": 1, "is_active":1, "created_by":ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+             "entity_id": ls_project['entity_id'], "name": ls_project['name'], "description": ls_project['description'], "owner": ls_project['entity_id'], "type":"ANNOTATION", "path": gt_processed_path, "is_public": 1, "is_active":1, "created_by":ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
         response_insert_file = insert_file.insert_files(payload_insert_file)
 
-        repo_item = TableRepoItem()
-        payload_repo_item = {
-            "file_id": response_insert_file["file_id"],
-            "repo_id": ls_project['repo_id'],
+        # repo_item = TableRepoItem()
+        # payload_repo_item = {
+        #     "file_id": response_insert_file["file_id"],
+        #     "repo_id": ls_project['repo_id'],
+        #     "type": "ANNOTATION",
+        #     "is_active": 1,
+        #     "created_by": ls_project['entity_id'],
+        #     "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+        # }
+        # response_repo_item = repo_item.insert(payload_repo_item)
+
+        # print("Response Insert File: {}".format(response_repo_item))
+
+        table_subset_item = TableSubsetItem()
+        payload_subset_item = {
+            "subset_id": subset_id,
+            "name": project_title,
+            "path": gt_processed_path,
             "type": "ANNOTATION",
             "is_active": 1,
-            "created_by": ls_project['entity_id'],
-            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
+            "created_by": entity_id
         }
-        response_repo_item = repo_item.insert(payload_repo_item)
 
-        print("Response Insert File: {}".format(response_repo_item))
+        table_subset_item.insert(payload_subset_item)
 
 
         response_object = {
-                    "path": final_path,
+                    "path": gt_processed_path,
                     "project_id": project_id,
                     "name": project_title.replace(" ", ""),
                     #"task_id": task_id,

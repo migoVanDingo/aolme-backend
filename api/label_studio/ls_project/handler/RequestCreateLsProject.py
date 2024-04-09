@@ -92,7 +92,7 @@ class RequestCreateLsProject(AbstractLsProject):
                 "description": payload['description'],
                 "path": import_storage_path,
                 "use_blob_urls": True,
-                "ls_id": persist_ls_project['ls_id']
+                "ls_import_id": persist_ls_project['ls_project_id']
             }
 
             print("payload_create_import_storage: {}".format(payload_create_import_storage))
@@ -114,13 +114,13 @@ class RequestCreateLsProject(AbstractLsProject):
                 create_import_storage['id'], payload_sync_import_storage)
             
             dao_insert_import_storage = {
-                "ls_id": create_import_storage['id'],
+                "ls_import_id": create_import_storage['id'],
                 "entity_id": payload_persist_ls_project['entity_id'],
                 "subset_id": payload['subset_id'],
                 "title": payload['name'],
                 "path": import_storage_path,
                 "created_by": payload['created_by'],
-                "project_id": payload_create_import_storage['project'],
+                "ls_project_id": payload_create_import_storage['project'],
                 "user_id": payload['created_by']
             }
 

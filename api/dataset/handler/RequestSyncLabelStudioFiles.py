@@ -42,17 +42,17 @@ class RequestSyncLabelStudioFiles(AbstractDataset):
 
 
             payload = { 
-                "project": import_storage['project_id'],
+                "project": import_storage['ls_project_id'],
                 "use_blob_urls": True
             }
 
-            api_request = RequestSyncImportStorage(import_storage['ls_id'], payload)
+            api_request = RequestSyncImportStorage(import_storage['ls_import_id'], payload)
             response = api_request.do()
             print("FileUploadAPI -- RequestSyncImportStorage response: {}".format(response))
 
 
             import_xlsx = HandleUploadGroundTruthLabelStudio()
-            import_xlsx_response = import_xlsx.do_process(import_storage['project_id'], data['entity_id'], data['dataset_id'], data['subset_id'])
+            import_xlsx_response = import_xlsx.do_process(import_storage['ls_project_id'], data['entity_id'], data['dataset_id'], data['subset_id'])
             print("Upload gt response: {}".format(import_xlsx_response))
 
             return import_xlsx_response
