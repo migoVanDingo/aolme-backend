@@ -4,6 +4,7 @@ import os
 
 from flask import jsonify
 from api.label_studio.ls_project.AbstractLsProject import AbstractLsProject
+from dao.TableDatasetV2 import TableDatasetV2
 from dao.TableLsImportStorage import TableLsImportStorage
 
 
@@ -13,6 +14,14 @@ class RequestCreateLsProject(AbstractLsProject):
 
     def do_process(self, payload):
         try:
+
+            table_dataset = TableDatasetV2()
+            dataset = table_dataset.read_item(payload['dataset_id'])
+            
+            if dataset['entity_id'].startswith("ORG"):
+                subset_path = os.path.join(os.environ["ORGANIZATION_DIRECTORY"], dataset['entity_id'], "dataset", payload["dataset_id"], "subset", payload["subset_id"])
+            elif dataset['entity_id'].startswith("USR"):
+                subset_path = os.path.join(os.environ["USER_DIRECTORY"], dataset['entity_id'], "dataset", payload["dataset_id"], "subset", payload["subset_id"])    
 
             # Create the ls project Payload
             payload_create_project = {
@@ -31,7 +40,7 @@ class RequestCreateLsProject(AbstractLsProject):
                 "description": payload['description'],
                 "ls_project_id": response['id'],
                 "entity_id": payload['owner'],
-                "repo_id": payload['repo_id'],
+                "subset_id": payload['subset_id'],
                 "is_active": True,
                 "created_by": payload['created_by'],
                 "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -64,13 +73,13 @@ class RequestCreateLsProject(AbstractLsProject):
             # path = os.path.join(
             #     os.environ["USER_DIRECTORY"], payload['created_by'])
             # path = os.path.join(path, "repo")
-            # path = os.path.join(path, payload['repo_id'])
+            # path = os.path.join(path, payload['subset_id'])
             # path = os.path.join(path, "files")
             # path = os.path.join(path, "uploads")
 
-            import_storage_path = os.path.join(
-                os.environ["REPO_DIRECTORY"], payload['repo_id'])
-            import_storage_path = os.path.join(import_storage_path, "local-storage")
+            # import_storage_path = os.path.join(
+            #     os.environ["REPO_DIRECTORY"], payload['subset_id'])
+            import_storage_path = os.path.join(subset_path, "local-storage")
 
             print("Import storage path: {}".format(import_storage_path))
             #test_path = "/Users/bubz/Developer/master-project/aolme-backend/project/334/videos"
@@ -83,6 +92,7 @@ class RequestCreateLsProject(AbstractLsProject):
                 "description": payload['description'],
                 "path": import_storage_path,
                 "use_blob_urls": True,
+                "ls_import_id": persist_ls_project['ls_project_id']
             }
 
             print("payload_create_import_storage: {}".format(payload_create_import_storage))
@@ -100,21 +110,17 @@ class RequestCreateLsProject(AbstractLsProject):
 
             
 
-
-            
-
-
             sync_import_storage = self.sync_import_storage(
                 create_import_storage['id'], payload_sync_import_storage)
             
             dao_insert_import_storage = {
-                "ls_id": create_import_storage['id'],
+                "ls_import_id": create_import_storage['id'],
                 "entity_id": payload_persist_ls_project['entity_id'],
-                "repo_id": payload['repo_id'],
+                "subset_id": payload['subset_id'],
                 "title": payload['name'],
                 "path": import_storage_path,
                 "created_by": payload['created_by'],
-                "project_id": payload_create_import_storage['project'],
+                "ls_project_id": payload_create_import_storage['project'],
                 "user_id": payload['created_by']
             }
 

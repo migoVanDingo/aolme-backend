@@ -16,10 +16,10 @@ class TableLsProject:
     
     def insert_ls_project(self, params):
         try:
-            params['ls_id'] = self.generate_id()
-            query = "INSERT INTO label_studio_project(ls_id, ls_project_id, entity_id, repo_id, name, description, is_active, created_by, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            params['label_studio_project_id'] = self.generate_id()
+            query = "INSERT INTO label_studio_project(label_studio_project_id, ls_project_id, entity_id, subset_id, name, description, is_active, created_by, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cur = self.db.connection.cursor()
-            cur.execute(query, (params['ls_id'], params['ls_project_id'], params['entity_id'], params['repo_id'],params['name'], params['description'], params['is_active'], params['created_by'], params['created_at']))
+            cur.execute(query, (params['label_studio_project_id'], params['ls_project_id'], params['entity_id'], params['subset_id'],params['name'], params['description'], params['is_active'], params['created_by'], params['created_at']))
 
             self.db.connection.commit()
             cur.close()
@@ -57,11 +57,11 @@ class TableLsProject:
         except Exception as e:
             return "Error::TableLsProject::read_ls_project_by_id(): " + str(e)
         
-    def read_ls_project_by_repo_id(self, repo_id):
+    def read_ls_project_by_subset_id(self, subset_id):
         try:
-            query = "SELECT * FROM label_studio_project WHERE is_active = 1 AND repo_id = %s"
+            query = "SELECT * FROM label_studio_project WHERE is_active = 1 AND subset_id = %s"
             cur = self.db.connection.cursor()
-            cur.execute(query, (repo_id,))
+            cur.execute(query, (subset_id,))
             
             data = cur.fetchall()
 
@@ -69,7 +69,7 @@ class TableLsProject:
 
             return data
         except Exception as e:
-            return "Error::TableLsProject::read_ls_project_by_repo_id(): " + str(e)
+            return "Error::TableLsProject::read_ls_project_by_subset_id(): " + str(e)
         
     def read_ls_project_list_by_entity_id(self, entity_id):
         try:

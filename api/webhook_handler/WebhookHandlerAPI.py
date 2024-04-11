@@ -18,10 +18,9 @@ def handle_project_created():
         response.headers['Content-Type'] = '*'
         return response
     
-    print('here webhook handler')
+    #print('webhook_handler_api::handle_project_created::webhook_payload: {}'.format(request.data))
     # data = json.loads(request.data)
     # data = json.dumps(data)
-    #print("json data: {}".format(data))
     handler = HandleProjectUpdate(request.data)
     response = handler.do_process()
 

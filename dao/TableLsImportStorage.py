@@ -19,20 +19,20 @@ class TableLsImportStorage:
             payload['import_storage_id'] = self.generate_entity_user_id()
             payload['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             payload['is_active'] = True
-            query = "INSERT INTO ls_import_storage(import_storage_id, ls_id, repo_id, entity_id, user_id, path, title, project_id, is_active, created_at, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO ls_import_storage(import_storage_id, ls_import_id, subset_id, entity_id, user_id, path, title, ls_project_id, is_active, created_at, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             cur = self.db.connection.cursor()
-            cur.execute(query, (payload['import_storage_id'],payload['ls_id'], payload['repo_id'], payload['entity_id'], payload['user_id'], payload['path'], payload['title'], payload['project_id'], payload['is_active'], payload['created_at'], payload['created_by']))
+            cur.execute(query, (payload['import_storage_id'],payload['ls_import_id'], payload['subset_id'], payload['entity_id'], payload['user_id'], payload['path'], payload['title'], payload['ls_project_id'], payload['is_active'], payload['created_at'], payload['created_by']))
 
             response = {
                 "import_storage_id": payload['import_storage_id'],
-                "ls_id": payload['ls_id'],
-                "repo_id": payload['repo_id'],
+                "ls_import_id": payload['ls_import_id'],
+                "subset_id": payload['subset_id'],
                 "entity_id": payload['entity_id'],
                 "user_id": payload['user_id'],
                 "path": payload['path'],
                 "title": payload['title'],
-                "project_id": payload['project_id'],
+                "ls_project_id": payload['ls_project_id'],
                 "is_active": payload['is_active'],
                 "created_at":  payload['created_at'],
                 "created_by": payload['created_by']
@@ -48,6 +48,24 @@ class TableLsImportStorage:
         except Exception as e:
             print("TableLsImportStorage -- insert_ls_import_storage() Error: " + str(e))
             return "TableLsImportStorage -- insert_ls_import_storage() Error: " + str(e)
+        
+    def read_ls_import_storage_by_subset_id(self, subset_id):
+        try:
+            query = "SELECT * FROM ls_import_storage WHERE subset_id = %s"
+            cur = self.db.connection.cursor()
+            cur.execute(query, (subset_id,))
+            data = cur.fetchall()
+            cur.close()
+
+            print("TableLsImportStorage -- read_ls_import_storage_by_subset_id() -- data: " + str(data))
+
+            if(len(data) > 0):
+                return data[0]
+
+            return data
+        except Exception as e:
+            print("TableLsImportStorage -- read_ls_import_storage_by_subset_id() Error: " + str(e))
+            return "TableLsImportStorage -- read_ls_import_storage_by_subset_id() Error: " + str(e)
         
 
     def read_ls_import_storage_by_repo_id(self, repo_id):

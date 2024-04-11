@@ -9,12 +9,13 @@ class HandleUploadGroundTruthLabelStudio:
         self.url = "http://localhost:8080/api/projects/"
         self.token= os.environ['LABEL_STUDIO_SECRET_KEY']
 
-    def do_process(self, project_id, repo_id):
+    def do_process(self, project_id, entity_id, dataset_id, subset_id):
         try:
-            files = os.listdir("{}/{}/ground-truth-reformat".format(os.environ['REPO_DIRECTORY'], repo_id))
+            path = "/Users/bubz/Developer/master-project/aolme-backend/_fs/organization/"+entity_id+"/dataset/"+dataset_id+"/subset/"+subset_id+"/ground-truth-raw"
+            files = os.listdir(path)
             arr = []
             for f in files:
-                f = "{}/{}/ground-truth-reformat/{}".format(os.environ['REPO_DIRECTORY'],repo_id, f)
+                f = "{}/{}".format(path, f)
                 print("HandleUploadGroundTruthLabelStudio -- files: {}".format(f))
                 arr.append(f)
 
@@ -38,21 +39,6 @@ class HandleUploadGroundTruthLabelStudio:
                         print(f"Failed to import {file_name} to project {project_id}. Status code: {response.status_code}")
                 except Exception as e:
                     print(f"Error while importing {file_name} to project {project_id}: {str(e)}")
-
-            #self.execute_curl_for_file_names(files, project_id)
-
-
-            # for filename in files:
-            #     print('filename: {}'.format(filename))
-            #     command = "curl -H 'Authorization: Token {}' -X POST 'http://localhost:8080/api/projects/{}/import' -F 'file=@/Users/bubz/Developer/master-project/aolme-backend/project/{}/ground-truth-reformat/{}".format(os.environ["LABEL_STUDIO_SECRET_KEY"], project_id, project_id, filename)
-            #     #subprocess.run(command, shell=True, check=True)
-
-            #     result = subprocess.run(command, capture_output=True, text=True)
-
-    
-
-            #     print("subprocess result: {}".format(result.stdout))
-        
 
             print("All commands executed successfully.")
             return "success"

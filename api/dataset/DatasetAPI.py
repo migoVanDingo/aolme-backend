@@ -13,6 +13,7 @@ from api.dataset.handler.RequestGetDatasetListByUser import RequestGetDatasetLis
 from api.dataset.handler.RequestGetSubset import RequestGetSubset
 from api.dataset.handler.RequestGetSubsetItems import RequestGetSubsetItems
 from api.dataset.handler.RequestGetSubsetList import RequestGetSubsetList
+from api.dataset.handler.RequestSyncLabelStudioFiles import RequestSyncLabelStudioFiles
 from api.dataset.handler.RequestUpdateDataset import RequestUpdateDataset
 
 
@@ -213,6 +214,32 @@ def get_subset_items(subset_id):
     api_request = RequestGetSubsetItems(subset_id)
     response = api_request.do_process()
     
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+
+@dataset_api.route('/api/dataset/subset/sync-label-studio-files', methods=['POST', 'OPTIONS'])      
+def sync_label_studio_files():
+    if request.method == 'OPTIONS':
+        response = make_response('success', 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+
+    data = json.loads(request.data)
+
+    if request.args.get('file_set_id') is not None:
+        file_set_id = request.args.get('file_set_id')
+    
+    # ENDPOINT LOGIC
+    api_request = RequestSyncLabelStudioFiles(data, file_set_id)
+    response = api_request.do_process()
+    
+
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'

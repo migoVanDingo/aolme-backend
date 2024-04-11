@@ -2,6 +2,8 @@ import subprocess, json, os
 from flask_cors import CORS
 from flask import Blueprint, make_response, request
 from dotenv import load_dotenv
+from api.subprocess.handler.HandleLSExportAllFrames import HandleLSExportAllFrames
+from dao.TableSubset import TableSubset
 from file_watcher.WatchNotebook import WatchNotebook
 
 from utility.Directory import Directory
@@ -149,5 +151,26 @@ def start_jupyter_notebook():
         # Handle any errors that occur while running the commands
         print("Error:", e)
         return "Error: " + str(e), 404
+
+
+@subprocess_api.route('/subprocess/label-studio/export-all-frames', methods=['GET'])
+def export_all_frames():
+    try:
+        dataset_id = request.args.get('dataset_id')
+        subset_id = request.args.get('subset_id')
+        entity_id = request.args.get('entity_id')
+        project_id = request.args.get('project_id')
+
+        request = HandleLSExportAllFrames(entity_id, dataset_id, subset_id, project_id)
+
+        response = make_response("success", 204)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        print("SubprocessAPI::export_all_frames::Error: {}".format(str(e)))
+        return "SubprocessAPI::export_all_frames::Error: {}".format(str(e)), 404
+
 
 
