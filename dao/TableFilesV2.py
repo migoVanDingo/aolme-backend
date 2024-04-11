@@ -2,7 +2,7 @@ import random
 import string
 
 
-class TableDataset:
+class TableFilesV2:
     def __init__(self):
         from main import db
         self.db = db
@@ -11,15 +11,15 @@ class TableDataset:
         N = 22
         match type:
             case "DATASET":
-                return 'DS' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+                return 'FDS' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
             case "CONFIG":
-                return 'CF' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+                return 'FCF' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
             case "MODULE":
-                return 'MD' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+                return 'FMD' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
             case "ANNOTATION":
-                return 'ANN' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+                return 'FAN' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
             case "GROUND_TRUTH":
-                return 'GT' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+                return 'FGT' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
         
 
             case _:
@@ -37,10 +37,11 @@ class TableDataset:
             self.db.connection.commit()
             cur.close()
             return payload
+            
         
         except Exception as e:  
-            print("TableDataset -- insert_files() Error: " + str(e))
-            return "TableDataset -- insert_files() Error: " + str(e)
+            print("TableFilesV2 -- insert_files() Error: " + str(e))
+            return "TableFilesV2 -- insert_files() Error: " + str(e)
         
 
     def read_list(self):
@@ -52,7 +53,8 @@ class TableDataset:
             cur.close()
             return data
         except Exception as e:
-            return "TableDataset -- read_list() Error: " + str(e)
+            print("TableFilesV2 -- read_list() Error: " + str(e))
+            return "TableFilesV2 -- read_list() Error: " + str(e)
         
 
     def read_item(self, files_id):
@@ -64,7 +66,8 @@ class TableDataset:
             cur.close()
             return data
         except Exception as e:
-            return "TableDataset -- read_item() Error: " + str(e)
+            print("TableFilesV2 -- read_item() Error: " + str(e))
+            return "TableFilesV2 -- read_item() Error: " + str(e)
 
     def read_list_by_entity(self, entity_id):
         query = "SELECT * FROM files WHERE entity_id = %s AND is_active = 1"
@@ -75,7 +78,8 @@ class TableDataset:
             cur.close()
             return data
         except Exception as e:
-            return "TableDataset -- read_list_by_entity() Error: " + str(e)
+            print("TableFilesV2 -- read_list_by_entity() Error: " + str(e))
+            return "TableFilesV2 -- read_list_by_entity() Error: " + str(e)
 
     def read_list_by_user(self, user_id):
         query = "SELECT * FROM files WHERE owner = %s AND is_active = 1"
@@ -86,7 +90,8 @@ class TableDataset:
             cur.close()
             return data
         except Exception as e:
-            return "TableDataset -- read_list_by_user() Error: " + str(e)
+            print("TableFilesV2 -- read_list_by_user() Error: " + str(e))
+            return "TableFilesV2 -- read_list_by_user() Error: " + str(e)
         
 
     def update(self, payload):
@@ -98,7 +103,8 @@ class TableDataset:
             cur.close()
             return payload
         except Exception as e:
-            return "TableDataset -- update() Error: " + str(e)
+            print("TableFilesV2 -- update() Error: " + str(e))
+            return "TableFilesV2 -- update() Error: " + str(e)
 
     def delete(self, files_id):
         query = "DELETE FROM files WHERE file_id = %s"
@@ -109,7 +115,8 @@ class TableDataset:
             cur.close()
             return files_id
         except Exception as e:
-            return "TableDataset -- delete() Error: " + str(e)
+            print("TableFilesV2 -- delete() Error: " + str(e))
+            return "TableFilesV2 -- delete() Error: " + str(e)
 
     def archive(self, files_id):
         query = "UPDATE files SET is_active = 0 WHERE file_id = %s"
@@ -120,7 +127,8 @@ class TableDataset:
             cur.close()
             return files_id
         except Exception as e:
-            return "TableDataset -- archive() Error: " + str(e)
+            print("TableFilesV2 -- archive() Error: " + str(e))
+            return "TableFilesV2 -- archive() Error: " + str(e)
         
     def archive_by_name(self, name, entity_id):
         query = "UPDATE files SET is_active = 0 WHERE name = %s AND entity_id = %s"
@@ -131,6 +139,7 @@ class TableDataset:
             cur.close()
             return name
         except Exception as e:
-            return "TableDataset -- archive_by_name() Error: " + str(e)
+            print("TableFilesV2 -- archive_by_name() Error: " + str(e))
+            return "TableFilesV2 -- archive_by_name() Error: " + str(e)
         
 

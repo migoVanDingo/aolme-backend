@@ -3,7 +3,7 @@ from api.directory_tree.AbstractDirectoryTree import AbstractDirectoryTree
 import os, json
 from dotenv import load_dotenv
 
-from dao.TableDataset import TableDataset
+from dao.TableFilesV2 import TableFilesV2
 from dao.TableRepoItem import TableRepoItem
 load_dotenv()
 
@@ -15,7 +15,7 @@ class RequestGetFolderItems(AbstractDirectoryTree):
         self.owner_id = owner_id
         self.repo_id = repo_id
         self.path = ""
-        self.files_db = TableDataset()
+        self.files_db = TableFilesV2()
         self.repo_item_db = TableRepoItem()
 
     def do_process(self):

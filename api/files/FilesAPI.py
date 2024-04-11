@@ -40,5 +40,5 @@ def create_file():
         return response
         
     except Exception as e:
-        print(str(e))
-        return "Error: " + str(e), 404
+        print("FilesAPI::create_file()::Error: " + str(e))
+        return "FilesAPI::create_file()::Error: " + str(e), 404

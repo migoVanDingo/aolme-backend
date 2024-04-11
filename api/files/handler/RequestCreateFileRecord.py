@@ -1,18 +1,17 @@
 from datetime import datetime
 import os
-from api.dataset.AbstractDataset import AbstractDataset
+
+from flask import jsonify
+from api.files.AbstractFiles import AbstractFiles
 from api.dataset.entity.CreateDatasetValidator import CreateDatasetValidator
 from dao.TableRepoItem import TableRepoItem
 
-class RequestCreateFileRecord(AbstractDataset):
+class RequestCreateFileRecord(AbstractFiles):
     def __init__(self, params, files, repo_id=None):
         super().__init__()
         self.params = params
         self.files = files
-        if repo_id is None:
-            self.repo_id = None
-        else:
-            self.repo_id = repo_id
+        self.repo_id = repo_id
 
     def do_process(self):
         try:
@@ -27,6 +26,9 @@ class RequestCreateFileRecord(AbstractDataset):
                 path = os.path.join(os.environ['ORGANIZATION_DIRECTORY'], self.params.get('entity_id'))
 
             
+            
+
+            
             repo_path = None
             if self.repo_id is not None:
                 # repo_path = os.path.join(os.environ['USER_DIRECTORY'], 'repo')
@@ -35,21 +37,21 @@ class RequestCreateFileRecord(AbstractDataset):
                 repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
                 repo_path = os.path.join(repo_path, self.params.get('type').lower())
 
+            print("repo_path: {}".format(repo_path))
+
             path = os.path.join(path, self.params.get('type').lower())
 
 
-                
-            
-            
-            
-            
             files = self.files
+
+            print("files: {}".format(files))
             now = "{}".format(datetime.now())
             for file in files:
                 if file.filename == '':
+                    print("Error: File must have name")
                     return "File must have name"
                 
-
+        
                 path = os.path.join(path, file.filename)
                 print("path: {}".format(path))
                 # Create entry in db first to get dataset_id
@@ -71,12 +73,13 @@ class RequestCreateFileRecord(AbstractDataset):
 
                 
 
-                validator = CreateDatasetValidator()
-                is_valid = validator.validate(payload)
-                if is_valid[0] is False:
-                    return is_valid[1]
+                # validator = CreateDatasetValidator()
+                # is_valid = validator.validate(payload)
+                # if is_valid[0] is False:
+                #     print("RequestCreateFileRecord::::do_process()::CreateDatasetValidator::Error: {}".format(str(is_valid[1])))
+                #     return is_valid[1]
                 
-                dao_response = self.create(payload)
+                dao_response = self.insert_file(payload)
 
                 print("daoReponse: {}".format(dao_response))
 
@@ -111,9 +114,9 @@ class RequestCreateFileRecord(AbstractDataset):
 
 
 
-            return dao_response
+            return jsonify(dao_response)
             
 
         except Exception as e:
-            print("RequestCreateDataset -- do_process() Error: " + str(e))
-            return "RequestCreateDataset -- do_process() Error: " + str(e)
+            print("RequestCreateFileRecord -- do_process() Error: " + str(e))
+            return "RequestCreateFileRecord -- do_process() Error: " + str(e), 404
