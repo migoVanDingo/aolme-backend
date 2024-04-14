@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, make_response, request
 from flask_cors import CORS
+from api.repository.handler.RequestAddRepoItem import RequestAddRepoItem
 from api.repository.handler.RequestArchiveRepo import RequestArchiveRepo
 
 from api.repository.handler.RequestCreateRepo import RequestCreateRepo
@@ -10,6 +11,7 @@ from api.repository.handler.RequestGetRepoById import RequestGetRepoById
 from api.repository.handler.RequestGetRepoByOwner import RequestGetRepoByOwner
 from api.repository.handler.RequestGetRepoItemList import RequestGetRepoItemList
 from api.repository.handler.RequestUpdateRepo import RequestUpdateRepo
+from api.repository.handler.RequestCheckAndUpdateRepoItem import RequestCheckAndUpdateRepoItem
 
 
 repository_api = Blueprint('repository_api', __name__)
@@ -161,4 +163,49 @@ def archive_repository_by_id(repo_id):
     response.headers['Content-Type'] = '*'
     return response
 
+@repository_api.route('/api/repository/<repo_id>/item', methods=['POST', 'OPTIONS'])
+def add_repo_item(repo_id):
+    if request.method == 'OPTIONS':
+        response = make_response('success', 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    
 
+    
+    # ENDPOINT LOGIC
+    api_request = RequestAddRepoItem(repo_id, json.loads(request.data))
+    response = api_request.do_process()
+
+    
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+@repository_api.route('/api/repository/<repo_id>/item/update', methods=['POST', 'OPTIONS'])
+def update_repo_item(repo_id):
+    if request.method == 'OPTIONS':
+        response = make_response('success', 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    
+
+    data = json.loads(request.data)
+
+    print("\nupdate_repo_item data: {}\n\n".format(data))
+    
+    # ENDPOINT LOGIC
+    api_request = RequestCheckAndUpdateRepoItem(data, repo_id)
+    response = api_request.do_process()
+
+    
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response

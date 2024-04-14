@@ -1,3 +1,4 @@
+from flask import jsonify
 from api.organization.AbstractOrganization import AbstractOrganization
 
 
@@ -11,7 +12,7 @@ class RequestGetOrganizationById(AbstractOrganization):
 
             response = self.get_organization_by_id(self.org_id)
             print("Response: {}".format(response))
-            return response
+            return jsonify(response)
         except Exception as e:
             print("RequestGetOrganizationById -- do_process() Error: " + str(e))
             return "RequestGetOrganizationById -- do_process() Error: " + str(e)
