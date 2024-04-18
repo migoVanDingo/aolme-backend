@@ -33,7 +33,7 @@ def create_file():
         response = api_request.do_process()
         
 
-        response = make_response(response, 200)
+        response = make_response("SUCCESS", 200)
         response.headers['Access-Control-Allow-Headers'] = '*'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'

@@ -24,6 +24,7 @@ class RequestCreateFileRecord(AbstractFiles):
                 path = os.path.join(os.environ['USER_DIRECTORY'], self.params.get('entity_id'))
             elif "ORG" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['ORGANIZATION_DIRECTORY'], self.params.get('entity_id'))
+            
 
             
             
@@ -35,11 +36,11 @@ class RequestCreateFileRecord(AbstractFiles):
                 # repo_path = os.path.join(repo_path, self.repo_id)
                 # repo_path = os.path.join(repo_path, 'files')
                 repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
-                repo_path = os.path.join(repo_path, self.params.get('type').lower())
+                repo_path = os.path.join(repo_path, self.params['type'].lower())
 
             print("repo_path: {}".format(repo_path))
 
-            path = os.path.join(path, self.params.get('type').lower())
+            path = os.path.join(path, self.params['type'].lower())
 
 
             files = self.files
@@ -56,18 +57,19 @@ class RequestCreateFileRecord(AbstractFiles):
                 print("path: {}".format(path))
                 # Create entry in db first to get dataset_id
                 payload = {
-                    "entity_id": self.params.get('entity_id'),
+                    "entity_id": self.params['entity_id'],
                     "name": file.filename,
-                    "description": self.params.get('description'),
-                    "owner": self.params.get('owner'),
-                    "type": self.params.get('type'),
-                    "created_by": self.params.get('owner'),
+                    "description": self.params['description'] if 'description' in self.params else self.params['type'],
+                    "owner": self.params['owner'],
+                    "type": self.params['type'],
+                    "created_by": self.params['owner'],
                     "created_at": now,
-                    "path": path,
+                    "path": path if self.repo_id is None else repo_path,
                     "is_active": 1,
+                    "is_public": 0,
                 }
 
-                payload['is_public'] = 1 if self.params.get('is_public') == '1' else 0
+                
 
                 print("payload: {}".format(payload))
 
@@ -108,13 +110,15 @@ class RequestCreateFileRecord(AbstractFiles):
                 # file.filename = dataset_id + '...'.join(f) + '.' + last
                 
                 file.save(path)
-                if repo_path is not None:
-                    file.save(os.path.join(repo_path, file.filename))
+                if self.repo_id is not None:
+                    repo_path = os.path.join(repo_path, file.filename)
+                    print("Saving to repo_path: {}".format(repo_path))
+                    file.save(repo_path)
 
 
 
 
-            return jsonify(dao_response)
+            return "SUCCESS"
             
 
         except Exception as e:

@@ -30,12 +30,18 @@ class TableFilesV2:
     def insert_files(self, payload):
         query = "INSERT INTO files(file_id, entity_id, name, description, owner, type, path, is_public, is_active, created_by, created_at) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
+        
+
         try:
             payload['file_id'] = self.generate_id(payload['type'])
+
+            print("TableFilesV2 -- insert_files() payload: {}".format(payload))
             cur = self.db.connection.cursor()
             cur.execute(query, (payload['file_id'], payload['entity_id'], payload['name'], payload['description'], payload['owner'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['created_by'], payload['created_at']))
+            
             self.db.connection.commit()
             cur.close()
+            print("TableFilesV2 -- insert_files() Success: {}".format(payload))
             return payload
             
         

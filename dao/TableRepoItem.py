@@ -12,7 +12,7 @@ class TableRepoItem:
         try:
             payload['is_active'] = 1
             payload['created_at'] = "{}".format(datetime.now())
-            payload['created_by'] = payload['user_id']
+            payload['created_by'] = payload['created_by'] if 'created_by' in payload else payload['owner'] if 'owner' in payload else payload['user_id'] if 'user_id' in payload else "DATA_ERROR_USER_ID"
             cur = self.db.connection.cursor()
             cur.execute(query, (payload['file_id'], payload['repo_id'], payload['type'], payload['is_active'], payload['created_at'], payload['created_by']))
             self.db.connection.commit()

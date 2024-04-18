@@ -26,7 +26,7 @@ class ReadRepoDirectory(AbstractDirectoryTree):
         #all_dir_path = os.path.join(all_dir_path, 'files')
 
         dir_list = Constant.directory_list
-
+        print("DirectoryTreeAPI::ReadRepoDirectory::all_dir_path: {}".format(all_dir_path))
         file_list = []
         for dir in dir_list:
             current_dir = os.path.join(all_dir_path,dir)
