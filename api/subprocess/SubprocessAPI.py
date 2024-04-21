@@ -115,7 +115,7 @@ def start_jupyter_notebook():
 
     
     commands = [
-        "jupyter notebook"
+        "jupyter lab"
     ]
 
     print("Commands: {}".format(commands))
