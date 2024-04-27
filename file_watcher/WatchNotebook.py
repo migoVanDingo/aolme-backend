@@ -2,7 +2,7 @@ from genericpath import isfile
 from os import listdir
 import os
 import time
-from dao.TableDataset import TableDataset
+from dao.TableFilesV2 import TableFilesV2
 
 from dao.TableFiles import TableFiles
 from dao.TableRepoItem import TableRepoItem
@@ -39,7 +39,7 @@ class WatchNotebook:
         while True:
         
             #Get from database
-            table_files = TableDataset()
+            table_files = TableFilesV2()
             previousFileList = table_files.read_list_by_entity(payload_insert_file['entity_id'])
 
             print("Previous File List 1: {}".format(previousFileList))

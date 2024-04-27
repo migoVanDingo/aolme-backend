@@ -7,8 +7,11 @@ class AbstractRepository(ABC):
     def __init__(self):
         super().__init__()
         self.repo = TableRepository()
+        self.repo_item = TableRepoItem()
     
-    #Concrete methods
+    ###Concrete methods
+
+    #Table Repository
     def create(self, params):
         return self.repo.insert(params)
     
@@ -21,10 +24,6 @@ class AbstractRepository(ABC):
     def read_list_entity(self, entity_id):
         return self.repo.read_list_entity(entity_id)
     
-    def read_list_repo_items(self, repo_id):
-        repo_item = TableRepoItem()
-        return repo_item.read_list_repo_items(repo_id)
-    
     def update(self, params):
         return self.repo.update(params)
     
@@ -33,6 +32,14 @@ class AbstractRepository(ABC):
     
     def delete(self, id):
         return self.repo.delete(id)
+    
+
+    #Table RepoItem
+    def add_repo_item(self, data):
+        return self.repo_item.insert(data)
+    
+    def read_list_repo_items(self, repo_id):
+        return self.repo_item.read_list_repo_items(repo_id)
     
     #Abstract methods
     @abstractmethod

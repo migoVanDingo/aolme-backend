@@ -4,10 +4,11 @@ from flask import jsonify
 from api.label_studio.ls_project.handler.RequestExportAllFrames import RequestExportAllFrames
 from api.subprocess.handler.HandleLSExportAllFrames import HandleLSExportAllFrames
 from api.webhook_handler.handler.ConvertAnnotationToDataset import ConvertAnnotationToDataset
-from dao.TableDataset import TableDataset
+
 
 from dao.TableDatasetV2 import TableDatasetV2
 from dao.TableFiles import TableFiles
+from dao.TableFilesV2 import TableFilesV2
 from dao.TableLsProject import TableLsProject
 from dao.TableRepoItem import TableRepoItem
 from dao.TableSubset import TableSubset
@@ -79,7 +80,7 @@ class HandleProjectUpdate:
 
         
         #add to files
-        insert_file = TableDataset()
+        insert_file = TableFilesV2()
         payload_insert_file = {
              "entity_id": ls_project['entity_id'], "name": ls_project['name'], "description": ls_project['description'], "owner": ls_project['entity_id'], "type":"ANNOTATION", "path": gt_processed_path, "is_public": 1, "is_active":1, "created_by":ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }

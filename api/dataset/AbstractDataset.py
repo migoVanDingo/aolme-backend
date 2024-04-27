@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from dao.TableDataset import TableDataset
+from dao.TableFilesV2 import TableFilesV2
 from dao.TableDatasetV2 import TableDatasetV2
 from dao.TableSubset import TableSubset
 from dao.TableSubsetItem import TableSubsetItem
@@ -8,7 +8,7 @@ class AbstractDataset(ABC):
 
     def __init__(self):
         super().__init__()
-        self.table_dataset = TableDataset()
+        self.table_dataset = TableFilesV2()
         self.v2 = TableDatasetV2()
         self.subset = TableSubset()
         self.subset_item = TableSubsetItem()

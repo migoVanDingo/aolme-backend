@@ -1,18 +1,17 @@
 from datetime import datetime
 import os
-from api.dataset.AbstractDataset import AbstractDataset
+
+from flask import jsonify
+from api.files.AbstractFiles import AbstractFiles
 from api.dataset.entity.CreateDatasetValidator import CreateDatasetValidator
 from dao.TableRepoItem import TableRepoItem
 
-class RequestCreateFileRecord(AbstractDataset):
+class RequestCreateFileRecord(AbstractFiles):
     def __init__(self, params, files, repo_id=None):
         super().__init__()
         self.params = params
         self.files = files
-        if repo_id is None:
-            self.repo_id = None
-        else:
-            self.repo_id = repo_id
+        self.repo_id = repo_id
 
     def do_process(self):
         try:
@@ -25,6 +24,10 @@ class RequestCreateFileRecord(AbstractDataset):
                 path = os.path.join(os.environ['USER_DIRECTORY'], self.params.get('entity_id'))
             elif "ORG" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['ORGANIZATION_DIRECTORY'], self.params.get('entity_id'))
+            
+
+            
+            
 
             
             repo_path = None
@@ -33,50 +36,52 @@ class RequestCreateFileRecord(AbstractDataset):
                 # repo_path = os.path.join(repo_path, self.repo_id)
                 # repo_path = os.path.join(repo_path, 'files')
                 repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
-                repo_path = os.path.join(repo_path, self.params.get('type').lower())
+                repo_path = os.path.join(repo_path, self.params['type'].lower())
 
-            path = os.path.join(path, self.params.get('type').lower())
+            print("repo_path: {}".format(repo_path))
+
+            path = os.path.join(path, self.params['type'].lower())
 
 
-                
-            
-            
-            
-            
             files = self.files
+
+            print("files: {}".format(files))
             now = "{}".format(datetime.now())
             for file in files:
                 if file.filename == '':
+                    print("Error: File must have name")
                     return "File must have name"
                 
-
+        
                 path = os.path.join(path, file.filename)
                 print("path: {}".format(path))
                 # Create entry in db first to get dataset_id
                 payload = {
-                    "entity_id": self.params.get('entity_id'),
+                    "entity_id": self.params['entity_id'],
                     "name": file.filename,
-                    "description": self.params.get('description'),
-                    "owner": self.params.get('owner'),
-                    "type": self.params.get('type'),
-                    "created_by": self.params.get('owner'),
+                    "description": self.params['description'] if 'description' in self.params else self.params['type'],
+                    "owner": self.params['owner'],
+                    "type": self.params['type'],
+                    "created_by": self.params['owner'],
                     "created_at": now,
-                    "path": path,
+                    "path": path if self.repo_id is None else repo_path,
                     "is_active": 1,
+                    "is_public": 0,
                 }
 
-                payload['is_public'] = 1 if self.params.get('is_public') == '1' else 0
+                
 
                 print("payload: {}".format(payload))
 
                 
 
-                validator = CreateDatasetValidator()
-                is_valid = validator.validate(payload)
-                if is_valid[0] is False:
-                    return is_valid[1]
+                # validator = CreateDatasetValidator()
+                # is_valid = validator.validate(payload)
+                # if is_valid[0] is False:
+                #     print("RequestCreateFileRecord::::do_process()::CreateDatasetValidator::Error: {}".format(str(is_valid[1])))
+                #     return is_valid[1]
                 
-                dao_response = self.create(payload)
+                dao_response = self.insert_file(payload)
 
                 print("daoReponse: {}".format(dao_response))
 
@@ -105,15 +110,17 @@ class RequestCreateFileRecord(AbstractDataset):
                 # file.filename = dataset_id + '...'.join(f) + '.' + last
                 
                 file.save(path)
-                if repo_path is not None:
-                    file.save(os.path.join(repo_path, file.filename))
+                if self.repo_id is not None:
+                    repo_path = os.path.join(repo_path, file.filename)
+                    print("Saving to repo_path: {}".format(repo_path))
+                    file.save(repo_path)
 
 
 
 
-            return dao_response
+            return "SUCCESS"
             
 
         except Exception as e:
-            print("RequestCreateDataset -- do_process() Error: " + str(e))
-            return "RequestCreateDataset -- do_process() Error: " + str(e)
+            print("RequestCreateFileRecord -- do_process() Error: " + str(e))
+            return "RequestCreateFileRecord -- do_process() Error: " + str(e), 404
