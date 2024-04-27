@@ -11,6 +11,7 @@ from api.dataset.handler.RequestGetDatasetList import RequestGetDatasetList
 from api.dataset.handler.RequestGetDatasetListByEntity import RequestGetDatasetListByEntity
 from api.dataset.handler.RequestGetDatasetListByUser import RequestGetDatasetListByUser
 from api.dataset.handler.RequestGetSubset import RequestGetSubset
+from api.dataset.handler.RequestGetSubsetAnnotation import RequestGetSubsetAnnotation
 from api.dataset.handler.RequestGetSubsetItems import RequestGetSubsetItems
 from api.dataset.handler.RequestGetSubsetList import RequestGetSubsetList
 from api.dataset.handler.RequestSyncLabelStudioFiles import RequestSyncLabelStudioFiles
@@ -245,3 +246,26 @@ def sync_label_studio_files():
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = '*'
     return response
+
+@dataset_api.route('/api/subset/<subset_id>/annotation', methods=['GET']) 
+def get_subset_annotation(subset_id):
+    try:
+
+        #entity_id = request.args.get('entity_id')
+        filename = request.args.get('filename')
+        
+
+        print("RequestGetSubsetAnnotation::filename: {}".format(filename))
+        print("RequestGetSubsetAnnotation::path: {}".format(subset_id))
+
+        api_request = RequestGetSubsetAnnotation(subset_id, filename)
+        response = api_request.do_process()
+        
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        print("DatasetAPI::Error: {}".format(e))
+        return "DatasetAPI::Error: {}".format(e), 404   

@@ -1,5 +1,7 @@
+import json
 import os
 import subprocess
+import time
 from dao.TableSubset import TableSubset
 
 
@@ -35,5 +37,40 @@ class HandleLSExportAllFrames():
         
         for command in commands:
             subprocess.run(command, shell=True, check=True)
+
+        return self.changeFilename("{}.json".format(name))
+
+    
+    def changeFilename(self, name):
+        #check current directory for files
+        files = os.listdir()
+        for file in files:
+            if file == name:
+                #read file
+                with open(file, 'r') as f:
+                    data = f.read()
+                    #get the video string of the data object in the first element
+                    
+                    videoPath = json.loads(data)
+                    videoPath = videoPath[0]['data']
+                    videoPath = videoPath['video']
+                    print("videoPath: {}".format(videoPath))
+
+                    #split the video string by the / character
+                    videoPath = videoPath.split('/')
+                    #get the last element of the split string
+                    videoName = videoPath[-1]
+                    #rename the file to the video name
+
+                    videoName = videoName.split('.')[0]
+                    videoName = videoName + ".json"
+
+                    os.rename(file, videoName)
+
+                    return videoName
+
+
+
+
 
         

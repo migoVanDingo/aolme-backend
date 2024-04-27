@@ -25,9 +25,6 @@ def handle_project_created():
     response = handler.do_process()
 
 
-
-
-
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'
