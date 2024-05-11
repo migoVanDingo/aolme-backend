@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, current_app
 from flask_cors import CORS
 from api.organization.handler.RequestArchiveOrganization import RequestArchiveOrganization
 from api.organization.handler.RequestDeleteOrganization import RequestDeleteOrganization
@@ -19,12 +19,6 @@ CORS(user_api)
 
 @user_api.route('/api/user', methods=['POST', 'OPTIONS'])
 def create_user():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
     #data = json.loads(request.data)
     # handler = HandleCreateUser(data)
@@ -52,6 +46,8 @@ def create_user():
 
 @user_api.route('/api/user/<user_id>', methods=["GET"])
 def get_user(user_id):
+
+    current_app.logger.info("Get User ID: {}".format(user_id))
 
     handler = HandleGetUser(user_id)
     user = handler.do_process()
@@ -114,17 +110,14 @@ def delete_user(user_id):
 
 @user_api.route('/api/user/login', methods=["POST", "OPTIONS"])
 def login():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
-    
 
+    current_app.logger.info("Login User")
+    
     data = json.loads(request.data)
     handler = HandleLogin(data)
     response = handler.do_process()
+
+    current_app.logger.info("End Login User: {}".format(response))
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'

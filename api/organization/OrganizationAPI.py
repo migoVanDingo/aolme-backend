@@ -14,12 +14,6 @@ CORS(organization_api)
 
 @organization_api.route('/api/organization', methods=['POST', 'OPTIONS'])
 def create_organization():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
     # ENDPOINT LOGIC
     api_request = RequestCreateOrganization(json.loads(request.data))
@@ -68,13 +62,6 @@ def get_organization_list():
 @organization_api.route('/api/organization/<org_id>', methods=['PATCH', 'OPTIONS'])
 def update_organization_by_id(org_id):
     
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
-    
     data = json.loads(request.data)
 
     # ENDPOINT LOGIC
@@ -90,13 +77,6 @@ def update_organization_by_id(org_id):
 
 @organization_api.route('/api/organization/<org_id>', methods=['PATCH', 'OPTIONS'])
 def archive_organization(org_id):
-    
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
 
     
     # ENDPOINT LOGIC
@@ -112,15 +92,6 @@ def archive_organization(org_id):
 
 @organization_api.route('/api/organization/<org_id>', methods=['DELETE', 'OPTIONS'])
 def delete_organization(org_id):
-    
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
-
-    
     # ENDPOINT LOGIC
     api_request = RequestDeleteOrganization(org_id)
     response = api_request.do_process()

@@ -12,13 +12,6 @@ CORS(files_api)
 @files_api.route('/api/files', methods=['POST', 'OPTIONS'])
 def create_file():
     try:
-        if request.method == 'OPTIONS':
-            response = make_response('success', 200)
-            response.headers['Access-Control-Allow-Headers'] = '*'
-            response.headers['Access-Control-Allow-Origin'] = '*'
-            response.headers['Content-Type'] = '*'
-            return response
-
         
         repo_id = request.args.get('repo_id')
 

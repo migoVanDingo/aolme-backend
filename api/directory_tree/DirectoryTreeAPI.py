@@ -119,14 +119,7 @@ def get_folder_items(project_id):
 
 @directory_tree_api.route('/api/directory/project/<project_id>/new', methods=['POST', 'OPTIONS'])
 def create_directory(project_id):
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
 
-        return response
-    
     try:
 
         data = json.loads(request.data)
@@ -147,13 +140,6 @@ def create_directory(project_id):
     
 @directory_tree_api.route('/api/directory/organization/<org_id>/project/<project_id>', methods=['POST', 'OPTIONS'])
 def create_project_directory(org_id, project_id):
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-
-        return response
     
     try:
         api_request = RequestCreateProjectDirectory(org_id, project_id)
@@ -173,13 +159,6 @@ def create_project_directory(org_id, project_id):
 
 @directory_tree_api.route('/api/directory/organization/<org_id>', methods=['POST', 'OPTIONS'])
 def create_organization_directory(org_id):
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-
-        return response
     
     try:
         api_request = RequestCreateOrganizationDirectory(org_id)
@@ -199,13 +178,6 @@ def create_organization_directory(org_id):
     
 @directory_tree_api.route('/api/directory/user/<user_id>', methods=['POST', 'OPTIONS'])
 def create_user_directory(user_id):
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-
-        return response
     try:
         api_request = RequestCreateUserDirectory(user_id)
         response = api_request.do_process()

@@ -19,12 +19,6 @@ CORS(repository_api)
 
 @repository_api.route('/api/repository', methods=['POST', 'OPTIONS'])
 def create_repository():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
     # ENDPOINT LOGIC
     api_request = RequestCreateRepo(json.loads(request.data))
@@ -101,13 +95,6 @@ def get_repository_items_by_id(repo_id):
 @repository_api.route('/api/repository/<repo_id>', methods=['PATCH', 'OPTIONS'])
 def update_repository_by_id(repo_id):
     
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
-    
     # ENDPOINT LOGIC
     api_request = RequestUpdateRepo(repo_id, json.loads(request.data))
     response = api_request.do_process()
@@ -122,13 +109,6 @@ def update_repository_by_id(repo_id):
 
 @repository_api.route('/api/repository/<repo_id>', methods=['DELETE', 'OPTIONS'])
 def delete_repository_by_id(repo_id):
-    
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
     # ENDPOINT LOGIC
     api_request = RequestDeleteRepo(repo_id)
@@ -145,13 +125,6 @@ def delete_repository_by_id(repo_id):
 @repository_api.route('/api/repository/archive/<repo_id>', methods=['DELETE', 'OPTIONS'])
 def archive_repository_by_id(repo_id):
     
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
-    
     # ENDPOINT LOGIC
     api_request = RequestArchiveRepo(repo_id)
     response = api_request.do_process()
@@ -165,13 +138,6 @@ def archive_repository_by_id(repo_id):
 
 @repository_api.route('/api/repository/<repo_id>/item', methods=['POST', 'OPTIONS'])
 def add_repo_item(repo_id):
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
-    
 
     
     # ENDPOINT LOGIC
@@ -187,14 +153,7 @@ def add_repo_item(repo_id):
 
 @repository_api.route('/api/repository/<repo_id>/item/update', methods=['POST', 'OPTIONS'])
 def update_repo_item(repo_id):
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
-
     data = json.loads(request.data)
 
     print("\nupdate_repo_item data: {}\n\n".format(data))

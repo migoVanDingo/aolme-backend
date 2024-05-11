@@ -10,13 +10,6 @@ CORS(webhook_handler_api)
 
 @webhook_handler_api.route('/api/webhook-handler/project-created', methods=['POST'])
 def handle_project_created():
-
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
     #print('webhook_handler_api::handle_project_created::webhook_payload: {}'.format(request.data))
     # data = json.loads(request.data)

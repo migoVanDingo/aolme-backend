@@ -18,13 +18,7 @@ CORS(subprocess_api)
 
 @subprocess_api.route('/subprocess/label-studio', methods=["POST", "OPTIONS", "GET"])
 def start_label_studio_project():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
 
-        return response
     
     #data = json.loads(request.data)
     commands = [
@@ -58,13 +52,6 @@ def start_label_studio_project():
 
 @subprocess_api.route('/file/upload', methods=['POST', 'OPTIONS'])
 def upload_files_to_project():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-
-        return response
     
     data = json.loads(request.data)
 
@@ -87,13 +74,6 @@ def upload_files_to_project():
 
 @subprocess_api.route('/subprocess/jupyter', methods=['POST', 'OPTIONS'])
 def start_jupyter_notebook():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-
-        return response
     
     data = json.loads(request.data)
 

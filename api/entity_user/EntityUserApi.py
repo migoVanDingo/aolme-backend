@@ -15,12 +15,6 @@ CORS(entity_user_api)
 
 @entity_user_api.route('/api/entity-user', methods=['POST', 'OPTIONS'])
 def insert_entity_user():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
 
     print("data: {}".format(request.data))
 
@@ -90,12 +84,6 @@ def get_user_list_by_entity(entity_id):
 @entity_user_api.route('/api/entity-user', methods=['PATCH', 'OPTIONS'])
 def update_entity_user():
     
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
     data = json.loads(request.data)
 

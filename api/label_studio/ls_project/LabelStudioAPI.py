@@ -27,12 +27,6 @@ def get_repo_project_by_id(repo_id):
 
 @label_studio_api.route('/api/label_studio/project', methods=['POST', 'OPTIONS'])
 def create_project():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
 
     data = json.loads(request.data)
     print("args: {}".format(data))

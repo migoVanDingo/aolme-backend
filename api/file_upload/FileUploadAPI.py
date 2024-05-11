@@ -49,14 +49,6 @@ def upload_gt():
 
 @file_upload_api.route('/files/<file_set_id>', methods=['POST', 'OPTIONS'])
 def upload_files(file_set_id):
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-
-        return response
-    
 
     try:
         file_set_id = int(file_set_id)

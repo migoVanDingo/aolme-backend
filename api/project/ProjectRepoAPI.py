@@ -24,12 +24,6 @@ CORS(project_repo_api)
 @project_repo_api.route('/repo/project/create', methods=['POST', 'OPTIONS'])
 def create_project_in_repo():
     try:
-        if request.method == 'OPTIONS':
-            response = make_response('success', 200)
-            response.headers['Access-Control-Allow-Headers'] = '*'
-            response.headers['Access-Control-Allow-Origin'] = '*'
-            response.headers['Content-Type'] = '*'
-            return response
 
         
         if request.method == 'POST':
@@ -169,12 +163,6 @@ def get_repo_project_list():
 @project_repo_api.route('/api/project', methods=['POST', 'OPTIONS'])
 def create_project():
     try:
-        if request.method == 'OPTIONS':
-            response = make_response('success', 200)
-            response.headers['Access-Control-Allow-Headers'] = '*'
-            response.headers['Access-Control-Allow-Origin'] = '*'
-            response.headers['Content-Type'] = '*'
-            return response
         
         data = json.loads(request.data)
         api_request = RequestCreateProject(data)

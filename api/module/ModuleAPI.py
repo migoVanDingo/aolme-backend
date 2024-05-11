@@ -17,12 +17,6 @@ CORS(module_api)
 
 @module_api.route('/api/module', methods=['POST', 'OPTIONS'])
 def create_module():
-    if request.method == 'OPTIONS':
-        response = make_response('success', 200)
-        response.headers['Access-Control-Allow-Headers'] = '*'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Content-Type'] = '*'
-        return response
     
     repo_id = request.args.get('repo_id')
 

@@ -11,3 +11,4 @@ project/*
 _fs/*
 aafs/*
 _raw_files
+*.log

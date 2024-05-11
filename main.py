@@ -2,6 +2,7 @@ import json
 from flask import Flask, jsonify, make_response, request
 from flask_mysqldb import MySQL
 from flask_cors import CORS, cross_origin
+import logging
 from api.label_studio.task.TaskAPI import task_api
 from api.label_studio.project.ProjectAPI import project_api
 from api.label_studio.file_export.ExportAPI import file_export_api
@@ -23,6 +24,9 @@ from api.dataset.DatasetAPI import dataset_api
 from api.files.FilesAPI import files_api
 from api.label_studio.ls_project.LabelStudioAPI import label_studio_api
 
+logging.basicConfig(filename='record.log',
+                level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
+
 db = MySQL()
 app = Flask(__name__)
 CORS(app)
@@ -37,6 +41,17 @@ db.init_app(app)
 
 
 #app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.before_request
+def handle_options():
+    if request.method == 'OPTIONS':
+        response = make_response('success', 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    
+
 
 app.register_blueprint(task_api)
 app.register_blueprint(project_api)
