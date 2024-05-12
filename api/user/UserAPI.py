@@ -1,4 +1,5 @@
 import json
+from logging import Logger
 from flask import Blueprint, jsonify, make_response, request, current_app
 from flask_cors import CORS
 from api.organization.handler.RequestArchiveOrganization import RequestArchiveOrganization
@@ -12,6 +13,7 @@ from api.user.handler.RequestCreateUser import RequestCreateUser
 from api.user.handler.RequestDeleteUser import RequestDeleteUser
 from api.user.handler.RequestGetUserById import RequestGetUserById
 from api.user.handler.RequestUpdateUser import RequestUpdateUser
+from app.logger.AppLogger import AppLogger
 
 
 user_api = Blueprint('user_api', __name__)
@@ -20,9 +22,7 @@ CORS(user_api)
 @user_api.route('/api/user', methods=['POST', 'OPTIONS'])
 def create_user():
     
-    #data = json.loads(request.data)
-    # handler = HandleCreateUser(data)
-    # response = handler.do_process()   
+    
 
     args = request.args
     if "entity_id" in args:
@@ -110,18 +110,15 @@ def delete_user(user_id):
 
 @user_api.route('/api/user/login', methods=["POST", "OPTIONS"])
 def login():
-
-    current_app.logger.info("Login User")
     
     data = json.loads(request.data)
     handler = HandleLogin(data)
     response = handler.do_process()
-
-    current_app.logger.info("End Login User: {}".format(response))
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = '*'
     return response
+
 

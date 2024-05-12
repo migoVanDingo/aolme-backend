@@ -1,3 +1,4 @@
+from flask import current_app
 from api.files.AbstractFiles import AbstractFiles
 
 class RequestDeleteFile(AbstractFiles):
@@ -5,4 +6,11 @@ class RequestDeleteFile(AbstractFiles):
         self.data = data
 
     def do_process(self):
-        return self.delete_file(self.data['file_id'])
+        try:
+            current_app.logger.info(f"{self.__class__.__name__} :: file_id: {self.data['file_id']}")
+            response = self.delete_file(self.data['file_id'])
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            return response
+        except Exception as e:
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}", 404

@@ -1,4 +1,6 @@
 import os
+
+from flask import current_app
 from api.dataset.AbstractDataset import AbstractDataset
 from api.file_upload.FileUtility import FileUtility
 from api.label_studio.storage.local.handler.RequestSyncImportStorage import RequestSyncImportStorage
@@ -13,13 +15,13 @@ class RequestSyncLabelStudioFiles(AbstractDataset):
         
     def do_process(self):
         try:
-
+            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.data} :: file_set_id: {self.file_set_id}")
             data = self.data
 
             dao_import_storage = TableLsImportStorage()
             import_storage = dao_import_storage.read_ls_import_storage_by_subset_id(data['subset_id'])
 
-            print('RequestUploadFiles::import_storage: {}'.format(import_storage))
+            current_app.logger.info(f"{self.__class__.__name__} :: read_ls_import_storage_by_subset_id: {import_storage}")
 
             path = ""
             if(data['entity_id'].startswith("ORG")):
@@ -27,10 +29,11 @@ class RequestSyncLabelStudioFiles(AbstractDataset):
             elif(data['entity_id'].startswith("USR")):
                 path = os.path.join(os.environ["USER_DIRECTORY"], data['entity_id'], "dataset", data['dataset_id'], "subset", data['subset_id'])
             else:
-                print("RequestSyncLabelStudioFiles::Error: Invalid entity_id: " + data['entity_id'])
+                current_app.logger.error(f"{self.__class__.__name__} :: Invalid entity_id: {data['entity_id']}")
                 return "RequestSyncLabelStudioFiles::Error: Invalid entity_id: " + data['entity_id']
             
-            print('RequestSyncLabelStudioFiles::path: {}'.format(path))
+            
+            current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
 
             xlsx_files = os.listdir(os.path.join(path, "xlsx"))
 
@@ -46,17 +49,18 @@ class RequestSyncLabelStudioFiles(AbstractDataset):
                 "use_blob_urls": True
             }
 
+            current_app.logger.info(f"{self.__class__.__name__} :: RequestSyncImportStorage payload: {payload}")
             api_request = RequestSyncImportStorage(import_storage['ls_import_id'], payload)
             response = api_request.do()
-            print("FileUploadAPI -- RequestSyncImportStorage response: {}".format(response))
+            current_app.logger.info(f"{self.__class__.__name__} :: RequestSyncImportStorage response: {response}")
 
 
             import_xlsx = HandleUploadGroundTruthLabelStudio()
             import_xlsx_response = import_xlsx.do_process(import_storage['ls_project_id'], data['entity_id'], data['dataset_id'], data['subset_id'])
-            print("Upload gt response: {}".format(import_xlsx_response))
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {import_xlsx_response}")
 
             return import_xlsx_response
             
         except Exception as e:
-            print("RequestSyncLabelStudioFiles -- do_process() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "RequestSyncLabelStudioFiles -- do_process() Error: " + str(e)

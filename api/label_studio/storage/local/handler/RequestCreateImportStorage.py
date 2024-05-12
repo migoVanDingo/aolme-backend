@@ -1,3 +1,4 @@
+from flask import current_app
 import json, requests, os
 from dotenv import load_dotenv
 load_dotenv()
@@ -11,6 +12,7 @@ class RequestCreateImportStorage:
 
     def do(self):
         try:
+            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.payload}")
             #print("Token: {}".format(self.token))
             headers = {
                 "Authorization":"Token {}".format(self.token),
@@ -22,7 +24,8 @@ class RequestCreateImportStorage:
             x = requests.post(self.url, data=data, headers=headers)
 
             #print('import storage: {}'.format(x))
-
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {x.json()}")
             return x.json()
         except Exception as e:
-            return "Error: " + str(e), 404
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}", 404

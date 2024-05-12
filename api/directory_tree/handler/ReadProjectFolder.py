@@ -1,5 +1,5 @@
 import os, json
-from flask import jsonify
+from flask import current_app, jsonify
 from dotenv import load_dotenv
 from api.directory_tree.AbstractDirectoryTree import AbstractDirectoryTree
 load_dotenv()
@@ -15,19 +15,26 @@ class ReadProjectFolder(AbstractDirectoryTree):
 
     
     def do_process(self):
-        #dir_list = os.listdir(self.path)
-        #dir_list = os.walk(self.path, topdown=True)
+        try:
+            #dir_list = os.listdir(self.path)
+            #dir_list = os.walk(self.path, topdown=True)
+            current_app.logger.info(f"{self.__class__.__name__} :: entity_id: {self.entity_id}")
+            current_app.logger.info(f"{self.__class__.__name__} :: args: {self.args}")
 
-        print('sa: {}'.format(self.args))
 
-        for item in self.args:
-            self.path = '{}/{}'.format(self.path, item) 
+            for item in self.args:
+                self.path = '{}/{}'.format(self.path, item) 
 
-        print('PATH: {}'.format(self.path))
+ 
+            current_app.logger.info(f"{self.__class__.__name__} :: path: {self.path}")
 
-        response = self.get_folder_items(self.path)
-        return response
-
+            response = self.get_folder_items(self.path)
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            return response
+        except Exception as e:
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}", 404
+        
         
 
         # items = []

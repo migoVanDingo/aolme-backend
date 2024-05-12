@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from flask import current_app
 from api.user.AbstractUser import AbstractUser
 from dao.TableEntityUser import TableEntityUser
 
@@ -10,25 +12,23 @@ class RequestUpdateUser(AbstractUser):
 
     def do_process(self):
         try:
+            current_app.logger.info(f"{self.__class__.__name__} :: user_id: {self.user_id} :: payload: {self.params}")
 
-            print("\n params: {}\n\n".format(self.params))
-
-            print("\n userId: {}\n\n".format(self.user_id))
             self.params["updated_at"] = "{}".format(datetime.now())
             updateEmail = self.update_user_email(self.params, self.user_id)
-            print("\n updateEmail: {}\n".format(updateEmail))
+            current_app.logger.info(f"{self.__class__.__name__} :: updateEmail: {updateEmail}")
+
             updateUsername = self.update_username(self.params, self.user_id)
-            print("\n updateUsername: {}\n".format(updateUsername))
+            current_app.logger.info(f"{self.__class__.__name__} :: updateUsername: {updateUsername}")
 
 
             entity_user_table = TableEntityUser()
             updateRoles = entity_user_table.update_entity_user_roles(self.params, self.params["entity_user_id"])
-            print("\n updateRoles: {}\n".format(updateRoles))
+            current_app.logger.info(f"{self.__class__.__name__} :: updateRoles: {updateRoles}")
 
 
             updateStatus = entity_user_table.update_entity_user_status(self.params, self.params["entity_user_id"])
-
-            print("\n updateStatus: {}\n".format(updateStatus)) 
+            current_app.logger.info(f"{self.__class__.__name__} :: updateStatus: {updateStatus}")
 
             
 
@@ -38,10 +38,12 @@ class RequestUpdateUser(AbstractUser):
                 "user_id": self.user_id
             }
 
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+
             return response
     
         except Exception as e:
-            print("RequestUpdateUser -- do_process() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "RequestUpdateUser -- do_process() Error: " + str(e)
 
 

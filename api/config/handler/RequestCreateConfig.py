@@ -1,5 +1,7 @@
 from datetime import datetime
 import os
+
+from flask import current_app
 from api.config.AbstractConfig import AbstractConfig
 from api.config.entity.CreateConfigValidator import CreateConfigValidator
 from dao.TableRepoItem import TableRepoItem
@@ -16,7 +18,7 @@ class RequestCreateConfig(AbstractConfig):
 
     def do_process(self):
         try:
-
+            current_app.logger.info(f"{self.__class__.__name__} :: params: {self.params} :: repo_id: {self.repo_id}")
             dao_response = "NULL"
             if "USR" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['USER_DIRECTORY'], self.params.get('entity_id'))
@@ -24,17 +26,19 @@ class RequestCreateConfig(AbstractConfig):
                 path = os.path.join(os.environ['ORGANIZATION_DIRECTORY'], self.params.get('entity_id'))
                 
             path = os.path.join(path, 'config')
+            current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
             
             
             files = self.files
             now = "{}".format(datetime.now())
             for file in files:
                 if file.filename == '':
+                    current_app.logger.error(f"{self.__class__.__name__} :: File must have name")
                     return "File must have name"
                 
 
                 path = os.path.join(path, file.filename)
-                print("path: {}".format(path))
+                current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
                 # Create entry in db first to get config_id
                 payload = {
                     "entity_id": self.params.get('entity_id'),
@@ -50,14 +54,17 @@ class RequestCreateConfig(AbstractConfig):
 
                 payload['is_public'] = 1 if self.params.get('is_public') == '1' else 0
 
-                print("payload: {}".format(payload))
+                current_app.logger.info(f"{self.__class__.__name__} :: payload: {payload}")
 
                 validator = CreateConfigValidator()
                 is_valid = validator.validate(payload)
                 if is_valid[0] is False:
+                    current_app.logger.error(f"{self.__class__.__name__} :: Error: Invalid Payload: {is_valid[1]}")
                     return is_valid[1]
                 
                 dao_response = self.create(payload)
+
+                current_app.logger.info(f"{self.__class__.__name__} :: create-config-response: {dao_response}")
 
                 if self.repo_id is not None:
                     repo_item_payload = {
@@ -68,10 +75,11 @@ class RequestCreateConfig(AbstractConfig):
                         "created_by": dao_response['created_by'],
                         "type": "CONFIG"
                     }
-                    print("Saving repo_item -- payload: {}".format(repo_item_payload))
+                    current_app.logger.info(f"{self.__class__.__name__} :: repo_item_payload: {repo_item_payload}")
+
                     table_repo_item = TableRepoItem()
                     response = table_repo_item.insert(repo_item_payload)
-                    print("TableRepoItem::::insert()::::response: {}".format(response))
+                    current_app.logger.info(f"{self.__class__.__name__} :: insert-repo-item-response: {response}")
 
                 # print("dao_response: {}".format(dao_response))
                 # config_id = dao_response['config_id']
@@ -86,9 +94,10 @@ class RequestCreateConfig(AbstractConfig):
 
 
 
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {dao_response}")
             return dao_response
             
 
         except Exception as e:
-            print("RequestCreateConfig -- do_process() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "RequestCreateConfig -- do_process() Error: " + str(e)

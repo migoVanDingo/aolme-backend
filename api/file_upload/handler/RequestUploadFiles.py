@@ -1,6 +1,6 @@
 import os
 from time import sleep
-from flask import Flask, flash, make_response, request, redirect, url_for
+from flask import Flask, current_app, flash, make_response, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from api.file_upload.FileUtility import FileUtility
 from api.subprocess.handler.HandleUploadGroundTruthLabelStudio import HandleUploadGroundTruthLabelStudio
@@ -23,7 +23,7 @@ class RequestUploadFiles:
 
     def do(self):
         
-
+        current_app.logger.info(f"{self.__class__.__name__} :: project_id: {self.project_id} :: repo_id: {self.repo_id} :: file_set_id: {self.file_set_id}")
         """ if 'file' not in request.files:
                 response = make_response('No file found', 500)
                 return response """
@@ -44,10 +44,12 @@ class RequestUploadFiles:
         for file in files:
 
             if file.filename == '':
+                current_app.logger.error(f"{self.__class__.__name__} :: Error ::File must have name")
                 response = make_response('File must have name', 500)
                 return response
     
-            print("file: {}".format(file.filename))
+
+            current_app.logger.info(f"{self.__class__.__name__} :: file: {file.filename}")
             # Create the uploads directory
             # current_directory = os.getcwd()
             
@@ -76,8 +78,8 @@ class RequestUploadFiles:
                 file_type = ''
                 match filename[1]:
                     case 'mp4':
-                        print('Save mp4 files')
                         save_path = os.path.join(self.final_path, file.filename)
+                        current_app.logger.info(f"{self.__class__.__name__} :: Save video files: {save_path}")
                         file.save(save_path)
                         file_type = "VIDEO"
                     
@@ -86,6 +88,7 @@ class RequestUploadFiles:
                         print('Save xlsx files')
                         save_path = os.path.join(self.gt_path, file.filename)
                         table_files.make_directory_reformat_gt(self.project_id, repo_path)
+                        current_app.logger.info(f"{self.__class__.__name__} :: Save xlsx files: {save_path}")
                         file.save(save_path)
                         sleep(1)
                         FileUtility.signal_reformat_xlsx(self.repo_id, self.file_set_id)
@@ -94,6 +97,7 @@ class RequestUploadFiles:
 
                     case _:
                         print("The file didn't match, extention: {}".format(filename[1]))
+                        current_app.logger.error(f"{self.__class__.__name__} :: The file didn't match, extention: {filename[1]}")
                 
                 
                 
@@ -111,6 +115,7 @@ class RequestUploadFiles:
                 }
 
 
+                current_app.logger.info(f"{self.__class__.__name__} :: create-file-info-payload: {payload}")
                 insert_file = table_files.create_file_info(payload)
 
                 #print(insert_file)
@@ -122,12 +127,12 @@ class RequestUploadFiles:
             
             self.count = self.count + 1
 
-        print('Pre-signal_create_local_storage()')
+        
         local_storage_directory = FileUtility.signal_create_local_storage(self.project_id, self.repo_id)
-        print(local_storage_directory)
+        current_app.logger.info(f"{self.__class__.__name__} :: local_storage_directory: {local_storage_directory}")
         move_files_response = FileUtility.move_files_to_local_storage(self.project_id, self.repo_id)
 
-        
+        current_app.logger.info(f"{self.__class__.__name__} :: Response: {move_files_response}")
         return move_files_response
     
 def allowed_file(filename):

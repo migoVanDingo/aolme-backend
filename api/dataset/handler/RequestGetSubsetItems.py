@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import current_app, jsonify
 from api.dataset.AbstractDataset import AbstractDataset
 
 class RequestGetSubsetItems(AbstractDataset):
@@ -8,11 +8,11 @@ class RequestGetSubsetItems(AbstractDataset):
 
     def do_process(self):
         try:
-
+            current_app.logger.info(f"{self.__class__.__name__} :: subset_id: {self.subset_id}")
             response = self.read_items_by_subset_id(self.subset_id)
-            print("RequestGetSubsetItems -- do_process() response: " + str(response))
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
             return jsonify(response)
             
         except Exception as e:
-            print("RequestGetSubsetItems -- do_process() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "RequestGetSubsetItems -- do_process() Error: " + str(e)

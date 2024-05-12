@@ -1,3 +1,4 @@
+from flask import current_app
 import requests, os
 from dotenv import load_dotenv
 load_dotenv()
@@ -8,11 +9,16 @@ class RequestDeleteImportStorage:
         self.url = "http://localhost:8080/api/storages/localfiles/{}".format(self.file_id)
         
     def do(self):
-        headers = {
-            "Authorization":"Token {}".format(self.token)
-        }
+        try:
+            current_app.logger.info(f"{self.__class__.__name__} :: file_id: {self.file_id}")
+            headers = {
+                "Authorization":"Token {}".format(self.token)
+            }
 
-        x = requests.delete(self.url, headers=headers)
+            x = requests.delete(self.url, headers=headers)
 
-        print(x)
-        return x.status_code
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {x.status_code}")
+            return x.status_code
+        except Exception as e:
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}", 404

@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 
-from flask import jsonify
+from flask import current_app, jsonify
 from api.files.AbstractFiles import AbstractFiles
 from api.dataset.entity.CreateDatasetValidator import CreateDatasetValidator
 from dao.TableRepoItem import TableRepoItem
@@ -15,10 +15,10 @@ class RequestCreateFileRecord(AbstractFiles):
 
     def do_process(self):
         try:
-
+            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.params}")
             dao_response = "NULL"
 
-            print("params: {}".format(self.params))
+           
             path = ''
             if "USR" in self.params.get('entity_id'):
                 path = os.path.join(os.environ['USER_DIRECTORY'], self.params.get('entity_id'))
@@ -28,7 +28,6 @@ class RequestCreateFileRecord(AbstractFiles):
 
             
             
-
             
             repo_path = None
             if self.repo_id is not None:
@@ -38,23 +37,24 @@ class RequestCreateFileRecord(AbstractFiles):
                 repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
                 repo_path = os.path.join(repo_path, self.params['type'].lower())
 
-            print("repo_path: {}".format(repo_path))
+            current_app.logger.info(f"{self.__class__.__name__} :: repo_path: {repo_path}")
 
             path = os.path.join(path, self.params['type'].lower())
 
-
+            current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
+            
             files = self.files
 
-            print("files: {}".format(files))
+            current_app.logger.info(f"{self.__class__.__name__} :: files: {files}")
             now = "{}".format(datetime.now())
             for file in files:
                 if file.filename == '':
-                    print("Error: File must have name")
+                    current_app.logger.error(f"{self.__class__.__name__} :: Error ::File must have name")
                     return "File must have name"
                 
         
                 path = os.path.join(path, file.filename)
-                print("path: {}".format(path))
+                current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
                 # Create entry in db first to get dataset_id
                 payload = {
                     "entity_id": self.params['entity_id'],
@@ -70,8 +70,8 @@ class RequestCreateFileRecord(AbstractFiles):
                 }
 
                 
-
-                print("payload: {}".format(payload))
+                current_app.logger.info(f"{self.__class__.__name__} :: payload: {payload}")
+                
 
                 
 
@@ -82,8 +82,7 @@ class RequestCreateFileRecord(AbstractFiles):
                 #     return is_valid[1]
                 
                 dao_response = self.insert_file(payload)
-
-                print("daoReponse: {}".format(dao_response))
+                current_app.logger.info(f"{self.__class__.__name__} :: dao_response: {dao_response}")
 
                 if self.repo_id is not None:
                     repo_item_payload = {
@@ -94,10 +93,11 @@ class RequestCreateFileRecord(AbstractFiles):
                         "created_by": dao_response['created_by'],
                         "type": dao_response['type']
                     }
-                    print("Saving repo_item -- payload: {}".format(repo_item_payload))
+                    
+                    current_app.logger.info(f"{self.__class__.__name__} :: repo_item_payload: {repo_item_payload}")
                     table_repo_item = TableRepoItem()
                     response = table_repo_item.insert(repo_item_payload)
-                    print("TableRepoItem::::insert()::::response: {}".format(response))
+                    current_app.logger.info(f"{self.__class__.__name__} :: TableRepoItem::::insert()::::response: {response}")
                     
                 
 
@@ -112,15 +112,16 @@ class RequestCreateFileRecord(AbstractFiles):
                 file.save(path)
                 if self.repo_id is not None:
                     repo_path = os.path.join(repo_path, file.filename)
-                    print("Saving to repo_path: {}".format(repo_path))
+                    current_app.logger.info(f"{self.__class__.__name__} :: repo_path: {repo_path}")
                     file.save(repo_path)
 
 
 
 
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: SUCCESS")
             return "SUCCESS"
             
 
         except Exception as e:
-            print("RequestCreateFileRecord -- do_process() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "RequestCreateFileRecord -- do_process() Error: " + str(e), 404

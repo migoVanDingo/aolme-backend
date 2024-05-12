@@ -1,4 +1,6 @@
 import os
+
+from flask import current_app
 from api.files.AbstractFiles import AbstractFiles
 from dao.TableFiles import TableFiles
 
@@ -10,9 +12,11 @@ class RequestUploadFile(AbstractFiles):
 
     def do_process(self):
         try:
+            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.data}")
             for file in self.files:
 
                 if file.filename == '':
+                    current_app.logger.error("FILE_MUST_HAVE_NAME")
                     return "FILE_MUST_HAVE_NAME", 500
                 
                 current_directory = os.getcwd()
@@ -21,7 +25,7 @@ class RequestUploadFile(AbstractFiles):
 
                 uploads_directory = os.path.join(uploads_directory, self.data['org_id'])
 
-
+                current_app.logger.info(f"{self.__class__.__name__} :: uploads_directory: {uploads_directory}")
 
                 # match self.data["type"]:
                 #     case 'DATASET':
@@ -57,10 +61,14 @@ class RequestUploadFile(AbstractFiles):
             #create file entry payload for DB
 
             #insert file entry into DB
-            return self.insert_file(self.data['file_name'], self.data['file_content'])
+
+            response = self.insert_file(self.data['file_name'], self.data['file_content'])
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            return response
         
         except Exception as e:
-            return "Error: " + str(e), 404
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}", 404
         
 
 def allowed_file(filename):

@@ -1,3 +1,4 @@
+from flask import current_app
 import os, requests
 from dotenv import load_dotenv
 load_dotenv()
@@ -9,6 +10,7 @@ class RequestCreateWebhook:
 
     def do(self):
         try:
+            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.payload}")
             headers = {
                 "Authorization":"Token {}".format(self.token)
             }
@@ -17,7 +19,7 @@ class RequestCreateWebhook:
 
             #print("response: {}".format(response.content.decode('utf-8')))
 
-            
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response.content.decode('utf-8')}")
             return response.content.decode('utf-8')
         except Exception as e:
             return "Error: " + str(e), 404

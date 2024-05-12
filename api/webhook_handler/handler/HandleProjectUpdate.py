@@ -98,6 +98,14 @@ class HandleProjectUpdate:
             "path": gt_processed_path, 
             "is_public": 1, 
             "is_active": 1, 
+            "created_by": ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "entity_id": ls_project['entity_id'], 
+            "name": ls_project['name'], 
+            "description": ls_project['description'], "owner": ls_project['entity_id'], 
+            "type": "ANNOTATION", 
+            "path": gt_processed_path, 
+            "is_public": 1, 
+            "is_active": 1, 
             "created_by": ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
@@ -117,6 +125,7 @@ class HandleProjectUpdate:
 
         # print("Response Insert File: {}".format(response_repo_item))
 
+        print("HandleProjectUpdate::allFramesFilename: {}".format(allFramesFilename))
         print("HandleProjectUpdate::allFramesFilename: {}".format(allFramesFilename))
         table_subset_item = TableSubsetItem()
         payload_subset_item = {

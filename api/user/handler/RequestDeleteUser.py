@@ -1,3 +1,4 @@
+from flask import current_app
 from api.user.AbstractUser import AbstractUser
 
 class RequestDeleteUser(AbstractUser):
@@ -5,4 +6,9 @@ class RequestDeleteUser(AbstractUser):
         self.user_id = user_id
 
     def do_process(self):
-        return self.delete_user(self.user_id)
+        try:
+            current_app.logger.info(f"{self.__class__.__name__} :: user_id: {self.user_id}")
+            return self.delete_user(self.user_id)
+        except Exception as e:
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}"

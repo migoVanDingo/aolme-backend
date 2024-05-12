@@ -1,3 +1,4 @@
+from flask import current_app
 import json, requests, os
 from dotenv import load_dotenv
 load_dotenv()
@@ -11,12 +12,17 @@ class RequestUpdateExportStorage:
 
 
     def do(self):
-        headers = {
-            "Authorization":"Token {}".format(self.token),
-            "Content-Type": "application/json"
-        }
+        try:
+            current_app.logger.info(f"{self.__class__.__name__} :: file_id: {self.file_id}")
+            headers = {
+                "Authorization":"Token {}".format(self.token),
+                "Content-Type": "application/json"
+            }
 
-        data = json.dumps(self.payload)
-        x = requests.post(self.url, data=data, headers=headers)
+            data = json.dumps(self.payload)
+            x = requests.post(self.url, data=data, headers=headers)
 
-        return x.json()
+            return x.json()
+        except Exception as e:
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}", 404

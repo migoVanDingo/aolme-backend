@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import current_app, jsonify
 from api.label_studio.ls_project.AbstractLsProject import AbstractLsProject
 
 class RequestGetLsProjectByRepoId(AbstractLsProject):
@@ -8,11 +8,12 @@ class RequestGetLsProjectByRepoId(AbstractLsProject):
 
     def do_process(self):
         try:
+            current_app.logger.info(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
             ls_project = self.get_ls_project_by_repo_id(self.repo_id)
             print("ls_project: {}".format(ls_project))
-
+            current_app.logger.info(f"{self.__class__.__name__} :: Response: {ls_project}")
             return jsonify(ls_project)
             
         except Exception as e:
-            print("Error: {}".format(e))
-            return None
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return f"{self.__class__.__name__} :: ERROR: {str(e)}", 404

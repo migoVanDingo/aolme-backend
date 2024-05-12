@@ -1,5 +1,7 @@
 import json
 import os
+
+from flask import current_app
 from api.dataset.AbstractDataset import AbstractDataset
 
 class RequestGetSubsetAnnotation(AbstractDataset):
@@ -21,27 +23,26 @@ class RequestGetSubsetAnnotation(AbstractDataset):
             #     path = os.path.join(os.environ["USER_DIRECTORY"], self.entity_id, "dataset", self.dataset_id, "subset", self.subset_id)
 
             # annotation_dir = os.path.join(path, "annotation")
+            current_app.logger.info(f"{self.__class__.__name__} :: subset_id: {self.subset_id}")
             subset = self.read_subset(self.subset_id)
             path = subset['path']
             annotation_path = os.path.join(path, "annotation")
+            current_app.logger.info(f"{self.__class__.__name__} :: annotation_path: {annotation_path}")
 
             filename = self.filename.split(".")
             filename = filename[0] + ".json"
 
-            print("RequestGetSubsetAnnotation::do_process::filename: {}".format(filename))
-
-            print("RequestGetSubsetAnnotation::do_process::annotation_path: {}".format(annotation_path))
+            current_app.logger.info(f"{self.__class__.__name__} :: filename: {filename}")
 
             #read annotation dir
             files = os.listdir(annotation_path)
             for file in files:
-                print('file: {}'.format(file))
-                print('filename: {}'.format(filename))
+                current_app.logger.info(f"{self.__class__.__name__} :: file: {file}")
                 #read file
                 if file == filename:
                     with open(os.path.join(annotation_path,filename), 'r', encoding='utf-8') as f:
                         data = json.load(f)
-                            
+                        current_app.logger.info(f"{self.__class__.__name__} :: response: {data}")
                         return data
                     
             return "RequestGetSubsetAnnotation::do_process::Error: File not found"
@@ -49,5 +50,5 @@ class RequestGetSubsetAnnotation(AbstractDataset):
             
         
         except Exception as e:
-            print("RequestGetSubsetAnnotation::do_process::Error: {}".format(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "RequestGetSubsetAnnotation::do_process::Error: {}".format(e)
