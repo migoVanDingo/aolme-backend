@@ -1,6 +1,6 @@
 import os
 from time import sleep
-from flask import Blueprint, jsonify, make_response, request, flash, url_for
+from flask import Blueprint, current_app, jsonify, make_response, request, flash, url_for
 import json
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
@@ -41,7 +41,7 @@ def upload_gt():
         response.headers['Content-Type'] = '*'
         return response
     except Exception as e:
-        print("FILE_UPLOAD_API::upload_ground_truth::Error===========>>> " + str(e))
+        current_app.logger.error("FileUploadAPI -- upload_gt() -- Error: {}".format(str(e)))
         return "FILE_UPLOAD_API::upload_ground_truth::Error===========>>> " + str(e), 404
 
 
@@ -59,16 +59,15 @@ def upload_files(file_set_id):
         dao_import_storage = TableLsImportStorage()
         import_storage = dao_import_storage.read_ls_import_storage_by_repo_id(repo_id)
 
-        print('RequestUploadFiles::import_storage: {}'.format(import_storage))
+        current_app.logger.info("FileUploadAPI -- upload_files() -- import_storage: {}".format(import_storage))
 
 
-        print("Files length: {}".format(len(files)))
-        print('FileUploadAPI project_id: {} --- {}'.format(import_storage['project_id'], import_storage['project_id']))
-        print("REPO ID: {}".format(repo_id))    
+        current_app.logger.info("FileUploadAPI -- upload_files() -- data: {}".format(data))
+
         api_request = RequestUploadFiles(import_storage['project_id'],files, repo_id, file_set_id)
         
         upload_files_response = api_request.do()
-        print("FileUploadAPI -- RequestUploadFiles response: {}".format(upload_files_response))
+        current_app.logger.info("FileUploadAPI -- upload_files() -- upload_files_response: {}".format(upload_files_response))
         
         sleep(1)
     
@@ -81,36 +80,21 @@ def upload_files(file_set_id):
                     "use_blob_urls": True,
                 }
 
-        # print("TRIPPING payload: {}".format(payload))
-        # validator = PayloadCreateImportStorage()
-        # is_valid = validator.validate(payload)
-        # if is_valid[0] is False:
-        #     print("TRIPPING is_valid: {}".format(is_valid[1]))
-        #     return is_valid[1]
         
-        # print("PRE -- RequestCreateImportStorage")
-        # api_request = RequestCreateImportStorage(payload)
-        # local_storage_response = api_request.do()
-
-
-        # print("FileUploadAPI -- RequestCreateImportStorage response: {}".format(local_storage_response))
-        #print("localStorage response: {}".format(local_storage))
-            
 
         payload = { 
                 "project": import_storage['project_id'],
                 "use_blob_urls": True
             }
-
+        current_app.logger.info("FileUploadAPI -- upload_files() -- request-sync-import-payload: {}".format(payload))
         api_request = RequestSyncImportStorage(import_storage['ls_id'], payload)
         response = api_request.do()
-        print("FileUploadAPI -- RequestSyncImportStorage response: {}".format(response))
-        #print("sync storage {}".format(sync_storage_response))
+        current_app.logger.info("FileUploadAPI -- upload_files() -- request-sync-import-response: {}".format(response))
 
             
         import_xlsx = HandleUploadGroundTruthLabelStudio()
         import_xlsx_response = import_xlsx.do_process(import_storage['project_id'], repo_id)
-        print("Upload gt response: {}".format(import_xlsx_response))
+        current_app.logger.info("FileUploadAPI -- upload_files() -- import_xlsx_response: {}".format(import_xlsx_response))
 
     
         response = make_response("DONE", 200)
@@ -120,8 +104,8 @@ def upload_files(file_set_id):
         return response
 
     except Exception as e:
-        print("Error yoseph: {}".format(str(e)))
-        return "Error yosephat: " + str(e), 404
+        current_app.logger.error("FileUploadAPI -- upload_files() -- Error: {}".format(str(e)))
+        return "FILE_UPLOAD_API::upload_files::Error===========>>> " + str(e), 404
 
 
 @file_upload_api.route('/files/<project_id>', methods=['GET'])
@@ -130,7 +114,6 @@ def get_project_files(project_id):
 
         api_request = RequestGetProjectFiles(project_id)
         response = api_request.do()
-        #print('response: {}'.format(response))
         
         
 
@@ -142,57 +125,3 @@ def get_project_files(project_id):
      
     except Exception as e:
         return "Error: " + str(e), 404
-
-
-# UPLOAD_FOLDER = '/uploads'
-# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json', 'csv'}
-
-# @file_upload_api.route("/upload", methods=['POST', 'OPTIONS'])
-# def upload_files():
-    
-    
-#     if request.method == 'OPTIONS':
-#         response = make_response('success', 200)
-#         response.headers['Access-Control-Allow-Headers'] = '*'
-#         response.headers['Access-Control-Allow-Origin'] = '*'
-#         response.headers['Content-Type'] = '*'
-
-#         return response
-
-#     """ if 'file' not in request.files:
-#         response = make_response('No file found', 500)
-#         return response """
-    
-#     files = request.files.getlist('file')
-#     print(len(files))
-
-
-#         # If the user does not select a file, the browser submits an
-#         # empty file without a filename.
-
-#     for file in files:
-
-#         if file.filename == '':
-#             response = make_response('File must have name', 500)
-#             return response
-    
-#         # Create the uploads directory
-#         current_directory = os.getcwd()
-#         uploads_directory = os.path.join(current_directory, 'uploads')
-    
-#         if file and allowed_file(file.filename):
-#             #filename = secure_filename(file.filename)
-#             print(os.path.join(uploads_directory, file.filename))
-#             file.save(os.path.join(uploads_directory, file.filename))
-#             #print(jsonify(url_for('download_file', name=file.filename)))
-            
-#         print(file.filename)
-
-#     response = make_response('success', 200)
-#     response.headers['Access-Control-Allow-Origin'] = '*'
-#     return response
-    
-# def allowed_file(filename):
-#     return '.' in filename and \
-#            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-

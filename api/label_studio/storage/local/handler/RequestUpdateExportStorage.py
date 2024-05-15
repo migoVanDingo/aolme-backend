@@ -13,7 +13,7 @@ class RequestUpdateExportStorage:
 
     def do(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: file_id: {self.file_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: file_id: {self.file_id}")
             headers = {
                 "Authorization":"Token {}".format(self.token),
                 "Content-Type": "application/json"

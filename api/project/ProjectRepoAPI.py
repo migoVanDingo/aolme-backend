@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, jsonify, make_response, request, flash, url_for
+from flask import Blueprint, current_app, jsonify, make_response, request, flash, url_for
 import json
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
@@ -39,7 +39,7 @@ def create_project_in_repo():
             }
             api_request = RequestCreateProject(payload)
             label_studio_project = api_request.do()
-            print("lsPRO: {}".format(label_studio_project))
+            current_app.logger.info("ProjectRepoAPI -- create_project_in_repo() -- request-create-project response: {}".format(label_studio_project))
 
             payload_create_webhook = {
                 "actions": [
@@ -53,16 +53,16 @@ def create_project_in_repo():
                 "url": "http://127.0.0.1:5000/api/webhook-handler/project-created"
             }
 
-            print('MY payload : {}'.format(payload))
+            current_app.logger.info("ProjectRepoAPI -- create_project_in_repo() -- payload_create_webhook: {}".format(payload_create_webhook))
 
             create_webhook = RequestCreateWebhook(payload_create_webhook)
             response = create_webhook.do()
 
 
-        
+            current_app.logger.info("ProjectRepoAPI -- create_project_in_repo() -- create_webhook response: {}".format(response))
             #Create project in my app
             if label_studio_project is not None:
-                #print('ls project ID: {}'.format(label_studio_project['id']))
+
                 payload = {
                     "name": data['name'],
                     "description": data['description'],
@@ -72,21 +72,12 @@ def create_project_in_repo():
                     "ls_project_id":label_studio_project['id'],
                     "organization": "aolme"
                 }
+                current_app.logger.info("ProjectRepoAPI -- create_project_in_repo() -- payload_create_repo_project: {}".format(payload))
                 api_request = RequestCreateRepoProject(payload)
 
                 repo_project = api_request.do()
-                #print("repo project response: {}".format(repo_project.data))
-
-            #Create project in Label Studio
-            # if repo_project is not None:
-            #     payload = {
-            #         "title": data['name'],
-            #         "description": data['description']
-            #     }
-            #     api_request = RequestCreateProject(payload)
-            #     label_studio_project = api_request.do()
-            #     print(label_studio_project)
-
+                current_app.logger.info("ProjectRepoAPI -- create_project_in_repo() -- request_create_repo_project response: {}".format(repo_project))
+                
             #Add Local storage to Label Studio project
             if label_studio_project is not None:  
                 response_payload = {
@@ -96,43 +87,19 @@ def create_project_in_repo():
                     "path": "/Users/bubz/Developer/master-project/aolme-backend/uploads/{}/videos".format(label_studio_project['id']),
                     "use_blob_urls": True,
                 }
-                # validator = PayloadCreateImportStorage()
-                # is_valid = validator.validate(payload)
-                # if is_valid[0] is False:
-                #     return is_valid[1]
-                # api_request = RequestCreateImportStorage(payload)
-                # local_storage = api_request.do()
-                # print(local_storage)
-
                 
-                """ response = {
-                    "project_id":label_studio_project['id'],
-                    "local_storage_id": local_storage['id']
-                    } """
-                   
-
-
-
-            
-            
-            # if label_studio_project is not None:
-                
-            #     api_request = RequestUploadFiles(files)
-            #     upload_files_response = api_request.do()
-                
-            
+                current_app.logger.info("ProjectRepoAPI -- create_project_in_repo() -- response_payload: {}".format(response_payload))
             return response_payload, 200
         
         
     except Exception as e:
-        print(str(e))
-        return "Error: " + str(e), 404
+        current_app.logger.error("Error: ProjectRepoAPI -- create_project_in_repo(): " + str(e))    
+        return "Error: ProjectRepoAPI -- create_project_in_repo(): " + str(e), 404
     
 @project_repo_api.route('/repo/project/<project_id>', methods=['GET'])
 def get_repo_project_by_id(project_id):
     try:
 
-        print(project_id)
         api_request = RequestGetProjectById(project_id)
         
         res = api_request.do_process()

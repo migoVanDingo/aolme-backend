@@ -25,9 +25,9 @@ class RequestCreateDataset(AbstractDataset):
                 return is_valid[1]
             
     
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.data}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.data}")
             response = self.create(self.data)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             
             return response
             

@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from flask import current_app
+
 
 class TableRepoItem:
     def __init__(self):
@@ -18,12 +20,12 @@ class TableRepoItem:
             self.db.connection.commit()
             cur.close()
 
-            print("TableRepoItem -- insert() Success: ", payload)
+            current_app.logger.debug(f"{self.__class__.__name__} :: insert-repo-item :: payload: {payload}")
 
             return payload
         
         except Exception as e:
-            print("TableRepoItem -- insert() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: insert-repo-item :: Error: {str(e)}")
             return "TableRepoItem -- insert() Error: " + str(e)
         
     def archive(self, repo_item_id):
@@ -60,48 +62,8 @@ class TableRepoItem:
             
             return data
 
-            """ result = []
-            for item in repo_item_data:
-                #print("item: ", item)
-                res = None
-
-                query = "SELECT * FROM files WHERE file_id = %s AND is_active = 1"
-                cur = self.db.connection.cursor()
-                cur.execute(query, (item['file_id'],))
-                res = cur.fetchall()
-                cur.close()
-                result.append(res[0]) 
-                match item['type']:
-                    case "DATASET":
-                        query = "SELECT * FROM dataset WHERE dataset_id = %s AND is_active = 1"
-                        cur = self.db.connection.cursor()
-                        cur.execute(query, (item['repo_item_id'],))
-                        res = cur.fetchall()
-                        cur.close()
-                        
-                        
-                    case "CONFIG":
-                        query = "SELECT * FROM config WHERE config_id = %s AND is_active = 1"
-                        cur = self.db.connection.cursor()
-                        cur.execute(query, (item['repo_item_id'],))
-                        res = cur.fetchall()
-                        cur.close()
-                        
-                    case "MODULE":
-                        query = "SELECT * FROM module WHERE module_id = %s AND is_active = 1"
-                        cur = self.db.connection.cursor()
-                        cur.execute(query, (item['repo_item_id'],))
-                        res = cur.fetchall()
-                        cur.close()
-                        
-                    case _:
-                        print("Invalid type")
-
-                
             
-            print("result: ", result)
-            return result """
 
         except Exception as e:
-            print("TableRepoItem -- read_list_repo_item() Error: " + str(e))
-            return "TableRepoItem -- read_list_repo_item() Error: " + str(e)
+            current_app.logger.error(f"{self.__class__.__name__} :: read_list_repo_items :: Error: {str(e)}")
+            return f"{self.__class__.__name__} :: read_list_repo_items :: Error: {str(e)}"

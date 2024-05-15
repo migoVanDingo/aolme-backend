@@ -7,10 +7,10 @@ class RequestUpdateUserGroup(AbstractUserGroup):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.params}")
             
             response = self.update_user_group(self.params)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
 
             return response
         except Exception as e:

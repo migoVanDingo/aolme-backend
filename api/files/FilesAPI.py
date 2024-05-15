@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, make_response, request
+from flask import Blueprint, current_app, make_response, request
 from flask_cors import CORS
 
 from api.files.handler.RequestCreateFileRecord import RequestCreateFileRecord
@@ -14,8 +14,6 @@ def create_file():
     try:
         
         repo_id = request.args.get('repo_id')
-
-        print("repoId: " + repo_id)
 
         
         files = request.files.getlist('file')
@@ -33,6 +31,6 @@ def create_file():
         return response
         
     except Exception as e:
-        print("FilesAPI::create_file()::Error: " + str(e))
+        current_app.logger.error("FilesAPI -- create_file() -- Error: {}".format(str(e)))
         return "FilesAPI::create_file()::Error: " + str(e), 404
     

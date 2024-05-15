@@ -18,18 +18,18 @@ class ReadProjectFolder(AbstractDirectoryTree):
         try:
             #dir_list = os.listdir(self.path)
             #dir_list = os.walk(self.path, topdown=True)
-            current_app.logger.info(f"{self.__class__.__name__} :: entity_id: {self.entity_id}")
-            current_app.logger.info(f"{self.__class__.__name__} :: args: {self.args}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: entity_id: {self.entity_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: args: {self.args}")
 
 
             for item in self.args:
                 self.path = '{}/{}'.format(self.path, item) 
 
  
-            current_app.logger.info(f"{self.__class__.__name__} :: path: {self.path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: path: {self.path}")
 
             response = self.get_folder_items(self.path)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
@@ -37,22 +37,4 @@ class ReadProjectFolder(AbstractDirectoryTree):
         
         
 
-        # items = []
-        # with os.scandir(self.path) as it:
-        #     for entry in it:
-        #         if not entry.name.startswith('.'):
-        #             if entry.is_file():
-        #                 file_name = entry.name
-        #                 base_name, extension = os.path.splitext(file_name)
-        #                 items.append({ "name": base_name + extension, "type": "file"})
-
-        #             if entry.is_dir():
-        #                 items.append({"name": entry.name, "type": "folder"})
-                    
-          
-            
-        #     # Split the file name into base and extension
-            
-
-        # print("dir_list: {}".format(items))
 

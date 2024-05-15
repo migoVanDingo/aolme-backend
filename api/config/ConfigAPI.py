@@ -18,13 +18,10 @@ CORS(config_api)
 def create_config():
     repo_id = request.args.get('repo_id')
 
-    print("repoId: " + repo_id)
 
     files = request.files.getlist('file')
     data = request.form
 
-    print("Files: ", files)
-    print("Data: {}".format(data))
     
     # ENDPOINT LOGIC
     api_request = RequestCreateConfig(data, files, repo_id)

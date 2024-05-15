@@ -1,6 +1,8 @@
 import csv
 import json
 import os
+
+from flask import current_app
 from api.label_studio.ls_project.AbstractLsProject import AbstractLsProject
 class ConvertAnnotationToDataset(AbstractLsProject):
     def __init__(self, annotation, project_id, project_title, path):
@@ -14,7 +16,7 @@ class ConvertAnnotationToDataset(AbstractLsProject):
         url = self.endpoint_url_get_all_frames(self.project_id)
         response = self.get(url, self.get_headers()).json()
 
-        print("Response length: {}".format(len(response)))
+        current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
 
         rows = []
         for task in response:
@@ -45,7 +47,7 @@ class ConvertAnnotationToDataset(AbstractLsProject):
                         
         csv_filename = "{}.csv".format(self.path)
         #csv_filename = os.path.join(self.path, csv_filename)
-        print("CSV Filename: {}".format(csv_filename))
+        current_app.logger.debug(f"{self.__class__.__name__} :: csv_filename: {csv_filename}")
 
         with open(csv_filename, 'w', newline='') as csvfile:
             # Extract field names from the first item in the JSON data

@@ -3,6 +3,8 @@ import random
 import string
 
 import uuid
+
+from flask import current_app
 class TableUser:
     def __init__(self):
         from main import db
@@ -58,7 +60,7 @@ class TableUser:
 
             return params['user_id']
         except Exception as e:
-            print("TableUser -- update_user_email() Error: " + str(e))
+            current_app.logger.error("TableUser -- update_user_email() Error: " + str(e))
             return "TableUser -- update_user_email() Error: " + str(e)
         
     def update_username(self, params, user_id):
@@ -73,7 +75,7 @@ class TableUser:
 
             return params['user_id']
         except Exception as e:
-            print("TableUser -- update_username() Error: " + str(e))
+            current_app.logger.error("TableUser -- update_username() Error: " + str(e))
             return "TableUser -- update_username() Error: " + str(e)
 
     def update_user(self, payload):

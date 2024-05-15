@@ -3,6 +3,8 @@ import random
 import string
 from datetime import datetime
 
+from flask import current_app
+
 
 class TableSubsetItem:
     def __init__(self): 
@@ -27,7 +29,7 @@ class TableSubsetItem:
             return payload
 
         except Exception as e:
-            print("TableSubsetItem -- insert() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableSubsetItem -- insert() Error: " + str(e)
         
     def read_list(self, subset_id):
@@ -39,7 +41,7 @@ class TableSubsetItem:
             cur.close()
             return data
         except Exception as e:
-            print("TableSubsetItem -- read_list() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableSubsetItem -- read_list() Error: " + str(e)
         
     def read_item(self, sub_item_id):
@@ -51,5 +53,5 @@ class TableSubsetItem:
             cur.close()
             return data
         except Exception as e:
-            print("TableSubsetItem -- read_item() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableSubsetItem -- read_item() Error: " + str(e)

@@ -9,7 +9,7 @@ class RequestAddRepoItem(AbstractRepository):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: repo_id: {self.repo_id} :: payload: {self.data}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo_id: {self.repo_id} :: payload: {self.data}")
             payload = {
                 "file_id": self.data['file_id'],
                 "repo_id": self.repo_id,
@@ -17,9 +17,9 @@ class RequestAddRepoItem(AbstractRepository):
                 "user_id": self.data['user_id'],
             }
 
-            current_app.logger.info(f"{self.__class__.__name__} :: add-repo-item-payload: {payload}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: add-repo-item-payload: {payload}")
             response = self.add_repo_item(payload)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

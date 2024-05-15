@@ -21,14 +21,12 @@ class AbstractLsProject(ABC):
             "Authorization":"Token {}".format(self.get_token()),
             "Content-Type": "application/json"
         }
-        print("Headers: {}".format(headers))
         return headers
     
     def get_webhook_headers(self):
         webhook_headers = {
             "Authorization":"Token {}".format(self.get_token())
         }
-        print("Webhook Headers: {}".format(webhook_headers))
         return webhook_headers
 
 

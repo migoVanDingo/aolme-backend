@@ -3,7 +3,7 @@ import logging
 import random
 import string
 
-from flask import jsonify
+from flask import current_app, jsonify
 
 class TableRepository:
 
@@ -28,7 +28,7 @@ class TableRepository:
             return payload
         
         except Exception as e:
-            print("TableRepository -- insert_repository: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableRepository -- insert_repository: " + str(e)
         finally:
             cur.close()
@@ -61,11 +61,11 @@ class TableRepository:
 
             cur.close()
 
-            print("----------->>>    {}".format(list(data)))
+            current_app.logger.info(f"{self.__class__.__name__} :: read_list_owner: {data}")
 
             return list(data)
         except Exception as e:
-            print(" TableRepository -- read_list_owner: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return " TableRepository -- read_list_owner: " + str(e)
         
     def read_list_entity(self, entity_id):

@@ -8,7 +8,7 @@ class RequestDeleteRepo(AbstractRepository):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
             return self.delete(self.repo_id)
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

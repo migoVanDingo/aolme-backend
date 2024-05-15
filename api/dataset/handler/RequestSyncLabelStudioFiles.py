@@ -15,13 +15,13 @@ class RequestSyncLabelStudioFiles(AbstractDataset):
         
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.data} :: file_set_id: {self.file_set_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.data} :: file_set_id: {self.file_set_id}")
             data = self.data
 
             dao_import_storage = TableLsImportStorage()
             import_storage = dao_import_storage.read_ls_import_storage_by_subset_id(data['subset_id'])
 
-            current_app.logger.info(f"{self.__class__.__name__} :: read_ls_import_storage_by_subset_id: {import_storage}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: read_ls_import_storage_by_subset_id: {import_storage}")
 
             path = ""
             if(data['entity_id'].startswith("ORG")):
@@ -33,7 +33,7 @@ class RequestSyncLabelStudioFiles(AbstractDataset):
                 return "RequestSyncLabelStudioFiles::Error: Invalid entity_id: " + data['entity_id']
             
             
-            current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: path: {path}")
 
             xlsx_files = os.listdir(os.path.join(path, "xlsx"))
 
@@ -49,15 +49,15 @@ class RequestSyncLabelStudioFiles(AbstractDataset):
                 "use_blob_urls": True
             }
 
-            current_app.logger.info(f"{self.__class__.__name__} :: RequestSyncImportStorage payload: {payload}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: RequestSyncImportStorage payload: {payload}")
             api_request = RequestSyncImportStorage(import_storage['ls_import_id'], payload)
             response = api_request.do()
-            current_app.logger.info(f"{self.__class__.__name__} :: RequestSyncImportStorage response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: RequestSyncImportStorage response: {response}")
 
 
             import_xlsx = HandleUploadGroundTruthLabelStudio()
             import_xlsx_response = import_xlsx.do_process(import_storage['ls_project_id'], data['entity_id'], data['dataset_id'], data['subset_id'])
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {import_xlsx_response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {import_xlsx_response}")
 
             return import_xlsx_response
             

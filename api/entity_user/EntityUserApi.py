@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, make_response, request
+from flask import Blueprint, current_app, make_response, request
 from flask_cors import CORS
 from api.entity_user.handler.RequestArchiveEntityUser import RequestArchiveEntityUser
 from api.entity_user.handler.RequestDeleteEntityUser import RequestDeleteEntityUser
@@ -16,14 +16,10 @@ CORS(entity_user_api)
 @entity_user_api.route('/api/entity-user', methods=['POST', 'OPTIONS'])
 def insert_entity_user():
 
-    print("data: {}".format(request.data))
-
     data = json.loads(request.data)
-
-    
     
     # ENDPOINT LOGIC
-    api_request = RequestInsertEntityUser()
+    api_request = RequestInsertEntityUser(data)
     response = api_request.do_process()
 
     response = make_response(response, 200)
@@ -36,7 +32,6 @@ def insert_entity_user():
 def get_user_list_by_entity_id(entity_id):
     try:
         # ENDPOINT LOGIC
-        print("entity_id: {}".format(entity_id))
         api_request = RequestGetUserListByEntityId(entity_id)
         response = api_request.do_process()
     
@@ -47,8 +42,8 @@ def get_user_list_by_entity_id(entity_id):
         return response
 
     except Exception as e:
-        print(str(e))
-        return "Error: " + str(e), 404
+        current_app.logger.error("EntityUserAPI -- get_user_list_by_entity_id() -- Error: {}".format(str(e)))
+        return "CLASS::EntityUserAPI::ENDPOINT::get_user_list_by_entity_id:: " + str(e), 404
 
 @entity_user_api.route('/api/entity-user/user/<user_id>', methods=['GET'])
 def get_entity_list_by_user_id(user_id):
@@ -78,8 +73,8 @@ def get_user_list_by_entity(entity_id):
         return response
 
     except Exception as e:
-        print(str(e))
-        return "Error: " + str(e), 404
+        current_app.logger.error("EntityUserAPI -- get_user_list_by_entity() -- Error: {}".format(str(e)))
+        return "CLASS::EntityUserAPI::ENDPOINT::get_user_list_by_entity:: " + str(e), 404
 
 @entity_user_api.route('/api/entity-user', methods=['PATCH', 'OPTIONS'])
 def update_entity_user():

@@ -19,8 +19,6 @@ CORS(module_api)
 def create_module():
     
     repo_id = request.args.get('repo_id')
-
-    print("repoId: " + repo_id)
     
     files = request.files.getlist('file')
     data = request.form

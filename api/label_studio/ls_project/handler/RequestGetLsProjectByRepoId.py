@@ -8,10 +8,11 @@ class RequestGetLsProjectByRepoId(AbstractLsProject):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
             ls_project = self.get_ls_project_by_repo_id(self.repo_id)
-            print("ls_project: {}".format(ls_project))
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {ls_project}")
+
+            
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {ls_project}")
             return jsonify(ls_project)
             
         except Exception as e:

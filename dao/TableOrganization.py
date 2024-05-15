@@ -4,7 +4,7 @@ import random
 import string
 
 import MySQLdb
-from flask import jsonify
+from flask import current_app, jsonify
 
 class TableOrganization:
     def __init__(self):
@@ -24,19 +24,20 @@ class TableOrganization:
 
             payload["org_id"] = self.generate_org_id()
 
-            #print(payload)
+            current_app.logger.debug(f"{self.__class__.__name__} :: insert_organization :: payload: {payload}")
             
             cur = self.db.connection.cursor()
             cur.execute(insert_query, (payload["org_id"], payload["name"], payload["email"], payload["description"], payload["is_active"], payload["created_at"], payload["created_by"]))
 
             self.db.connection.commit()
 
+            current_app.logger.debug(f"{self.__class__.__name__} :: inserted-object: {payload}")
 
             return payload
         except MySQLdb.IntegrityError:
             logging.warn("failed to insert values %d, %s", id, "TABLE_ORG::INSERT_ORG")
         except Exception as e:
-            print(str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableOrganization -- create_organization() Error: " + str(e)
         finally:
             cur.close()
@@ -46,8 +47,9 @@ class TableOrganization:
         
     def read_organization(self, org_id):
         try:
-            print("\n\nread_organization orgId: {}\n\n".format(org_id))
+            
             query = "SELECT * FROM organization WHERE is_active = 1 AND organization_id = %s"
+
             cur = self.db.connection.cursor()
             cur.execute(query, (org_id,))
             
@@ -55,11 +57,12 @@ class TableOrganization:
 
             cur.close()
 
-            print("\nread_organization: {}\n\n".format(data))
+        
+            current_app.logger.debug(f"{self.__class__.__name__} :: read_organization :: object: {data}")
 
             return data[0]
         except Exception as e:
-            print("TableOrganization -- read_organization: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableOrganization -- read_organization: " + str(e)
         
 

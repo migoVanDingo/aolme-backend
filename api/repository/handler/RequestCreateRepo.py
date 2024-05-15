@@ -16,13 +16,13 @@ class RequestCreateRepo(AbstractRepository):
             self.payload["created_at"] = datetime.now()
             self.payload["is_active"] = True
 
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.payload}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.payload}")
 
 
             response = self.create(self.payload)
 
             repo_directory = os.path.join(os.environ['REPO_DIRECTORY'],response['repo_id'])
-            current_app.logger.info(f"{self.__class__.__name__} :: repo-directory: {repo_directory}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo-directory: {repo_directory}")
             os.mkdir(repo_directory)
             # repo_directory = os.path.join(user_directory, 'repo')
             # repo_directory = os.path.join(repo_directory, response['repo_id'])
@@ -35,7 +35,7 @@ class RequestCreateRepo(AbstractRepository):
             for dir in dir_list:
                 os.mkdir(os.path.join(repo_directory,dir))
 
-            current_app.logger.info(f"{self.__class__.__name__} :: repo-directory-created: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo-directory-created: {response}")
             return response
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

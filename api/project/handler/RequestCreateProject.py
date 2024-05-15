@@ -8,7 +8,7 @@ class RequestCreateProject(AbstractProject):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.params}")
             validate = CreateProjectValidator(self.params)
             is_valid = validate.validate()
             if is_valid[0] is False:

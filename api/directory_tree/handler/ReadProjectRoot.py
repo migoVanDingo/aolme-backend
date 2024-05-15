@@ -9,7 +9,7 @@ class ReadProjectRoot:
     
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: project_id: {self.project_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: project_id: {self.project_id}")
             #dir_list = os.listdir(self.path)
             #dir_list = os.walk(self.path, topdown=True)
             items = []
@@ -30,7 +30,7 @@ class ReadProjectRoot:
                 
 
 
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {items}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {items}")
 
             return items
         except Exception as e:

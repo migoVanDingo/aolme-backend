@@ -12,11 +12,10 @@ CORS(label_studio_api)
 
 @label_studio_api.route('/api/label_studio/repo/<repo_id>', methods=['GET'])
 def get_repo_project_by_id(repo_id):
-    print("get_repo_project_by_id: {}".format(repo_id))
+
     api_request = RequestGetLsProjectByRepoId(repo_id)
     response = api_request.do_process()
 
-    print("responseRRR: {}".format(response))
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
@@ -29,7 +28,7 @@ def get_repo_project_by_id(repo_id):
 def create_project():
 
     data = json.loads(request.data)
-    print("args: {}".format(data))
+
     api_request = RequestCreateLsProject()
 
     response = api_request.do_process(data)

@@ -1,5 +1,5 @@
 import os, json, requests
-from flask import jsonify
+from flask import current_app, jsonify
 from api.directory_tree.AbstractDirectoryTree import AbstractDirectoryTree  
 from dotenv import load_dotenv
 load_dotenv()
@@ -13,17 +13,19 @@ class Directory(AbstractDirectoryTree):
         path = os.path.join(path, folder_name)
 
         if os.path.isdir(path) is True:
-            print("FOLDER_ALREADY_EXISTS")
+            
+            current_app.logger.error(f"{self.__class__.__name__} :: FOLDER_ALREADY_EXISTS :: path: {path}")
             data = {"message":"FOLDER_ALREADY_EXISTS", "path":path}
             return data
         
 
         self.create_directory(path)
         
-        print("FOLDER_CREATED")
+
+        
         data = {"message":"FOLDER_CREATED", "path":path}
 
-        print(data)
+        current_app.logger.debug(f"{self.__class__.__name__} :: FOLDER_CREATED :: data: {data}")
         return data
     
 

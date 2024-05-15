@@ -11,7 +11,7 @@ class RequestUpdateOrganization(AbstractOrganization):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: org_id: {self.org_id} :: payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: org_id: {self.org_id} :: payload: {self.params}")
             params = {
                 "org_id": self.org_id,
                 "name": self.params["name"],
@@ -21,9 +21,9 @@ class RequestUpdateOrganization(AbstractOrganization):
                 "updated_by": self.params["updated_by"]
 
             }
-            current_app.logger.info(f"{self.__class__.__name__} :: update-organization-payload: {params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: update-organization-payload: {params}")
             response = self.update_organization(params)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

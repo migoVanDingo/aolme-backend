@@ -9,12 +9,12 @@ class HandleLogin(AbstractUser):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: Login User :: payload: {self.data}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Login User :: payload: {self.data}")
             table_user = TableUser()
             user = table_user.get_user_by_email(self.data['email'])
 
 
-            current_app.logger.info(f"{self.__class__.__name__} :: User: {user}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: User: {user}")
             
 
             (user) = user
@@ -26,7 +26,7 @@ class HandleLogin(AbstractUser):
                     "email": user['email'],
                     "username": user['username']
                 }
-                current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+                current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
 
                 return response
             else:

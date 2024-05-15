@@ -2,6 +2,8 @@ from genericpath import isfile
 from os import listdir
 import os
 import time
+
+from flask import current_app
 from dao.TableFilesV2 import TableFilesV2
 
 from dao.TableFiles import TableFiles
@@ -13,7 +15,7 @@ class WatchNotebook:
         pass
 
     def watch(self, path):
-        print("Watching notebook directory: " + path)
+        current_app.logger.debug(f"{self.__class__.__name__} :: Watching notebook directory: {path}")
 
 
     def fileInDirectory(self, watchDirectory: str):
@@ -35,20 +37,20 @@ class WatchNotebook:
     
 
     def fileWatcher(self, watchDirectory: str, pollTime: int, payload_insert_file):
-        print("Watching notebook directory: " + watchDirectory)
+        current_app.logger.debug(f"{self.__class__.__name__} :: Watching notebook directory: {watchDirectory}")
         while True:
         
             #Get from database
             table_files = TableFilesV2()
             previousFileList = table_files.read_list_by_entity(payload_insert_file['entity_id'])
 
-            print("Previous File List 1: {}".format(previousFileList))
+            current_app.logger.debug(f"{self.__class__.__name__} :: Previous File List: {previousFileList}")
             previousFileList = [x['name'] for x in previousFileList]
-            print("Previous File List 2: {}".format(previousFileList))
+            current_app.logger.debug(f"{self.__class__.__name__} :: Previous File List: {previousFileList}")
 
             #Check project directory
             newFileList = self.fileInDirectory(watchDirectory)
-            print("New File List: {}".format(newFileList))
+            current_app.logger.debug(f"{self.__class__.__name__} :: New File List: {newFileList}")
             
             fileDiff = self.listComparison(previousFileList, newFileList)
 
@@ -58,9 +60,9 @@ class WatchNotebook:
                 payload_insert_file['created_at'] = time.strftime("%Y-%m-%d %H:%M:%S")
                 payload_insert_file['created_by'] = payload_insert_file['owner']
 
-                print("Payload Insert File: {}".format(payload_insert_file))
+                current_app.logger.debug(f"{self.__class__.__name__} :: Payload Insert File: {payload_insert_file}")
                 response_insert_file = table_files.insert_files(payload_insert_file)
-                print("Response Insert File: {}".format(response_insert_file))
+                current_app.logger.debug(f"{self.__class__.__name__} :: Response Insert File: {response_insert_file}")
 
                 table_repo_item = TableRepoItem()
                 payload_repo_item = {
@@ -72,7 +74,7 @@ class WatchNotebook:
                     "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
                 response_repo_item = table_repo_item.insert(payload_repo_item)
-                print("Response Insert Repo Item: {}".format(response_repo_item))
+                current_app.logger.debug(f"{self.__class__.__name__} :: Response Insert Repo Item: {response_repo_item}")
 
 
 

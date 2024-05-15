@@ -11,9 +11,6 @@ CORS(webhook_handler_api)
 @webhook_handler_api.route('/api/webhook-handler/project-created', methods=['POST'])
 def handle_project_created():
     
-    #print('webhook_handler_api::handle_project_created::webhook_payload: {}'.format(request.data))
-    # data = json.loads(request.data)
-    # data = json.dumps(data)
     handler = HandleProjectUpdate(request.data)
     response = handler.do_process()
 

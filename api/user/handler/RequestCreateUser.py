@@ -17,7 +17,7 @@ class RequestCreateUser(AbstractUser):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.params} - entity_id: {self.entity_id} - entity_type: {self.entity_type}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.params} - entity_id: {self.entity_id} - entity_type: {self.entity_type}")
             
 
             params = {
@@ -32,7 +32,7 @@ class RequestCreateUser(AbstractUser):
              
             }
 
-            current_app.logger.info(f"{self.__class__.__name__} :: create-user-payload: {params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: create-user-payload: {params}")
 
 
 
@@ -46,7 +46,7 @@ class RequestCreateUser(AbstractUser):
             response = self.insert_user(params)
             del response['hash']
 
-            current_app.logger.info(f"{self.__class__.__name__} :: insert-user-response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: insert-user-response: {response}")
 
             if(self.entity_id is not None and self.entity_type is not None):
                 entity_user = {
@@ -60,11 +60,11 @@ class RequestCreateUser(AbstractUser):
                     "created_by": "root::MIGO" if "created_by" not in params else params["created_by"],
                     "created_at": "{}".format(datetime.now())
                 }
-                current_app.logger.info(f"{self.__class__.__name__} :: entity-user-payload: {entity_user}")
+                current_app.logger.debug(f"{self.__class__.__name__} :: entity-user-payload: {entity_user}")
                 entity_user_table = TableEntityUser()
                 entity_user_response = entity_user_table.insert_entity_user(entity_user)
             
-                current_app.logger.info(f"{self.__class__.__name__} :: entity-user-response: {entity_user_response}")
+                current_app.logger.debug(f"{self.__class__.__name__} :: entity-user-response: {entity_user_response}")
            
             
             
@@ -76,9 +76,9 @@ class RequestCreateUser(AbstractUser):
             request_create_user_dirs = RequestCreateUserDirectory(response['user_id'])
             api_request = request_create_user_dirs.do_process()
         
-            current_app.logger.info(f"{self.__class__.__name__} :: create-user-directories: {api_request}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: create-user-directories: {api_request}")
 
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

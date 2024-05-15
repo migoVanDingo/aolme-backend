@@ -1,3 +1,4 @@
+from flask import current_app
 from incoming import datatypes, PayloadValidator
 
 class InsertEntityUserValidator(PayloadValidator):
@@ -5,7 +6,7 @@ class InsertEntityUserValidator(PayloadValidator):
     user_id = datatypes.String(required=True)
     entity_type = datatypes.String(required=True)
     entity_status = datatypes.String(required=True)
-    status = datatypes.String(required=True)
+    user_status = datatypes.String(required=True)
 
 
     created_by = datatypes.String(required=True)
@@ -19,7 +20,6 @@ class InsertEntityUserValidator(PayloadValidator):
         if "DEVELOPER" not in val and "OWNER" not in val and "ADMIN" not in val and "USER" and "GUEST" not in val and "READ_ONLY" not in val:
             return False
    
-        print("ENTITY_USER_PAYLOAD: VALIDATED")
         
         return True
     

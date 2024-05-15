@@ -12,7 +12,7 @@ class RequestUploadFile(AbstractFiles):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.data}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.data}")
             for file in self.files:
 
                 if file.filename == '':
@@ -25,24 +25,7 @@ class RequestUploadFile(AbstractFiles):
 
                 uploads_directory = os.path.join(uploads_directory, self.data['org_id'])
 
-                current_app.logger.info(f"{self.__class__.__name__} :: uploads_directory: {uploads_directory}")
-
-                # match self.data["type"]:
-                #     case 'DATASET':
-                #         save_path = os.path.join(uploads_directory, 'datasets')
-                #         file
-                    
-                #     case 'MODULE':
-
-                #     case 'CONFIG':
-
-                #     case 'EXPERIMENT':
-
-                #     case 'FILE':
-
-                    
-                #     case _:
-                #         print("The file didn't match, extention: {}".format(filename[1]))
+                current_app.logger.debug(f"{self.__class__.__name__} :: uploads_directory: {uploads_directory}")
 
                 if file and allowed_file(file.filename):
                     f = file.filename
@@ -63,7 +46,7 @@ class RequestUploadFile(AbstractFiles):
             #insert file entry into DB
 
             response = self.insert_file(self.data['file_name'], self.data['file_content'])
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
         
         except Exception as e:

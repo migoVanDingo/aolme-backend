@@ -8,7 +8,7 @@ class RequestValidateLabelConfig:
 
     def do(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: project_id: {self.project_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: project_id: {self.project_id}")
             headers = {
                 "Authorization":"Token {}".format(self.token),
                 "Content-Type": "application/json"
@@ -16,7 +16,7 @@ class RequestValidateLabelConfig:
 
             data = json.dumps(self.data)
             x = requests.post(self.url, data=self.config, headers=headers)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {x.json()}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {x.json()}")
             
             return x.json()
         except Exception as e:

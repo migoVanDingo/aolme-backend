@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, current_app, jsonify, make_response, request
 import json
 from api.label_studio.webhook.entity.PayloadCreateWebhook import PayloadCreateWebhook
 
@@ -18,15 +18,17 @@ def create_webhook():
 
     data = json.loads(request.data)
 
-    print(data)
+    current_app.logger.info("WebhookAPI -- create_webhook() -- data: {}".format(data))
     validator = PayloadCreateWebhook()
     is_valid = validator.validate(data)
     if is_valid[0] is False:
+        current_app.logger.error("WebhookAPI -- create_webhook() -- Error: {}".format(is_valid[1]))
         return is_valid[1]
     
-    print("here")
+    
     api_request = RequestCreateWebhook(data)
     response = api_request.do()
+    current_app.logger.info("WebhookAPI -- create_webhook() -- response: {}".format(response))
 
     response = make_response(response)
     response.headers['Access-Control-Allow-Headers'] = '*'

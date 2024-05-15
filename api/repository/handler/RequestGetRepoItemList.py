@@ -8,9 +8,9 @@ class RequestGetRepoItemList(AbstractRepository):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
             response = jsonify(self.read_list_repo_items(self.repo_id))
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
         
         except Exception as e:

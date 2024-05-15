@@ -10,10 +10,10 @@ class RequestCreateUserDirectory(AbstractDirectoryTree):
     
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: user_id: {self.user_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: user_id: {self.user_id}")
             path = os.path.join(os.environ['USER_DIRECTORY'], self.user_id)
 
-            current_app.logger.info(f"{self.__class__.__name__} :: user-directory-path: {path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: user-directory-path: {path}")
             
             if os.path.isdir(path) is True:
                 
@@ -24,13 +24,13 @@ class RequestCreateUserDirectory(AbstractDirectoryTree):
             self.create_directory(path)
 
             dir_list = Constant.directory_list
-            current_app.logger.info(f"{self.__class__.__name__} :: directory-list: {dir_list}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: directory-list: {dir_list}")
 
             self.create_dir_list(path, dir_list)
 
             
             data = {"message":"USER_FOLDER_CREATED", "path":path}
-            current_app.logger.info(f"{self.__class__.__name__} :: user-directory-created: {data}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: user-directory-created: {data}")
 
             return data
     

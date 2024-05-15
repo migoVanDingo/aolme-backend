@@ -12,7 +12,7 @@ class RequestCreateSubset(AbstractDataset):
         
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.data}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.data}")
             dataset = TableDatasetV2()
             dataset_data = dataset.read_item(self.data['dataset_id'])
 
@@ -30,7 +30,7 @@ class RequestCreateSubset(AbstractDataset):
 
             
             path = os.path.join(path, "subset")
-            current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: path: {path}")
             if not os.path.exists(path):
                 os.mkdir(path) 
 
@@ -45,10 +45,10 @@ class RequestCreateSubset(AbstractDataset):
                 "owner": self.data['owner'],
             }
 
-            current_app.logger.info(f"{self.__class__.__name__} :: create-subset-payload: {payload}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: create-subset-payload: {payload}")
 
             response = self.create_subset(payload)
-            current_app.logger.info(f"{self.__class__.__name__} :: create-subset-response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: create-subset-response: {response}")
 
 
             if not os.path.exists(response['path']):
@@ -79,7 +79,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "XLSX"
-                    current_app.logger.info(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     dao_subset_item.insert(file_save_payload)
                     file.save(os.path.join(filepath, f))
 
@@ -90,7 +90,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "ANNOTATION"
-                    current_app.logger.info(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     dao_subset_item.insert(file_save_payload)
                     file.save(os.path.join(filepath, f))
 
@@ -102,7 +102,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "IMAGE"
-                    current_app.logger.info(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))
                     dao_subset_item.insert(file_save_payload)
 
@@ -111,7 +111,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "VIDEO"
-                    current_app.logger.info(f"{self.__class__name__} :: file_save_payload: {file_save_payload}")
+                    current_app.logger.debug(f"{self.__class__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))
                     dao_subset_item.insert(file_save_payload)
 
@@ -122,7 +122,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "AUDIO"
-                    current_app.logger.info(f"{self.__class__name__} :: file_save_payload: {file_save_payload}")
+                    current_app.logger.debug(f"{self.__class__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))
                     dao_subset_item.insert(file_save_payload)
 
@@ -131,11 +131,11 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "MISC"
-                    current_app.logger.info(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))    
                     dao_subset_item.insert(file_save_payload)               
         
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
             
         except Exception as e:

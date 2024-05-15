@@ -3,7 +3,7 @@ import random
 import string
 import json
 
-from flask import jsonify
+from flask import current_app, jsonify
 
 class TableLsProject:
     def __init__(self):
@@ -25,7 +25,7 @@ class TableLsProject:
             cur.close()
             return params
         except Exception as e:
-            print("Error::TableLsProject::insert_ls_project(): " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: insert_ls_project :: Error: {str(e)}")
             return "Error::TableLsProject::insert_ls_project(): " + str(e)
 
     def insert_ls_project_info(self, params):

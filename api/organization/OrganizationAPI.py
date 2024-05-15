@@ -30,12 +30,9 @@ def create_organization():
 @organization_api.route('/api/organization/<org_id>', methods=['GET'])
 def get_organization_by_id(org_id):
     
-    print("\norg_id: {}\n\n".format(org_id))
     # ENDPOINT LOGIC
     api_request = RequestGetOrganizationById(org_id)
     response = api_request.do_process()
-
-    print("\nget_organization_by_id:::Response: {}\n\n".format(response))
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'

@@ -5,4 +5,4 @@ class AppLogger:
         
 
     def log(self, message):
-        current_app.logger.info(message)
+        current_app.logger.debug(message)

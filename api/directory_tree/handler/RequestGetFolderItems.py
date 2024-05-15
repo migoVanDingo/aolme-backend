@@ -22,12 +22,12 @@ class RequestGetFolderItems(AbstractDirectoryTree):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: entity_id: {self.entity_id} :: folder_name: {self.folder_name} :: owner_id: {self.owner_id} :: repo_id: {self.repo_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: entity_id: {self.entity_id} :: folder_name: {self.folder_name} :: owner_id: {self.owner_id} :: repo_id: {self.repo_id}")
             self.path = self.getFolderPath(self.entity_id, self.repo_id, self.folder_name)
-            current_app.logger.info(f"{self.__class__.__name__} :: path: {self.path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: path: {self.path}")
 
             current_files = self.files_db.read_list_by_entity(self.entity_id)
-            current_app.logger.info(f"{self.__class__.__name__} :: current_files: {current_files}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: current_files: {current_files}")
 
             current_file_names = []
             current_notebooks = []
@@ -45,7 +45,7 @@ class RequestGetFolderItems(AbstractDirectoryTree):
                     if not entry.name.startswith('.'):
                         if entry.is_file():
 
-                            current_app.logger.info(f"{self.__class__.__name__} :: FILE: {entry.name}")
+                            current_app.logger.debug(f"{self.__class__.__name__} :: FILE: {entry.name}")
 
                             items.append({ "name": entry.name, "type": self.folder_name.upper()})
 
@@ -65,9 +65,9 @@ class RequestGetFolderItems(AbstractDirectoryTree):
                                     "is_public": 0,
                                 }
                                 
-                                current_app.logger.info(f"{self.__class__.__name__} :: PAYLOAD_INSERT_FILE: {payload_insert_file}")
+                                current_app.logger.debug(f"{self.__class__.__name__} :: PAYLOAD_INSERT_FILE: {payload_insert_file}")
                                 response_insert_file = self.files_db.insert_files(payload_insert_file)
-                                current_app.logger.info(f"{self.__class__.__name__} :: RESPONSE_INSERT_FILE: {response_insert_file}")
+                                current_app.logger.debug(f"{self.__class__.__name__} :: RESPONSE_INSERT_FILE: {response_insert_file}")
 
 
                                 payload_insert_repo_item = {
@@ -78,11 +78,11 @@ class RequestGetFolderItems(AbstractDirectoryTree):
                                     "created_at": "{}".format(datetime.now()),
                                     "created_by": self.owner_id
                                 }
-                                current_app.logger.info(f"{self.__class__.__name__} :: PAYLOAD_INSERT_REPO_ITEM: {payload_insert_repo_item}")
+                                current_app.logger.debug(f"{self.__class__.__name__} :: PAYLOAD_INSERT_REPO_ITEM: {payload_insert_repo_item}")
                                 response_repo_item = self.repo_item_db.insert(payload_insert_repo_item)
 
                                 
-                                current_app.logger.info(f"{self.__class__.__name__} :: RESPONSE_INSERT_REPO_ITEM: {response_repo_item}")
+                                current_app.logger.debug(f"{self.__class__.__name__} :: RESPONSE_INSERT_REPO_ITEM: {response_repo_item}")
 
                                 current_file_names.append(entry.name)
 
@@ -90,7 +90,7 @@ class RequestGetFolderItems(AbstractDirectoryTree):
             
 
           
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {items}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {items}")
 
             return items
         except Exception as e:

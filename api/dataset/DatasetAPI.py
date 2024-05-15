@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, make_response, request
+from flask import Blueprint, current_app, make_response, request
 from flask_cors import CORS
 from api.dataset.handler.RequestArchiveDataset import RequestArchiveDataset
 
@@ -24,13 +24,6 @@ CORS(dataset_api)
 @dataset_api.route('/api/dataset', methods=['POST', 'OPTIONS'])
 def create_dataset():
 
-    
-    # repo_id = request.args.get('repo_id')
-
-    # print("repoId: " + repo_id)
-
-    
-    # files = request.files.getlist('file')
     data = json.loads(request.data)
     
     # ENDPOINT LOGIC
@@ -159,7 +152,6 @@ def create_subset():
     files = request.files.getlist('file')
     data = request.form
 
-    print("RequestCreateSubset::data: {}".format(data))
     
     # ENDPOINT LOGIC
     api_request = RequestCreateSubset(data, files)
@@ -235,10 +227,6 @@ def get_subset_annotation(subset_id):
 
         #entity_id = request.args.get('entity_id')
         filename = request.args.get('filename')
-        
-
-        print("RequestGetSubsetAnnotation::filename: {}".format(filename))
-        print("RequestGetSubsetAnnotation::path: {}".format(subset_id))
 
         api_request = RequestGetSubsetAnnotation(subset_id, filename)
         response = api_request.do_process()
@@ -249,5 +237,5 @@ def get_subset_annotation(subset_id):
         response.headers['Content-Type'] = '*'
         return response
     except Exception as e:
-        print("DatasetAPI::Error: {}".format(e))
+        current_app.logger.error(f"{__name__} :: ERROR: {str(e)}")
         return "DatasetAPI::Error: {}".format(e), 404   

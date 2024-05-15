@@ -23,26 +23,26 @@ class RequestGetSubsetAnnotation(AbstractDataset):
             #     path = os.path.join(os.environ["USER_DIRECTORY"], self.entity_id, "dataset", self.dataset_id, "subset", self.subset_id)
 
             # annotation_dir = os.path.join(path, "annotation")
-            current_app.logger.info(f"{self.__class__.__name__} :: subset_id: {self.subset_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: subset_id: {self.subset_id}")
             subset = self.read_subset(self.subset_id)
             path = subset['path']
             annotation_path = os.path.join(path, "annotation")
-            current_app.logger.info(f"{self.__class__.__name__} :: annotation_path: {annotation_path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: annotation_path: {annotation_path}")
 
             filename = self.filename.split(".")
             filename = filename[0] + ".json"
 
-            current_app.logger.info(f"{self.__class__.__name__} :: filename: {filename}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: filename: {filename}")
 
             #read annotation dir
             files = os.listdir(annotation_path)
             for file in files:
-                current_app.logger.info(f"{self.__class__.__name__} :: file: {file}")
+                current_app.logger.debug(f"{self.__class__.__name__} :: file: {file}")
                 #read file
                 if file == filename:
                     with open(os.path.join(annotation_path,filename), 'r', encoding='utf-8') as f:
                         data = json.load(f)
-                        current_app.logger.info(f"{self.__class__.__name__} :: response: {data}")
+                        current_app.logger.debug(f"{self.__class__.__name__} :: response: {data}")
                         return data
                     
             return "RequestGetSubsetAnnotation::do_process::Error: File not found"

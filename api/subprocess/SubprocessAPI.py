@@ -1,6 +1,6 @@
 import subprocess, json, os
 from flask_cors import CORS
-from flask import Blueprint, make_response, request
+from flask import Blueprint, current_app, make_response, request
 from dotenv import load_dotenv
 from api.subprocess.handler.HandleLSExportAllFrames import HandleLSExportAllFrames
 from dao.TableSubset import TableSubset
@@ -26,18 +26,18 @@ def start_label_studio_project():
         "label-studio",
     ]
 
-    print('LABEL-STUDIO JSON: {}'.format(commands))
+    current_app.logger.info("SubprocessAPI :: start_label_studio_project:: Commands: {}".format(commands))
 
     # "export LABEL_STUDIO_USERNAME=a@a.com",
     #"export LABEL_STUDIO_PASSWORD=Migo1234!",
     env = os.environ.copy()
-    print('LABEL-STUDIO ENV: {}'.format(env))
+
     try:
     # Run each command sequentially
         for command in commands:
             subprocess.run(command, shell=True, check=True, env=env)
 
-        print("All commands executed successfully.")
+        current_app.logger.info("All commands executed successfully.")
 
         response = make_response("success", 204)
         response.headers['Access-Control-Allow-Headers'] = '*'
@@ -46,8 +46,8 @@ def start_label_studio_project():
         return response
     except subprocess.CalledProcessError as e:
         # Handle any errors that occur while running the commands
-        print("Error:", e)
-        return "Error: " + str(e), 404
+        current_app.logger.error("Error: SubprocessAPI :: start_label_studio_project:: Error: {}".format(str(e)))
+        return "Error: SubprocessAPI :: start_label_studio_project:: Error: {}".format(str(e))
 
 
 @subprocess_api.route('/file/upload', methods=['POST', 'OPTIONS'])
@@ -67,8 +67,8 @@ def upload_files_to_project():
         return response
     except subprocess.CalledProcessError as e:
         # Handle any errors that occur while running the commands
-        print("Error:", e)
-        return "Error: " + str(e), 404
+        current_app.logger.error("Error: SubprocessAPI :: upload_files_to_project:: Error: {}".format(str(e)))
+        return "Error: SubprocessAPI :: upload_files_to_project:: Error: {}".format(str(e))
     
 
 
@@ -77,19 +77,6 @@ def start_jupyter_notebook():
     
     data = json.loads(request.data)
 
-
-    # create_dir = Directory.create_directory(data['project_id'], data['folder_name'])
-
-    # print("create_dir: {}".format(create_dir['path']))
-    
-    # if data['entity_id'].startswith("ORG"):
-    #     dir = os.environ['ORGANIZATION_DIRECTORY']
-    # elif data['entity_id'].startswith("USR"):
-    #     dir = os.environ['USER_DIRECTORY']
-
-    # path = os.path.join(dir, data['entity_id'])
-    # path = os.path.join(path, 'notebook')
-
     path = os.path.join(os.environ['REPO_DIRECTORY'], data['repo_id'])
     path = os.path.join(path, 'notebook')
 
@@ -97,8 +84,6 @@ def start_jupyter_notebook():
     commands = [
         "jupyter lab"
     ]
-
-    print("Commands: {}".format(commands))
 
     try:
         os.chdir(path)
@@ -117,10 +102,6 @@ def start_jupyter_notebook():
 
         }
 
-        #watcher = WatchNotebook()
-        #watcher.fileWatcher(path, 1, payload_insert_file)
-
-        print("All commands executed successfully.")
 
         response = make_response("SUCCESS", 204)
         response.headers['Access-Control-Allow-Headers'] = '*'
@@ -129,8 +110,8 @@ def start_jupyter_notebook():
         return response
     except subprocess.CalledProcessError as e:
         # Handle any errors that occur while running the commands
-        print("Error:", e)
-        return "Error: " + str(e), 404
+        current_app.logger.error("Error: SubprocessAPI :: start_jupyter_notebook:: Error: {}".format(str(e)))
+        return "Error: SubprocessAPI :: start_jupyter_notebook:: Error: {}".format(str(e))
 
 
 @subprocess_api.route('/subprocess/label-studio/export-all-frames', methods=['GET'])
@@ -149,7 +130,7 @@ def export_all_frames():
         response.headers['Content-Type'] = '*'
         return response
     except Exception as e:
-        print("SubprocessAPI::export_all_frames::Error: {}".format(str(e)))
+        current_app.logger.error("SubprocessAPI::export_all_frames::Error: {}".format(str(e)))
         return "SubprocessAPI::export_all_frames::Error: {}".format(str(e)), 404
 
 

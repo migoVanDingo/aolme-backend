@@ -1,6 +1,8 @@
 import random
 import string
 
+from flask import current_app
+
 
 class TableConfig:
     def __init__(self):
@@ -16,14 +18,17 @@ class TableConfig:
 
         try:
             payload['config_id'] = self.generate_id()
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {payload}")
             cur = self.db.connection.cursor()
             cur.execute(query, (payload['config_id'], payload['entity_id'], payload['name'], payload['description'], payload['owner'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['created_by'], payload['created_at']))
             self.db.connection.commit()
             cur.close()
+
+            current_app.logger.debug(f"{self.__class__.__name__} :: inserted-object: {payload}")
             return payload
         
         except Exception as e:  
-            print("TableConfig -- insert_config() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableConfig -- insert_config() Error: " + str(e)
         
 

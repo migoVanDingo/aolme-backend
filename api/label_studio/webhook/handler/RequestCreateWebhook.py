@@ -10,16 +10,14 @@ class RequestCreateWebhook:
 
     def do(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.payload}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.payload}")
             headers = {
                 "Authorization":"Token {}".format(self.token)
             }
 
             response = requests.post(self.url, data=self.payload, headers=headers)
 
-            #print("response: {}".format(response.content.decode('utf-8')))
-
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response.content.decode('utf-8')}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response.content.decode('utf-8')}")
             return response.content.decode('utf-8')
         except Exception as e:
             return "Error: " + str(e), 404

@@ -31,7 +31,6 @@ def create_user():
     if "entity_type" in args:
         entity_type = args["entity_type"]
 
-    print("request.data: {}".format(json.loads(request.data)))
     data = json.loads(request.data)
     
     api_request = RequestCreateUser(data, entity_id, entity_type)
@@ -47,7 +46,7 @@ def create_user():
 @user_api.route('/api/user/<user_id>', methods=["GET"])
 def get_user(user_id):
 
-    current_app.logger.info("Get User ID: {}".format(user_id))
+    current_app.logger.debug("Get User ID: {}".format(user_id))
 
     handler = HandleGetUser(user_id)
     user = handler.do_process()
@@ -64,9 +63,6 @@ def get_user(user_id):
 @user_api.route('/api/user/<user_id>', methods=["PATCH"])
 def update_user(user_id):
     data = json.loads(request.data)
-    print("\nEdit User Data =======>>>>>>> {}\n\n".format(data))
-    #handler = RequestUpdateUser(data, user_id)
-    #response = handler.do_process()
 
     api_request = RequestUpdateUser(user_id, data)
     response = api_request.do_process()

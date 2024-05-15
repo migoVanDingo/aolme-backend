@@ -1,6 +1,8 @@
 from datetime import datetime
 import random
 import string
+
+from flask import current_app
 class TableProject:
     def __init__(self):
         from main import db
@@ -26,16 +28,17 @@ class TableProject:
     def read_project(self, project_id):
         try:
             query = "SELECT * FROM project WHERE is_active = 1 AND project_id = %s"
+
             cur = self.db.connection.cursor()
             cur.execute(query, (project_id,))
             
             data = cur.fetchall()
 
             cur.close()
-
+            current_app.logger.debug(f"{self.__class__.__name__} :: read_project :: response: {data}")
             return data
         except Exception as e:
-            print("Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: read_project :: Error: {str(e)}")
             return "Error: " + str(e)
         
 
@@ -86,7 +89,7 @@ class TableProject:
             
             now = datetime.now()
 
-            print("TableProject.creaet_project() -- {}".format(payload))
+            current_app.logger.debug(f"{self.__class__.__name__} :: create_project :: payload: {payload}")
 
             insert_query = "INSERT INTO project (name, description, owner, created_by, created_at, last_updated, last_updated_by, ls_project_id, is_public, organization) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cur = self.db.connection.cursor()
@@ -106,12 +109,13 @@ class TableProject:
                 "ls_project_id": payload['ls_project_id']
             }
 
-            print("TableProject.creaet_project RESPONSE() -- {}".format(response))
+            current_app.logger.debug(f"{self.__class__.__name__} :: create_project :: response: {response}")
 
             return response
 
         except Exception as e:
-            return "Error: " + str(e)
+            current_app.logger.error(f"{self.__class__.__name__} :: create_project :: Error: {str(e)}")
+            return f"{self.__class__.__name__} :: create_project :: Error: {str(e)}"
         
 
     def get_project_by_id(self, project_id):

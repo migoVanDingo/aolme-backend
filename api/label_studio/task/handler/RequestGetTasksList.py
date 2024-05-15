@@ -11,13 +11,13 @@ class RequestGetTasksList:
         
     def do(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.data}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.data}")
             headers = {
                 "Authorization":"Token {}".format(self.token)
             }
 
             x = requests.get(self.url, headers=headers)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {x.json()}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {x.json()}")
             return x.json()
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

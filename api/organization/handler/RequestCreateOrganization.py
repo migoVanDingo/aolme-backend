@@ -16,7 +16,7 @@ class RequestCreateOrganization(AbstractOrganization):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.params}")
         
         # Organization params
             params = {
@@ -27,7 +27,7 @@ class RequestCreateOrganization(AbstractOrganization):
                 "created_at":datetime.now(),
                 "created_by": self.params['user_id']
             }
-            current_app.logger.info(f"{self.__class__.__name__} :: create-organization-payload: {params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: create-organization-payload: {params}")
 
 
             #Validate the payload sent from FE
@@ -50,24 +50,25 @@ class RequestCreateOrganization(AbstractOrganization):
                 "entity_type": "ORGANIZATION",
                 "entity_status": "ACTIVE",
                 "created_by": self.params['user_id'],
-                "roles": "OWNER"
+                "roles": "OWNER",
+                "user_status": self.params['user_status']
             
             }
-            current_app.logger.info(f"{self.__class__.__name__} :: entity-user-payload: {entity_user_payload}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: entity-user-payload: {entity_user_payload}")
 
 
 
             api_request = RequestInsertEntityUser(entity_user_payload)
             response = api_request.do_process()
-            current_app.logger.info(f"{self.__class__.__name__} :: entity-user-response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: entity-user-response: {response}")
 
 
 
             api_request = RequestCreateOrganizationDirectory(org['org_id'])
             response = api_request.do_process()
-            current_app.logger.info(f"{self.__class__.__name__} :: create-organization-directory-response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: create-organization-directory-response: {response}")
 
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {org}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {org}")
 
             return org
         except Exception as e:

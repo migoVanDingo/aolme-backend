@@ -7,10 +7,10 @@ class RequestGetRepoByOwner(AbstractRepository):
         
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: owner_id: {self.owner_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: owner_id: {self.owner_id}")
             response = self.read_list_owner(self.owner_id)
 
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

@@ -15,7 +15,7 @@ class RequestCreateFileRecord(AbstractFiles):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.params}")
             dao_response = "NULL"
 
            
@@ -37,15 +37,15 @@ class RequestCreateFileRecord(AbstractFiles):
                 repo_path = os.path.join(os.environ['REPO_DIRECTORY'], self.repo_id)
                 repo_path = os.path.join(repo_path, self.params['type'].lower())
 
-            current_app.logger.info(f"{self.__class__.__name__} :: repo_path: {repo_path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo_path: {repo_path}")
 
             path = os.path.join(path, self.params['type'].lower())
 
-            current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: path: {path}")
             
             files = self.files
 
-            current_app.logger.info(f"{self.__class__.__name__} :: files: {files}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: files: {files}")
             now = "{}".format(datetime.now())
             for file in files:
                 if file.filename == '':
@@ -54,7 +54,7 @@ class RequestCreateFileRecord(AbstractFiles):
                 
         
                 path = os.path.join(path, file.filename)
-                current_app.logger.info(f"{self.__class__.__name__} :: path: {path}")
+                current_app.logger.debug(f"{self.__class__.__name__} :: path: {path}")
                 # Create entry in db first to get dataset_id
                 payload = {
                     "entity_id": self.params['entity_id'],
@@ -70,19 +70,11 @@ class RequestCreateFileRecord(AbstractFiles):
                 }
 
                 
-                current_app.logger.info(f"{self.__class__.__name__} :: payload: {payload}")
+                current_app.logger.debug(f"{self.__class__.__name__} :: payload: {payload}")
                 
-
-                
-
-                # validator = CreateDatasetValidator()
-                # is_valid = validator.validate(payload)
-                # if is_valid[0] is False:
-                #     print("RequestCreateFileRecord::::do_process()::CreateDatasetValidator::Error: {}".format(str(is_valid[1])))
-                #     return is_valid[1]
                 
                 dao_response = self.insert_file(payload)
-                current_app.logger.info(f"{self.__class__.__name__} :: dao_response: {dao_response}")
+                current_app.logger.debug(f"{self.__class__.__name__} :: dao_response: {dao_response}")
 
                 if self.repo_id is not None:
                     repo_item_payload = {
@@ -94,31 +86,23 @@ class RequestCreateFileRecord(AbstractFiles):
                         "type": dao_response['type']
                     }
                     
-                    current_app.logger.info(f"{self.__class__.__name__} :: repo_item_payload: {repo_item_payload}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: repo_item_payload: {repo_item_payload}")
                     table_repo_item = TableRepoItem()
                     response = table_repo_item.insert(repo_item_payload)
-                    current_app.logger.info(f"{self.__class__.__name__} :: TableRepoItem::::insert()::::response: {response}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: TableRepoItem::::insert()::::response: {response}")
                     
                 
 
-                # print("dao_response: {}".format(dao_response))
-                # dataset_id = dao_response['dataset_id']
-                
-                # filename = file.filename
-                # f = filename.split('.')
-                # last = f.pop()
-                # file.filename = dataset_id + '...'.join(f) + '.' + last
-                
                 file.save(path)
                 if self.repo_id is not None:
                     repo_path = os.path.join(repo_path, file.filename)
-                    current_app.logger.info(f"{self.__class__.__name__} :: repo_path: {repo_path}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: repo_path: {repo_path}")
                     file.save(repo_path)
 
 
 
 
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: SUCCESS")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: SUCCESS")
             return "SUCCESS"
             
 

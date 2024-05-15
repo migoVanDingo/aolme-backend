@@ -34,7 +34,6 @@ class AbstractDirectoryTree(ABC):
             # Split the file name into base and extension
             
 
-        print("dir_list: {}".format(items))
         return items
 
 

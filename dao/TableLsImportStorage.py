@@ -3,7 +3,7 @@ import os
 import random
 import string
 
-from flask import jsonify
+from flask import current_app, jsonify
 
 class TableLsImportStorage:
     def __init__(self):
@@ -20,6 +20,7 @@ class TableLsImportStorage:
             payload['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             payload['is_active'] = True
             query = "INSERT INTO ls_import_storage(import_storage_id, ls_import_id, subset_id, entity_id, user_id, path, title, ls_project_id, is_active, created_at, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            current_app.logger.debug(f"{self.__class__.__name__} :: insert_ls_import_storage :: payload: {payload}")
 
             cur = self.db.connection.cursor()
             cur.execute(query, (payload['import_storage_id'],payload['ls_import_id'], payload['subset_id'], payload['entity_id'], payload['user_id'], payload['path'], payload['title'], payload['ls_project_id'], payload['is_active'], payload['created_at'], payload['created_by']))
@@ -41,12 +42,10 @@ class TableLsImportStorage:
             self.db.connection.commit()
             cur.close()
 
-            print("TableLsImportStorage -- insert_ls_import_storage() -- response: " + str(response))
-
-
+            current_app.logger.debug(f"{self.__class__.__name__} :: inserted-object: {response}")
             return response
         except Exception as e:
-            print("TableLsImportStorage -- insert_ls_import_storage() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: insert_ls_import_storage :: Error: {str(e)}")
             return "TableLsImportStorage -- insert_ls_import_storage() Error: " + str(e)
         
     def read_ls_import_storage_by_subset_id(self, subset_id):
@@ -57,14 +56,14 @@ class TableLsImportStorage:
             data = cur.fetchall()
             cur.close()
 
-            print("TableLsImportStorage -- read_ls_import_storage_by_subset_id() -- data: " + str(data))
+            current_app.logger.debug(f"{self.__class__.__name__} :: read_ls_import_storage_by_subset_id() -- data: {data}")
 
             if(len(data) > 0):
                 return data[0]
 
             return data
         except Exception as e:
-            print("TableLsImportStorage -- read_ls_import_storage_by_subset_id() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: read_ls_import_storage_by_subset_id() Error: {str(e)}")
             return "TableLsImportStorage -- read_ls_import_storage_by_subset_id() Error: " + str(e)
         
 
@@ -76,12 +75,12 @@ class TableLsImportStorage:
             data = cur.fetchall()
             cur.close()
 
-            print("TableLsImportStorage -- read_ls_import_storage_by_repo_id() -- data: " + str(data))
+            current_app.logger.debug(f"{self.__class__.__name__} :: read_ls_import_storage_by_repo_id() -- data: {data}")
 
             if(len(data) > 0):
                 return data[0]
 
             return data
         except Exception as e:
-            print("TableLsImportStorage -- read_ls_import_storage_by_repo_id() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: read_ls_import_storage_by_repo_id() Error: {str(e)}")
             return "TableLsImportStorage -- read_ls_import_storage_by_repo_id() Error: " + str(e)

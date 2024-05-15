@@ -1,6 +1,8 @@
 import random
 import string
 
+from flask import current_app
+
 
 class TableFilesV2:
     def __init__(self):
@@ -35,18 +37,19 @@ class TableFilesV2:
         try:
             payload['file_id'] = self.generate_id(payload['type'])
 
-            print("TableFilesV2 -- insert_files() payload: {}".format(payload))
+            current_app.logger.debug(f"{self.__class__.__name__} :: insert_files :: payload: {payload}")
             cur = self.db.connection.cursor()
             cur.execute(query, (payload['file_id'], payload['entity_id'], payload['name'], payload['description'], payload['owner'], payload['type'], payload['path'], payload['is_public'], payload['is_active'], payload['created_by'], payload['created_at']))
             
             self.db.connection.commit()
             cur.close()
-            print("TableFilesV2 -- insert_files() Success: {}".format(payload))
+            
+            current_app.logger.debug(f"{self.__class__.__name__} :: insert_files :: inserted-object: {payload}")
             return payload
             
         
         except Exception as e:  
-            print("TableFilesV2 -- insert_files() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: insert_files :: Error: {str(e)}")
             return "TableFilesV2 -- insert_files() Error: " + str(e)
         
 
@@ -59,7 +62,7 @@ class TableFilesV2:
             cur.close()
             return data
         except Exception as e:
-            print("TableFilesV2 -- read_list() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: read_list :: Error: {str(e)}")
             return "TableFilesV2 -- read_list() Error: " + str(e)
         
 
@@ -72,7 +75,7 @@ class TableFilesV2:
             cur.close()
             return data
         except Exception as e:
-            print("TableFilesV2 -- read_item() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: read_item :: Error: {str(e)}")
             return "TableFilesV2 -- read_item() Error: " + str(e)
 
     def read_list_by_entity(self, entity_id):
@@ -84,7 +87,7 @@ class TableFilesV2:
             cur.close()
             return data
         except Exception as e:
-            print("TableFilesV2 -- read_list_by_entity() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: read_list_by_entity :: Error: {str(e)}")
             return "TableFilesV2 -- read_list_by_entity() Error: " + str(e)
 
     def read_list_by_user(self, user_id):
@@ -96,7 +99,7 @@ class TableFilesV2:
             cur.close()
             return data
         except Exception as e:
-            print("TableFilesV2 -- read_list_by_user() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: read_list_by_user :: Error: {str(e)}")
             return "TableFilesV2 -- read_list_by_user() Error: " + str(e)
         
 
@@ -109,7 +112,7 @@ class TableFilesV2:
             cur.close()
             return payload
         except Exception as e:
-            print("TableFilesV2 -- update() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: update :: Error: {str(e)}")
             return "TableFilesV2 -- update() Error: " + str(e)
 
     def delete(self, files_id):
@@ -121,7 +124,7 @@ class TableFilesV2:
             cur.close()
             return files_id
         except Exception as e:
-            print("TableFilesV2 -- delete() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: delete :: Error: {str(e)}")
             return "TableFilesV2 -- delete() Error: " + str(e)
 
     def archive(self, files_id):
@@ -133,7 +136,7 @@ class TableFilesV2:
             cur.close()
             return files_id
         except Exception as e:
-            print("TableFilesV2 -- archive() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: archive :: Error: {str(e)}")
             return "TableFilesV2 -- archive() Error: " + str(e)
         
     def archive_by_name(self, name, entity_id):
@@ -145,7 +148,7 @@ class TableFilesV2:
             cur.close()
             return name
         except Exception as e:
-            print("TableFilesV2 -- archive_by_name() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: archive_by_name :: Error: {str(e)}")
             return "TableFilesV2 -- archive_by_name() Error: " + str(e)
         
 

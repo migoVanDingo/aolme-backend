@@ -12,23 +12,23 @@ class RequestUpdateUser(AbstractUser):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: user_id: {self.user_id} :: payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: user_id: {self.user_id} :: payload: {self.params}")
 
             self.params["updated_at"] = "{}".format(datetime.now())
             updateEmail = self.update_user_email(self.params, self.user_id)
-            current_app.logger.info(f"{self.__class__.__name__} :: updateEmail: {updateEmail}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: updateEmail: {updateEmail}")
 
             updateUsername = self.update_username(self.params, self.user_id)
-            current_app.logger.info(f"{self.__class__.__name__} :: updateUsername: {updateUsername}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: updateUsername: {updateUsername}")
 
 
             entity_user_table = TableEntityUser()
             updateRoles = entity_user_table.update_entity_user_roles(self.params, self.params["entity_user_id"])
-            current_app.logger.info(f"{self.__class__.__name__} :: updateRoles: {updateRoles}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: updateRoles: {updateRoles}")
 
 
             updateStatus = entity_user_table.update_entity_user_status(self.params, self.params["entity_user_id"])
-            current_app.logger.info(f"{self.__class__.__name__} :: updateStatus: {updateStatus}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: updateStatus: {updateStatus}")
 
             
 
@@ -38,7 +38,7 @@ class RequestUpdateUser(AbstractUser):
                 "user_id": self.user_id
             }
 
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
 
             return response
     

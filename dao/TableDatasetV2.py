@@ -2,6 +2,8 @@ import random
 import string
 from datetime import datetime
 
+from flask import current_app
+
 
 class TableDatasetV2:
     def __init__(self): 
@@ -33,20 +35,21 @@ class TableDatasetV2:
         
         
         except Exception as e:
-            print("TableDatasetV2 -- insert() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableDatasetV2 -- insert() Error: " + str(e)
         
     def read_list_entity(self, entity_id):
         query = "SELECT * FROM dataset WHERE is_active = 1 AND entity_id = %s"
+
         try:
             cur = self.db.connection.cursor()
             cur.execute(query, (entity_id,))
             data = cur.fetchall()
             cur.close()
-            print("TableDatasetV2 -- read_list_entity() -- data: {}".format(data))
+            current_app.logger.info(f"{self.__class__.__name__} :: read_list_entity object :: {data}")
             return data
         except Exception as e:
-            print("TableDatasetV2 -- read_list() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableDatasetV2 -- read_list() Error: " + str(e)
         
     def read_item(self, dataset_id):

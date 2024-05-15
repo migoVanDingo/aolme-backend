@@ -12,7 +12,7 @@ class FileUtility:
             return x.json()
         except Exception as e:
             current_app.logger.error("FileUtility::signal_reformat_xlsx::Error: " + str(e))
-            return "Error: " + str(e)
+            return "FileUtility::signal_reformat_xlsx::Error: " + str(e)
         
     def signal_reformat_xlsx_v3(entity_id, dataset_id, subset_id, file_set_id):
         try:
@@ -22,7 +22,7 @@ class FileUtility:
             return x.json()
         except Exception as e:
             current_app.logger.error("FileUtility::signal_reformat_xlsx_v3::Error: " + str(e))
-            return "FileUtility::Error: " + str(e)
+            return "FileUtility::signal_reformat_xlsx_v3::Error: " + str(e)
         
     def signal_reformat_xlsx_v2(path):
         try:
@@ -35,48 +35,49 @@ class FileUtility:
             url = 'http://localhost:3002/convert/v2/xlsx'
             x = requests.post(url, data=data, headers=headers)
 
-            current_app.logger.info("FileUtility::signal_reformat_xlsx_v2(): {}".format(x.json()))
+            current_app.logger.debug("FileUtility::signal_reformat_xlsx_v2(): {}".format(x.json()))
             return x.json()
         except Exception as e:
             current_app.logger.error("FileUtility::Error: " + str(e))
-            return "Error: " + str(e)
+            return f"FileUtility::signal_reformat_xlsx_v2::Error: {str(e)}"
         
     def signal_create_local_storage(project_id, repo_id):
         try:
             url = 'http://localhost:3002/local-storage/{}/{}'.format(project_id, repo_id)
             x = requests.get(url)
-            current_app.logger.info("FileUtility::signal_create_local_storage(): {}".format(x.json()))
+            current_app.logger.debug("FileUtility::signal_create_local_storage(): {}".format(x.json()))
             return x.json()
         except Exception as e:
             current_app.logger.error("FileUtility::signal_create_local_storage::Error: " + str(e))
-            return "Error: " + str(e)
+            return f"FileUtility::signal_create_local_storage::Error: {str(e)}"
         
 
     def move_files_to_local_storage(project_id, repo_id):
-        print('CALL: move_files_to_local_storage')
+        current_app.logger.debug("CALL: move_files_to_local_storage")
         try:
             
             url = 'http://localhost:3002/local-storage/{}/move/{}'.format(project_id, repo_id)
-            print(url)
+            current_app.logger.debug(f"FileUtility::move_files_to_local_storage::url: {url}")
             x = requests.get(url)
-
+            
+            current_app.logger.debug("FileUtility::move_files_to_local_storage::response: {}".format(x.json()))
 
             return x.json()
         except Exception as e:
             current_app.logger.error("FileUtility::move_files_to_local_storage::Error: " + str(e))  
-            return "Error: " + str(e)
+            return f"FileUtility::move_files_to_local_storage::Error: {str(e)}"
         
     def move_files_to_local_storage_v2(entity_id, dataset_id, subset_id):
-        print('CALL: move_files_to_local_storage_v2')
+        current_app.logger.debug("CALL: move_files_to_local_storage_v2")
         try:
             
             url = 'http://localhost:3002/local-storage/entity/{}/dataset/{}/subset/{}/move'.format( entity_id, dataset_id, subset_id)
-            print(url)
+            current_app.logger.debug(f"FileUtility::move_files_to_local_storage_v2::url: {url}")
             x = requests.get(url)
 
-
+            current_app.logger.debug("FileUtility::move_files_to_local_storage_v2::response: {}".format(x.json()))
             return x.json()
         except Exception as e:
             current_app.logger.error("FileUtility::move_files_to_local_storage_v2::Error: " + str(e))
-            return "Error: " + str(e)
+            return f"FileUtility::move_files_to_local_storage_v2::Error: {str(e)}"
         

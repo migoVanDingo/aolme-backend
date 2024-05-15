@@ -1,5 +1,7 @@
 from datetime import datetime
 import os
+
+from flask import current_app
 from api.module.AbstractModule import AbstractModule
 from api.module.entity.ModuleValidator import CreateModuleValidator
 from dao.TableRepoItem import TableRepoItem
@@ -33,7 +35,7 @@ class RequestCreateModule(AbstractModule):
                 
 
                 path = os.path.join(path, file.filename)
-                print("path: {}".format(path))
+                current_app.logger.debug(f"{self.__class__.__name__} :: path: {path}")
                 # Create entry in db first to get module_id
                 payload = {
                     "entity_id": self.params.get('entity_id'),
@@ -49,11 +51,12 @@ class RequestCreateModule(AbstractModule):
 
                 payload['is_public'] = 1 if self.params.get('is_public') == '1' else 0
 
-                print("payload: {}".format(payload))
+                current_app.logger.debug(f"{self.__class__.__name__} :: create-module-payload: {payload}")
 
                 validator = CreateModuleValidator()
                 is_valid = validator.validate(payload)
                 if is_valid[0] is False:
+                    current_app.logger.error(f"{self.__class__.__name__} :: ERROR: Invalid Payload: {is_valid[1]}")
                     return is_valid[1]
                 
                 dao_response = self.create(payload)
@@ -66,19 +69,11 @@ class RequestCreateModule(AbstractModule):
                         "created_by": dao_response['created_by'],
                         "type": "MODULE"
                     }
-                    print("Saving repo_item -- payload: {}".format(repo_item_payload))
+                    current_app.logger.debug(f"{self.__class__.__name__} :: repo_item_payload: {repo_item_payload}")
                     table_repo_item = TableRepoItem()
                     response = table_repo_item.insert(repo_item_payload)
-                    print("TableRepoItem::::insert()::::response: {}".format(response))
+                    current_app.logger.debug(f"{self.__class__.__name__} :: insert-repo-item-response: {response}")
 
-                # print("dao_response: {}".format(dao_response))
-                # module_id = dao_response['module_id']
-                
-                # filename = file.filename
-                # f = filename.split('.')
-                # last = f.pop()
-                # file.filename = module_id + '...'.join(f) + '.' + last
-                
                 file.save(path)
 
 
@@ -88,7 +83,7 @@ class RequestCreateModule(AbstractModule):
             
 
         except Exception as e:
-            print("RequestCreateModule -- do_process() Error: " + str(e))
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "RequestCreateModule -- do_process() Error: " + str(e)
         
     

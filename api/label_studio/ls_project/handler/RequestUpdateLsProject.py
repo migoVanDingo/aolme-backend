@@ -7,7 +7,7 @@ class RequestUpdateLsProject(AbstractLsProject):
 
     def do_process(self, ls_project_id, payload):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: ls_project_id: {ls_project_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: ls_project_id: {ls_project_id}")
             response = self.update_ls_project(ls_project_id, payload)
             return self.update_ls_project(ls_project_id, response)
         except Exception as e:

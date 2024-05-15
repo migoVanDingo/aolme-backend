@@ -13,7 +13,7 @@ class RequestInsertEntityUser(AbstractEntityUser):
 
     def do_process(self):
         try:
-            current_app.logger.info(f"{self.__class__.__name__} :: payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.params}")
 
             self.params['is_active'] = True
             self.params['created_at'] = "{}".format(datetime.now())
@@ -27,11 +27,11 @@ class RequestInsertEntityUser(AbstractEntityUser):
                 return is_valid[1]
             
         #self.params['roles'] = json.dumps(self.params['roles'])
-            current_app.logger.info(f"{self.__class__.__name__} :: create-entity-user-payload: {self.params}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: create-entity-user-payload: {self.params}")
 
             
             response =  self.create_entity_user(self.params)
-            current_app.logger.info(f"{self.__class__.__name__} :: Response: {response}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
 
         
 
