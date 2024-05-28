@@ -4,6 +4,7 @@ from flask_cors import CORS
 from api.label_studio.ls_project.handler.RequestGetLsProjectByRepoId import RequestGetLsProjectByRepoId
 
 from api.label_studio.ls_project.handler.RequestCreateLsProject import RequestCreateLsProject
+from api.label_studio.ls_project.handler.RequestSyncImportStorage import RequestSyncImportStorage
 
 
 
@@ -33,6 +34,21 @@ def create_project():
 
     response = api_request.do_process(data)
     
+
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+#Sync import storage
+@label_studio_api.route('/api/label_studio/sync_import_storage/<import_id>', methods=['POST'])
+def sync_import_storage(import_id):
+
+    data = json.loads(request.data)
+
+    api_request = RequestSyncImportStorage(import_id, data)
+    response = api_request.do_process()
 
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'

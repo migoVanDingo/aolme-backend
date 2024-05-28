@@ -141,3 +141,31 @@ class TableLsProject:
             return ls_project_id
         except Exception as e:
             return "Error::TableLsProject::delete_ls_project(): " + str(e)
+        
+    def read_item_by_subset_id(self, subset_id):
+        try:
+            query = "SELECT * FROM label_studio_project WHERE is_active = 1 AND subset_id = %s"
+            cur = self.db.connection.cursor()
+            cur.execute(query, (subset_id,))
+            
+            data = cur.fetchall()
+
+            cur.close()
+
+            return data
+        except Exception as e:
+            return "Error::TableLsProject::read_item_by_subset_id(): " + str(e)
+        
+    def read_ls_import_storage_by_subset_id(self, subset_id):
+        try:
+            query = "SELECT * FROM ls_import_storage WHERE is_active = 1 AND subset_id = %s"
+            cur = self.db.connection.cursor()
+            cur.execute(query, (subset_id,))
+            
+            data = cur.fetchall()
+
+            cur.close()
+
+            return data[0]
+        except Exception as e:
+            return "Error::TableLsProject::read_ls_import_storage_by_subset_id(): " + str(e)

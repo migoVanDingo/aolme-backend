@@ -12,7 +12,9 @@ class HandleUploadGroundTruthLabelStudio:
     def do_process(self, project_id, entity_id, dataset_id, subset_id):
         try:
             current_app.logger.debug(f"{self.__class__.__name__} :: entity_id: {entity_id} :: dataset_id: {dataset_id} :: subset_id: {subset_id} :: project_id: {project_id}")
+
             path = "/Users/bubz/Developer/master-project/aolme-backend/_fs/organization/"+entity_id+"/dataset/"+dataset_id+"/subset/"+subset_id+"/ground-truth-raw"
+            
             current_app.logger.debug(f"{self.__class__.__name__} :: path: {path}")   
 
             files = os.listdir(path)

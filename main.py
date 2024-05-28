@@ -25,7 +25,7 @@ from api.files.FilesAPI import files_api
 from api.label_studio.ls_project.LabelStudioAPI import label_studio_api
 
 logging.basicConfig(filename='record.log',
-                level=logging.DEBUG, format='%(asctime)s | %(levelname)s | \n %(message)-20s')
+                level=logging.DEBUG, format='%(asctime)s | %(levelname)s | %(lineno)d | \n %(message)-20s')
 
 db = MySQL()
 app = Flask(__name__)

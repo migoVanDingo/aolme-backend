@@ -26,6 +26,8 @@ class TableSubsetItem:
             cur.execute(query, (payload['sub_item_id'], payload['subset_id'], payload['type'], payload['name'], payload['path'], payload['is_active'], payload['created_by'], payload['created_at']))
             self.db.connection.commit()
             cur.close()
+
+    
             return payload
 
         except Exception as e:

@@ -90,14 +90,7 @@ class HandleProjectUpdate:
             "is_public": 1, 
             "is_active": 1, 
             "created_by": ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "entity_id": ls_project['entity_id'], 
-            "name": ls_project['name'], 
-            "description": ls_project['description'], "owner": ls_project['entity_id'], 
-            "type": "ANNOTATION", 
-            "path": gt_processed_path, 
-            "is_public": 1, 
-            "is_active": 1, 
-            "created_by": ls_project['entity_id'], "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
         }
         current_app.logger.info(f"{self.__class__.__name__} :: payload_insert_file: {payload_insert_file}")
         response_insert_file = insert_file.insert_files(payload_insert_file)

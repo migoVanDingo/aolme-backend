@@ -13,8 +13,8 @@ class RequestCreateSubset(AbstractDataset):
     def do_process(self):
         try:
             current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.data}")
-            dataset = TableDatasetV2()
-            dataset_data = dataset.read_item(self.data['dataset_id'])
+
+            dataset_data = self.read_item(self.data['dataset_id'])
 
             path = ""
             if(dataset_data['entity_id'].startswith("ORG")):
@@ -60,7 +60,6 @@ class RequestCreateSubset(AbstractDataset):
                 if not os.path.exists(os.path.join(response['path'], subset_path)):
                     os.mkdir(os.path.join(response['path'], subset_path))
 
-            dao_subset_item = TableSubsetItem()
                 
             for file in self.files:
                 f = file.filename
@@ -80,7 +79,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "XLSX"
                     current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
-                    dao_subset_item.insert(file_save_payload)
+                    self.create_subset_item(file_save_payload)
                     file.save(os.path.join(filepath, f))
 
                 
@@ -91,7 +90,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "ANNOTATION"
                     current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
-                    dao_subset_item.insert(file_save_payload)
+                    self.create_subset_item(file_save_payload)
                     file.save(os.path.join(filepath, f))
 
 
@@ -104,16 +103,16 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload["type"] = "IMAGE"
                     current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))
-                    dao_subset_item.insert(file_save_payload)
+                    self.create_subset_item(file_save_payload)
 
                 elif  extension == "mp4" or extension == "mov" or extension == "mpg":
                     filepath = os.path.join(response['path'], "files")
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "VIDEO"
-                    current_app.logger.debug(f"{self.__class__name__} :: file_save_payload: {file_save_payload}")
+                    current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))
-                    dao_subset_item.insert(file_save_payload)
+                    self.create_subset_item(file_save_payload)
 
             
 
@@ -122,9 +121,10 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload['path'] = filepath
                     file_save_payload['name'] = f
                     file_save_payload["type"] = "AUDIO"
-                    current_app.logger.debug(f"{self.__class__name__} :: file_save_payload: {file_save_payload}")
+
+                    current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))
-                    dao_subset_item.insert(file_save_payload)
+                    self.create_subset_item(file_save_payload)
 
                 else:
                     filepath = os.path.join(response['path'], "misc")
@@ -133,7 +133,7 @@ class RequestCreateSubset(AbstractDataset):
                     file_save_payload["type"] = "MISC"
                     current_app.logger.debug(f"{self.__class__.__name__} :: file_save_payload: {file_save_payload}")
                     file.save(os.path.join(filepath, f))    
-                    dao_subset_item.insert(file_save_payload)               
+                    self.create_subset_item(file_save_payload)               
         
             current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")
             return response

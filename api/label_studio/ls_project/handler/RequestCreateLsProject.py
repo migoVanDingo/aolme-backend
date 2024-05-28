@@ -1,12 +1,24 @@
 from datetime import datetime
 import json
 import os
+import shutil
 
 from flask import current_app, jsonify
 from api.label_studio.ls_project.AbstractLsProject import AbstractLsProject
 from dao.TableDatasetV2 import TableDatasetV2
 from dao.TableLsImportStorage import TableLsImportStorage
 
+"""
+EXAMPLE PAYLOAD
+ {
+      name: STRING,
+      description: STRING,
+      owner: STRING,
+      created_by: STRING,
+      subset_id: STRING,
+      dataset_id: STRING,
+      entity_id: STRING,
+} """
 
 class RequestCreateLsProject(AbstractLsProject):
     def __init__(self):
@@ -56,7 +68,7 @@ class RequestCreateLsProject(AbstractLsProject):
                 payload_persist_ls_project)
 
    
-            current_app.logger.debug(f"{self.__class__.__name__} :: persist_ls_project: {persist_ls_project}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: persist_ls_project response: {persist_ls_project}")
 
             # initialize the webhook
             payload_create_webhook = {
@@ -78,18 +90,8 @@ class RequestCreateLsProject(AbstractLsProject):
 
             current_app.logger.debug(f"{self.__class__.__name__} :: create_webhook: {create_webhook}")
 
-            # Create import storage payload
-            # path = os.path.join(
-            #     os.environ["USER_DIRECTORY"], payload['created_by'])
-            # path = os.path.join(path, "repo")
-            # path = os.path.join(path, payload['subset_id'])
-            # path = os.path.join(path, "files")
-            # path = os.path.join(path, "uploads")
-
-            # import_storage_path = os.path.join(
-            #     os.environ["REPO_DIRECTORY"], payload['subset_id'])
             import_storage_path = os.path.join(subset_path, "local-storage")
-        
+
             current_app.logger.debug(f"{self.__class__.__name__} :: import_storage_path: {import_storage_path}")
 
             
@@ -110,7 +112,13 @@ class RequestCreateLsProject(AbstractLsProject):
                 json.dumps(payload_create_import_storage)).json()
 
 
-            current_app.logger.debug(f"{self.__class__.__name__} :: create_import_storage: {create_import_storage}") 
+            current_app.logger.debug(f"{self.__class__.__name__} :: create_import_storage response: {create_import_storage}") 
+
+            # Move files to local-storage directory
+            files_path = os.path.join(subset_path, "files")
+            for file in os.listdir(files_path):
+                shutil.copyfile(os.path.join(files_path, file), os.path.join(import_storage_path, file))
+
 
             payload_sync_import_storage = {
                 "project": payload_create_import_storage['project'],

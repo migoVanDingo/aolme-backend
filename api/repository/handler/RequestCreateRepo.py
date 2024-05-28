@@ -13,7 +13,7 @@ class RequestCreateRepo(AbstractRepository):
 
     def do_process(self):
         try:
-            self.payload["created_at"] = datetime.now()
+            self.payload["created_at"] = f"{datetime.now()}"
             self.payload["is_active"] = True
 
             current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.payload}")

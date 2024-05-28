@@ -10,10 +10,13 @@ from api.dataset.handler.RequestGetDatasetById import RequestGetDatasetById
 from api.dataset.handler.RequestGetDatasetList import RequestGetDatasetList
 from api.dataset.handler.RequestGetDatasetListByEntity import RequestGetDatasetListByEntity
 from api.dataset.handler.RequestGetDatasetListByUser import RequestGetDatasetListByUser
+from api.dataset.handler.RequestGetLabelStudioProject import RequestGetLabelStudioProject
 from api.dataset.handler.RequestGetSubset import RequestGetSubset
 from api.dataset.handler.RequestGetSubsetAnnotation import RequestGetSubsetAnnotation
 from api.dataset.handler.RequestGetSubsetItems import RequestGetSubsetItems
 from api.dataset.handler.RequestGetSubsetList import RequestGetSubsetList
+from api.dataset.handler.RequestInitializeDatasetRepoLabeler import RequestInitializeDatasetRepoLabeler
+from api.dataset.handler.RequestPushToSubset import RequestPushToSubset
 from api.dataset.handler.RequestSyncLabelStudioFiles import RequestSyncLabelStudioFiles
 from api.dataset.handler.RequestUpdateDataset import RequestUpdateDataset
 
@@ -25,9 +28,10 @@ CORS(dataset_api)
 def create_dataset():
 
     data = json.loads(request.data)
+    repo_id = request.args.get('repo_id')
     
     # ENDPOINT LOGIC
-    api_request = RequestCreateDataset(data)
+    api_request = RequestCreateDataset(data, repo_id)
     response = api_request.do_process()
     
 
@@ -209,6 +213,8 @@ def sync_label_studio_files():
 
     if request.args.get('file_set_id') is not None:
         file_set_id = request.args.get('file_set_id')
+    else:
+        file_set_id = ""
     
     # ENDPOINT LOGIC
     api_request = RequestSyncLabelStudioFiles(data, file_set_id)
@@ -221,8 +227,25 @@ def sync_label_studio_files():
     response.headers['Content-Type'] = '*'
     return response
 
+#get label studio project with this endpoint /api/dataset/subset/" + subsetId + "/labelstudio
+@dataset_api.route('/api/subset/<subset_id>/labelstudio', methods=['GET'])
+def get_subset_labelstudio(subset_id):
+    try:
+
+        api_request = RequestGetLabelStudioProject(subset_id)
+        response = api_request.do_process()
+        
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        current_app.logger.error(f"{__name__} :: ERROR: {str(e)}")
+        return "DatasetAPI::Error: {}".format(e), 404
+
 @dataset_api.route('/api/subset/<subset_id>/annotation', methods=['GET']) 
-def get_subset_annotation(subset_id):
+def get_subset_ls_project(subset_id):
     try:
 
         #entity_id = request.args.get('entity_id')
@@ -239,3 +262,41 @@ def get_subset_annotation(subset_id):
     except Exception as e:
         current_app.logger.error(f"{__name__} :: ERROR: {str(e)}")
         return "DatasetAPI::Error: {}".format(e), 404   
+    
+
+@dataset_api.route('/api/dataset/subset/push', methods=['POST', 'OPTIONS'])
+def push_file_to_subset():
+    try:
+        data = request.form
+        current_app.logger.debug(f"{__name__} :: WE MADE IT HERE: {data}")
+        files = request.files.getlist('file')
+        
+        api_request = RequestPushToSubset(data, files)
+        response = api_request.do_process()
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        current_app.logger.error(f"{__name__} :: ERROR: {str(e)}")
+        return "DatasetAPI::Error: {}".format(e), 404
+    
+#Initialize Dataset
+@dataset_api.route('/api/dataset/initialize', methods=['POST', 'OPTIONS'])
+def initialize_dataset():
+    try:
+        data = request.form
+        files = request.files.getlist('file')
+
+        api_request = RequestInitializeDatasetRepoLabeler(data, files)
+        response = api_request.do_process()
+        
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        current_app.logger.error(f"{__name__} :: ERROR: {str(e)}")
+        return "DatasetAPI::Error: {}".format(e), 404

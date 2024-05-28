@@ -59,6 +59,9 @@ class TableDatasetV2:
             cur.execute(query, (dataset_id,))
             data = cur.fetchall()
             cur.close()
+
+            if len(data) == 0:
+                return "NO_DATA_FOUND"
             return data[0]
         except Exception as e:
             return "TableDatasetV2 -- read_item() Error: " + str(e)
