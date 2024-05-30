@@ -24,9 +24,11 @@ class RequestGetSubsetAnnotation(AbstractDataset):
 
             # annotation_dir = os.path.join(path, "annotation")
             current_app.logger.debug(f"{self.__class__.__name__} :: subset_id: {self.subset_id}")
+
             subset = self.read_subset(self.subset_id)
             path = subset['path']
             annotation_path = os.path.join(path, "annotation")
+            
             current_app.logger.debug(f"{self.__class__.__name__} :: annotation_path: {annotation_path}")
 
             filename = self.filename.split(".")

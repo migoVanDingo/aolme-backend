@@ -60,3 +60,6 @@ class AbstractDataset(ABC):
     def read_items_by_subset_id(self, subset_id):
         return self.subset_item.read_list(subset_id)
     
+    def read_items_by_subset_and_filename(self, subset_id, filename):
+        return self.subset_item.read_item_by_subset_and_filename(subset_id, filename)
+    

@@ -62,6 +62,7 @@ class HandleLSExportAllFrames():
                     #get the video string of the data object in the first element
                     
                     videoPath = json.loads(data)
+                    print(f"video data oh ya ::: {videoPath}")
                     videoPath = videoPath[0]['data']
                     videoPath = videoPath['video']
                     current_app.logger.debug(f"{self.__class__.__name__} :: videoPath: {videoPath}")

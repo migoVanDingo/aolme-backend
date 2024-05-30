@@ -57,3 +57,15 @@ class TableSubsetItem:
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
             return "TableSubsetItem -- read_item() Error: " + str(e)
+        
+    def read_item_by_subset_and_filename(self, subset_id, filename):
+        query = "SELECT * FROM subset_item WHERE is_active = 1 AND subset_id = %s AND name = %s"
+        try:
+            cur = self.db.connection.cursor()
+            cur.execute(query, (subset_id, filename))
+            data = cur.fetchall()
+            cur.close()
+            return data
+        except Exception as e:
+            current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")
+            return "TableSubsetItem -- read_item_by_subset_and_filename() Error: " + str(e)

@@ -10,6 +10,7 @@ from api.dataset.handler.RequestGetDatasetById import RequestGetDatasetById
 from api.dataset.handler.RequestGetDatasetList import RequestGetDatasetList
 from api.dataset.handler.RequestGetDatasetListByEntity import RequestGetDatasetListByEntity
 from api.dataset.handler.RequestGetDatasetListByUser import RequestGetDatasetListByUser
+from api.dataset.handler.RequestGetFileAnnotationsByDataset import RequestGetFileAnnotationsByDataset
 from api.dataset.handler.RequestGetLabelStudioProject import RequestGetLabelStudioProject
 from api.dataset.handler.RequestGetSubset import RequestGetSubset
 from api.dataset.handler.RequestGetSubsetAnnotation import RequestGetSubsetAnnotation
@@ -252,6 +253,25 @@ def get_subset_ls_project(subset_id):
         filename = request.args.get('filename')
 
         api_request = RequestGetSubsetAnnotation(subset_id, filename)
+        response = api_request.do_process()
+        
+        response = make_response(response, 200)
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Content-Type'] = '*'
+        return response
+    except Exception as e:
+        current_app.logger.error(f"{__name__} :: ERROR: {str(e)}")
+        return "DatasetAPI::Error: {}".format(e), 404   
+    
+#get all annotations for dataset
+@dataset_api.route('/api/dataset/<dataset_id>/annotation', methods=['GET'])
+def get_all_dataset_file_annotations(dataset_id):
+    try:
+        #entity_id = request.args.get('entity_id')
+        filename = request.args.get('filename')
+
+        api_request = RequestGetFileAnnotationsByDataset(dataset_id, filename)
         response = api_request.do_process()
         
         response = make_response(response, 200)
