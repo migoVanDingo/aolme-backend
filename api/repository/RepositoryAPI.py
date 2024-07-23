@@ -1,6 +1,9 @@
 import json
 from flask import Blueprint, make_response, request
 from flask_cors import CORS
+from api.repository.handler.RequestGetGithubRepoContents import RequestGetGithubRepoContents
+from api.repository.handler.RequestSyncGithubRepo import RequestSyncGithubRepo
+from api.repository.handler.RequestCloneRepo import RequestCloneRepo
 from api.repository.handler.RequestAddRepoItem import RequestAddRepoItem
 from api.repository.handler.RequestArchiveRepo import RequestArchiveRepo
 
@@ -160,6 +163,43 @@ def update_repo_item(repo_id):
     response = api_request.do_process()
 
     
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+@repository_api.route('/api/repository/clone', methods=['POST', 'OPTIONS'])
+def clone_repo():
+    data = json.loads(request.data)
+
+    api_request = RequestCloneRepo(data)
+    response = api_request.do_process()
+
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+@repository_api.route('/api/repository/<repo_id>/sync', methods=['GET'])
+def sync_repo(repo_id):
+
+    api_request = RequestSyncGithubRepo(repo_id)
+    response = api_request.do_process()
+
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+@repository_api.route('/api/repository/<repo_id>/contents', methods=['GET'])
+def get_repo_contents(repo_id):
+    
+    api_request = RequestGetGithubRepoContents(repo_id)
+    response = api_request.do_process()
+
     response = make_response(response, 200)
     response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Origin'] = '*'

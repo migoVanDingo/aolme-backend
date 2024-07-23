@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dao.TableRepoLink import TableRepoLink
 from dao.TableRepoItem import TableRepoItem
 from dao.TableRepository import TableRepository
 
@@ -8,6 +9,7 @@ class AbstractRepository(ABC):
         super().__init__()
         self.repo = TableRepository()
         self.repo_item = TableRepoItem()
+        self.repo_link = TableRepoLink()
     
     ###Concrete methods
 
@@ -40,6 +42,14 @@ class AbstractRepository(ABC):
     
     def read_list_repo_items(self, repo_id):
         return self.repo_item.read_list_repo_items(repo_id)
+    
+
+    # Table RepoLink
+    def add_repo_link(self, data, dir_name):
+        return self.repo_link.insert(data, dir_name)
+    
+    def read_repo_link(self, repo_id):
+        return self.repo_link.read(repo_id)
     
     #Abstract methods
     @abstractmethod

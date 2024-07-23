@@ -18,7 +18,7 @@ class TableLsImportStorage:
         try:
             payload['import_storage_id'] = self.generate_entity_user_id()
             payload['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            payload['is_active'] = True
+            payload['is_active'] = 1
             query = "INSERT INTO ls_import_storage(import_storage_id, ls_import_id, subset_id, entity_id, user_id, path, title, ls_project_id, is_active, created_at, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             current_app.logger.debug(f"{self.__class__.__name__} :: insert_ls_import_storage :: payload: {payload}")
 

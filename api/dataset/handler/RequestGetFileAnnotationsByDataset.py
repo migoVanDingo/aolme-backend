@@ -14,7 +14,12 @@ class RequestGetFileAnnotationsByDataset(AbstractDataset):
         try:
             current_app.logger.debug(f"{self.__class__.__name__}")
 
-            filename = self.filename + ".json"
+            if ".mp4" in self.filename:
+                filename = self.filename.replace(".mp4", ".json")
+            else:
+                filename = self.filename + ".json"
+
+            current_app.logger.debug(f"{self.__class__.__name__} :: filename: {filename}")
 
             # Get subset list by dataset_id
             subset_list = self.read_list_by_dataset_id(self.dataset_id)
@@ -50,6 +55,8 @@ class RequestGetFileAnnotationsByDataset(AbstractDataset):
                 type = "talking"
             elif "Writing" in subset['name']:
                 type = "writing"
+            else:
+                type = "typing"
             
             annotation_list.append({ "type": type, "data":annotation[0] })
         

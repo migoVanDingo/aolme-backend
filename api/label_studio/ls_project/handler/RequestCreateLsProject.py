@@ -150,11 +150,11 @@ class RequestCreateLsProject(AbstractLsProject):
             dao_import_storage = TableLsImportStorage()
             insert_import_storage = dao_import_storage.insert_ls_import_storage(dao_insert_import_storage)
 
-            current_app.logger.debug(f"{self.__class__.__name__} :: insert_import_storage: {insert_import_storage}")
+            """ current_app.logger.debug(f"{self.__class__.__name__} :: insert_import_storage: {insert_import_storage}")
 
                 
             current_app.logger.debug(f"{self.__class__.__name__} :: sync_import_storage: {sync_import_storage.json()}")
-            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")   
+            current_app.logger.debug(f"{self.__class__.__name__} :: Response: {response}")   """ 
 
             return response
 

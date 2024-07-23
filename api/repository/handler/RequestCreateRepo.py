@@ -5,6 +5,7 @@ from api.repository.AbstractRepository import AbstractRepository
 from datetime import datetime
 
 from utility.Constant import Constant
+from utility.GitUtility import GitUtility
 class RequestCreateRepo(AbstractRepository):
     def __init__(self, payload):
         super().__init__()
@@ -34,6 +35,8 @@ class RequestCreateRepo(AbstractRepository):
 
             for dir in dir_list:
                 os.mkdir(os.path.join(repo_directory,dir))
+
+            GitUtility().git_init(repo_directory)
 
             current_app.logger.debug(f"{self.__class__.__name__} :: repo-directory-created: {response}")
             return response
