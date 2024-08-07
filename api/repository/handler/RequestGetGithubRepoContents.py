@@ -16,15 +16,21 @@ class RequestGetGithubRepoContents(AbstractRepository):
             response = self.read_repo_link(self.repo_id)
             current_app.logger.debug(f"{self.__class__.__name__} :: read repo link: {response}")
 
-            path = os.path.join(response[0]['path'], response[0]['dir_name'])
+            if(len(response) > 0):
 
-            response = {
-                "repo_id": self.repo_id,
-                "path": path,
-                "contents": LocalFileManager().get_directory_content(path)
-            }
+                path = os.path.join(response[0]['path'], response[0]['dir_name'])
 
-            return response
+                response = {
+                    "repo_id": self.repo_id,
+                    "path": path,
+                    "contents": LocalFileManager().get_directory_content(path)
+                }
+
+                return response
+            else:
+                return {
+                    "message":"NO_REPO_LINK"
+                }
 
         except Exception as e:
             current_app.logger.error(f"{self.__class__.__name__} :: ERROR: {str(e)}")

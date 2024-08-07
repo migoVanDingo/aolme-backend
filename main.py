@@ -25,7 +25,7 @@ from api.files.FilesAPI import files_api
 from api.label_studio.ls_project.LabelStudioAPI import label_studio_api
 
 logging.basicConfig(filename='record.log',
-                level=logging.DEBUG, format='%(asctime)s | %(levelname)s | %(lineno)d | \n %(message)-20s')
+                    level=logging.DEBUG, format='%(asctime)s | %(levelname)s | %(lineno)d | \n %(message)-20s')
 
 db = MySQL()
 app = Flask(__name__)
@@ -35,12 +35,12 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'aolme_db_v2'
 app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'aolme_db_v2'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor' 
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 db.init_app(app)
 
 
-#app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.before_request
 def handle_options():
@@ -50,7 +50,6 @@ def handle_options():
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Content-Type'] = '*'
         return response
-    
 
 
 app.register_blueprint(task_api)
@@ -74,4 +73,5 @@ app.register_blueprint(dataset_api)
 app.register_blueprint(files_api)
 app.register_blueprint(label_studio_api)
 
-
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)

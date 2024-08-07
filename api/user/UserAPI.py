@@ -49,7 +49,7 @@ def get_user(user_id):
     current_app.logger.debug("Get User ID: {}".format(user_id))
 
     handler = HandleGetUser(user_id)
-    user = handler.do_process()
+    response = handler.do_process()
 
     # api_request = RequestGetUserById(user_id)
     # response = api_request.do_process()
@@ -104,17 +104,20 @@ def delete_user(user_id):
     return response
 
 
-@user_api.route('/api/user/login', methods=["POST", "OPTIONS"])
+@user_api.route('/api/user/login', methods=["POST"])
 def login():
     
     data = json.loads(request.data)
+    print(data)
+    current_app.logger.debug(f":: Login User :: payload: {data}")
     handler = HandleLogin(data)
     response = handler.do_process()
+    return jsonify(message='Received', data=response)
 
-    response = make_response(response, 200)
-    response.headers['Access-Control-Allow-Headers'] = '*'
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Content-Type'] = '*'
+    # response = make_response(response, 200)
+    # response.headers['Access-Control-Allow-Headers'] = '*'
+    # response.headers['Access-Control-Allow-Origin'] = '*'
+    # response.headers['Content-Type'] = '*'
     return response
 
 

@@ -1,6 +1,7 @@
 import json
-from flask import Blueprint, make_response, request
+from flask import Blueprint, current_app, make_response, request
 from flask_cors import CORS
+from api.repository.handler.RequestGetRepoStages import RequestGetRepoStages
 from api.repository.handler.RequestGetGithubRepoContents import RequestGetGithubRepoContents
 from api.repository.handler.RequestSyncGithubRepo import RequestSyncGithubRepo
 from api.repository.handler.RequestCloneRepo import RequestCloneRepo
@@ -198,6 +199,22 @@ def sync_repo(repo_id):
 def get_repo_contents(repo_id):
     
     api_request = RequestGetGithubRepoContents(repo_id)
+    response = api_request.do_process()
+
+    response = make_response(response, 200)
+    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = '*'
+    return response
+
+@repository_api.route('/api/repository/stages', methods=['GET'])
+def get_repo_stages():
+
+
+    path = request.args.get('path')
+    current_app.logger.debug(f"get_repo_stages :: path: {path}")
+    
+    api_request = RequestGetRepoStages(path)
     response = api_request.do_process()
 
     response = make_response(response, 200)

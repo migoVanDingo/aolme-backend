@@ -9,7 +9,7 @@ class RequestSyncGithubRepo(AbstractRepository):
 
     def do_process(self):
         try:
-            current_app.logger.debug(f"{self.__class__.__name__} :: payload: {self.repo_id}")
+            current_app.logger.debug(f"{self.__class__.__name__} :: repo_id: {self.repo_id}")
 
             dir_name = self.read_repo_link(self.repo_id)[0]['dir_name']
 
