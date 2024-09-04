@@ -112,7 +112,7 @@ def login():
     current_app.logger.debug(f":: Login User :: payload: {data}")
     handler = HandleLogin(data)
     response = handler.do_process()
-    return jsonify(message='Received', data=response)
+    return jsonify(response)
 
     # response = make_response(response, 200)
     # response.headers['Access-Control-Allow-Headers'] = '*'

@@ -74,4 +74,4 @@ app.register_blueprint(files_api)
 app.register_blueprint(label_studio_api)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5003)
