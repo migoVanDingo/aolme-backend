@@ -68,6 +68,34 @@ CREATE TABLE module(id INT NOT NULL AUTO_INCREMENT, module_id VARCHAR(255) NOT N
 CREATE TABLE config(id INT NOT NULL AUTO_INCREMENT, config_id VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024) NULL, owner VARCHAR(255) NOT NULL, is_public INT NOT NULL, entity_id VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL,  is_active INT NOT NULL, created_by VARCHAR(255) NOT NULL, created_at VARCHAR(255) NOT NULL, updated_by VARCHAR(255) NULL, updated_at VARCHAR(255) NULL, deleted_by VARCHAR(255) NULL, deleted_at VARCHAR(255) NULL, PRIMARY KEY(id));
 
 
+-- JOBS
+CREATE TABLE jobs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    job_id VARCHAR(255) NOT NULL,
+    job_name VARCHAR(255) NOT NULL,
+    service VARCHAR(255) NOT NULL,
+    tasks JSON NOT NULL,
+    data JSON NOT NULL,
+    status ENUM('pending', 'in-progress', 'completed', 'failed') DEFAULT 'pending',
+    result TEXT NULL,
+    error TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+
+CREATE TABLE job_tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    job_task_id VARCHAR(255) NOT NULL,
+    job_id VARCHAR(255) NOT NULL,
+    task_name VARCHAR(255) NOT NULL,
+    status ENUM('pending', 'in-progress', 'completed', 'failed') DEFAULT 'pending',
+    result TEXT NULL,
+    error TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+
+
+
+
 
 -- AOLME_DAO DATABASE
 CREATE TABLE ground_truth(id INT NOT NULL AUTO_INCREMENT, ground_truth_id VARCHAR(255) NOT NULL, video_id VARCHAR(255) NOT NULL, filename VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, is_active INT NOT NULL, created_by VARCHAR(255) NOT NULL, created_at VARCHAR(255) NOT NULL, updated_by VARCHAR(255) NULL, updated_at VARCHAR(255) NULL, deleted_by VARCHAR(255) NULL, deleted_at VARCHAR(255) NULL, PRIMARY KEY(id));
@@ -83,3 +111,5 @@ CREATE TABLE datastore_subset_item(id INT NOT NULL AUTO_INCREMENT, ds_subset_ite
 CREATE TABLE datastore_subset_directory(id INT NOT NULL AUTO_INCREMENT, directory_id VARCHAR(255) NOT NULL, ds_subset_id VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL, is_active INT NOT NULL, created_by VARCHAR(255) NOT NULL, created_at VARCHAR(255) NOT NULL, updated_by VARCHAR(255) NULL, updated_at VARCHAR(255) NULL, deleted_by VARCHAR(255) NULL, deleted_at VARCHAR(255) NULL, PRIMARY KEY(id));
 
 CREATE TABLE datastore(id INT NOT NULL AUTO_INCREMENT, datastore_id VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024) NULL, is_public INT NOT NULL, entity_id VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL,  is_active INT NOT NULL, created_by VARCHAR(255) NOT NULL, created_at VARCHAR(255) NOT NULL, updated_by VARCHAR(255) NULL, updated_at VARCHAR(255) NULL, deleted_by VARCHAR(255) NULL, deleted_at VARCHAR(255) NULL, PRIMARY KEY(id));
+
+

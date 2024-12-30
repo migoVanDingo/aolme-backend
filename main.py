@@ -27,17 +27,31 @@ from api.label_studio.ls_project.LabelStudioAPI import label_studio_api
 logging.basicConfig(filename='record.log',
                     level=logging.DEBUG, format='%(asctime)s | %(levelname)s | %(lineno)d | \n %(message)-20s')
 
-db = MySQL()
+
 app = Flask(__name__)
 CORS(app)
 
+# Backend Database
+db = MySQL()
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'aolme_db_v2'
 app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'aolme_db_v2'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
 db.init_app(app)
+
+
+# Jobs Databasef
+""" job_tracking_db = MySQL()
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'job_tracking_service'
+app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_DB'] = 'job_tracking_service'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+job_tracking_db.init_app(app)
+
+app.config['RQ_REDIS_URL'] = 'redis://localhost:6379/0'
+rq = RQ(app) """
 
 
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

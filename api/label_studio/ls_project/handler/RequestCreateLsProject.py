@@ -38,16 +38,18 @@ class RequestCreateLsProject(AbstractLsProject):
                 subset_path = os.path.join(os.environ["USER_DIRECTORY"], dataset['entity_id'], "dataset", payload["dataset_id"], "subset", payload["subset_id"])    
 
             current_app.logger.debug(f"{self.__class__.__name__} :: subset_path: {subset_path}")
+
             # Create the ls project Payload
             payload_create_project = {
-                "title": payload['name'], "description": payload['description']}
+                "title": payload['name'], 
+                "description": payload['description']
+            }
 
  
             current_app.logger.debug(f"{self.__class__.__name__} :: payload_create_project: {payload_create_project}")
 
             # Create the ls project
-            response = self.create_ls_project(
-                json.dumps(payload_create_project))
+            response = self.create_ls_project(json.dumps(payload_create_project))
             
             current_app.logger.debug(f"{self.__class__.__name__} :: create-project-response: {response}")
 
